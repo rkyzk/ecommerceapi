@@ -22,4 +22,9 @@ public class ProductServiceImpl implements ProductService {
 	public Product createProduct(Product product) {
 		return productRepository.save(product);
 	}
+	
+	@Override
+	public Product updateProduct(Product product, Long prodId) {
+		return productRepository.save(product);
+	}
 }
