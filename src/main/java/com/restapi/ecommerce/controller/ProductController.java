@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.restapi.ecommerce.entity.Product;
 import com.restapi.ecommerce.service.ProductService;
@@ -39,5 +40,17 @@ public class ProductController {
 			@PathVariable Long prodId) {
 		Product updatedProduct = productService.updateProduct(product, prodId);
 		return new ResponseEntity<> (updatedProduct, HttpStatus.OK);
+	}
+	
+	@PutMapping("/admin/products/delete/{prodId}")
+	public ResponseEntity<String> deleteProduct(@PathVariable Long prodId) {
+		try {
+			String status = productService.deleteProduct(prodId);
+			// return new ResponseEntity<>(status, HttpStatus.OK);
+			// return ResponseEntity.ok(status);
+		    return ResponseEntity.status(HttpStatus.OK).body(status);
+		} catch (ResponseStatusException e) {
+			return new ResponseEntity<>(e.getReason(), e.getStatusCode());
+		}	
 	}
 }
