@@ -18,7 +18,7 @@ public class Product {
 	private Long id;
 
 	@NotBlank
-	@Size(min=3, max=5)
+	@Size(min=3, max=50)
 	private String name;
 
 	private Instant deletedAt;
