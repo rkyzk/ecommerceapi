@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.restapi.ecommerce.entity.Product;
+import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.repository.ProductRepository;
 
 @Service
@@ -32,7 +31,7 @@ public class ProductServiceImpl implements ProductService {
 		Optional<Product> storedProduct = productRepository.findById(prodId);
 		Product productToUpdate = storedProduct
 				.orElseThrow(()
-						-> new ResponseStatusException(HttpStatus.NOT_FOUND, "resource not found"));
+						-> new ResourceNotFoundException("Product", "productId", prodId));
 	    productToUpdate.setName(product.getName());
 		productRepository.save(productToUpdate);
 		return productToUpdate;
@@ -43,7 +42,7 @@ public class ProductServiceImpl implements ProductService {
 		Optional<Product> storedProduct = productRepository.findById(prodId);	
 		Product productToDelete = storedProduct
 				.orElseThrow(()
-						-> new ResponseStatusException(HttpStatus.NOT_FOUND, "resource not found"));
+						-> new ResourceNotFoundException("Product", "productId", prodId));
 	    productToDelete.setDeletedAt(Instant.now());
 		productRepository.save(productToDelete);
 		return "product deleted";
