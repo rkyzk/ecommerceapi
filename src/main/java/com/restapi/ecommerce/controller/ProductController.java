@@ -17,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.restapi.ecommerce.entity.Product;
 import com.restapi.ecommerce.service.ProductService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -30,13 +32,13 @@ public class ProductController {
 	}
 	
 	@PostMapping("/admin/products")
-	public ResponseEntity<Product> postProduct(@RequestBody Product product) {
+	public ResponseEntity<Product> postProduct(@Valid @RequestBody Product product) {
 		Product savedProduct = productService.createProduct(product);
 		return new ResponseEntity<> (savedProduct, HttpStatus.CREATED);
 	}
 	
 	@PutMapping("/admin/products/{prodId}")
-	public ResponseEntity<Product> updateProduct(@RequestBody Product product,
+	public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product,
 			@PathVariable Long prodId) {
 		Product updatedProduct = productService.updateProduct(product, prodId);
 		return new ResponseEntity<> (updatedProduct, HttpStatus.OK);
