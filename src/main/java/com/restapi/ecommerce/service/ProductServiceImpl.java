@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.restapi.ecommerce.entity.Product;
+import com.restapi.ecommerce.exceptions.APIException;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.repository.ProductRepository;
 
@@ -18,7 +19,11 @@ public class ProductServiceImpl implements ProductService {
 	
 	@Override
 	public List<Product> getProducts() {
-		return productRepository.findAll();
+		List<Product> prodList = productRepository.findAll();
+		if (prodList.isEmpty()) {
+			throw new APIException("No products present");
+		}
+		return prodList;
 	};
 	
 	@Override
