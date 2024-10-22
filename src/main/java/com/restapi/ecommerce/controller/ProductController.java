@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restapi.ecommerce.entity.Product;
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
 import com.restapi.ecommerce.service.ProductService;
@@ -37,10 +36,10 @@ public class ProductController {
 	}
 	
 	@PutMapping("/admin/products/{prodId}")
-	public ResponseEntity<Product> updateProduct(@Valid @RequestBody Product product,
+	public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
 			@PathVariable Long prodId) {
-		Product updatedProduct = productService.updateProduct(product, prodId);
-		return new ResponseEntity<> (updatedProduct, HttpStatus.OK);
+		ProductDTO updatedProdDTO = productService.updateProduct(productDTO, prodId);
+		return new ResponseEntity<> (updatedProdDTO, HttpStatus.OK);
 	}
 	
 	@PutMapping("/admin/products/delete/{prodId}")
