@@ -7,5 +7,5 @@ public interface ProductService {
 	ProductResponse getProducts();
 	public ProductDTO createProduct(ProductDTO productDTO);
 	public ProductDTO updateProduct(ProductDTO productDTO, Long prodId);
-	public String deleteProduct(Long prodId);
+	public ProductDTO deleteProduct(Long prodId);
 }
