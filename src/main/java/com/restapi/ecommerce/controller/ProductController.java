@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restapi.ecommerce.entity.Product;
+import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
 import com.restapi.ecommerce.service.ProductService;
 
@@ -30,8 +31,8 @@ public class ProductController {
 	}
 	
 	@PostMapping("/admin/products")
-	public ResponseEntity<Product> postProduct(@Valid @RequestBody Product product) {
-		Product savedProduct = productService.createProduct(product);
+	public ResponseEntity<ProductDTO> postProduct(@Valid @RequestBody ProductDTO productDTO) {
+		ProductDTO savedProduct = productService.createProduct(productDTO);
 		return new ResponseEntity<> (savedProduct, HttpStatus.CREATED);
 	}
 	
