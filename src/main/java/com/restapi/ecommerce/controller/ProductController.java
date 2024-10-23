@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restapi.ecommerce.payload.ProductDTO;
@@ -24,8 +25,10 @@ public class ProductController {
 	ProductService productService;
 	
 	@GetMapping("/public/products")
-	public ResponseEntity<ProductResponse> getProducts() {
-		ProductResponse response = productService.getProducts();
+	public ResponseEntity<ProductResponse> getProducts(
+			@RequestParam (name = "pageNumber") Integer pageNumber,
+			@RequestParam (name = "pageSize") Integer pageSize) {
+		ProductResponse response = productService.getProducts(pageNumber, pageSize);
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
 	

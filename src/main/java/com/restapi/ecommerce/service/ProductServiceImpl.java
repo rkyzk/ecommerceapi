@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.restapi.ecommerce.entity.Product;
@@ -24,12 +27,14 @@ public class ProductServiceImpl implements ProductService {
 	private ModelMapper modelMapper;
 	
 	@Override
-	public ProductResponse getProducts() {
-		List<Product> content = productRepository.findAll();
-		if (content.isEmpty()) {
+	public ProductResponse getProducts(Integer pageNumber, Integer pageSize) {
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+		Page<Product> productPage = productRepository.findAll(pageDetails);
+		List<Product> products = productPage.getContent();
+		if (products.isEmpty()) {
 			throw new APIException("No products present");
 		}
-		List<ProductDTO> productDTOs = content.stream()
+		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
 				.toList();
 		ProductResponse response = new ProductResponse();
