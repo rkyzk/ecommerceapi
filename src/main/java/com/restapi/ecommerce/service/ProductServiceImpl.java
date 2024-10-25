@@ -39,6 +39,12 @@ public class ProductServiceImpl implements ProductService {
 				.toList();
 		ProductResponse response = new ProductResponse();
 		response.setContent(productDTOs);
+		// set pagination data
+		response.setPageNumber(productPage.getNumber());
+		response.setPageSize(productPage.getSize());
+		response.setTotalElements(productPage.getTotalElements());
+		response.setTotalPages(productPage.getTotalPages());
+		response.setLastPage(productPage.isLast());
 		return response;
 	};
 	
