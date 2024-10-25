@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.restapi.ecommerce.entity.Product;
@@ -27,8 +28,12 @@ public class ProductServiceImpl implements ProductService {
 	private ModelMapper modelMapper;
 	
 	@Override
-	public ProductResponse getProducts(Integer pageNumber, Integer pageSize) {
-		Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
+			String sortBy, String sortOrder) {
+		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+				? Sort.by(sortBy).ascending()
+				: Sort.by(sortBy).descending();
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
 		Page<Product> productPage = productRepository.findAll(pageDetails);
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {

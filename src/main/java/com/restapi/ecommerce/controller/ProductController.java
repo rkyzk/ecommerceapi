@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.restapi.ecommerce.config.AppConstants;
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
 import com.restapi.ecommerce.service.ProductService;
@@ -26,9 +27,15 @@ public class ProductController {
 	
 	@GetMapping("/public/products")
 	public ResponseEntity<ProductResponse> getProducts(
-			@RequestParam (name = "pageNumber") Integer pageNumber,
-			@RequestParam (name = "pageSize") Integer pageSize) {
-		ProductResponse response = productService.getProducts(pageNumber, pageSize);
+			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
+			    required=false) Integer pageNumber,
+			@RequestParam (name = "pageSize", defaultValue = AppConstants.PAGE_SIZE,
+			    required=false) Integer pageSize,
+			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_BY,
+			    required=false) String sortBy,
+			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
+			    required=false) String sortOrder) {
+		ProductResponse response = productService.getProducts(pageNumber, pageSize, sortBy, sortOrder);
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
 	
