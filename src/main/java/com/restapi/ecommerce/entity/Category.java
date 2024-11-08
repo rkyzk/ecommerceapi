@@ -35,5 +35,5 @@ public class Category {
 			joinColumns = @JoinColumn(name = "product_id"),
 			inverseJoinColumns = @JoinColumn(name = "category_id")
 	)
-	private Set<Product> groups = new HashSet<>();
+	private Set<Product> products = new HashSet<>();
 }

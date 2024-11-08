@@ -1,11 +1,16 @@
 package com.restapi.ecommerce.entity;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -43,4 +48,8 @@ public class Product {
 	private Instant updatedAt;
 
 	private Instant deletedAt;
+	
+	@ManyToMany(mappedBy = "products")
+	@JsonIgnore
+	private Set<Category> categories = new HashSet<>();
 }
