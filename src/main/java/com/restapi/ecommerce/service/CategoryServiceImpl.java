@@ -16,6 +16,7 @@ import com.restapi.ecommerce.exceptions.APIException;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.CategoryDTO;
 import com.restapi.ecommerce.payload.CategoryResponse;
+import com.restapi.ecommerce.repository.CategoryRepository;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {

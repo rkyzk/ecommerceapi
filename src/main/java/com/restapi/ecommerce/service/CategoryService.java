@@ -8,5 +8,5 @@ public interface CategoryService {
 			String sortBy, String sortOrder);
 	public CategoryDTO createCategory(CategoryDTO categoryDTO);
 	public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId);
-	public CategoryDTO deleteCategory(Long categoryId);
+	public void deleteCategory(Long categoryId);
 }
