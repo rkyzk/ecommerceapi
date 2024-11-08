@@ -29,14 +29,14 @@ public class CustomGlobalExceptionHandler {
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<APIResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
 		String message = e.getMessage();
-		APIResponse response = new APIResponse(message , false);
-		return new ResponseEntity<> (response, HttpStatus.NOT_FOUND);
+		APIResponse apiResponse = new APIResponse(message , false);
+		return new ResponseEntity<> (apiResponse, HttpStatus.NOT_FOUND);
 	}
 	
 	@ExceptionHandler(APIException.class)
 	public ResponseEntity<APIResponse> handleAPIException(APIException e) {
 		String message = e.getMessage();
-		APIResponse response = new APIResponse(message , false);
-		return new ResponseEntity<> (response, HttpStatus.BAD_REQUEST);
+		APIResponse apiResponse = new APIResponse(message , false);
+		return new ResponseEntity<> (apiResponse, HttpStatus.BAD_REQUEST);
 	}
 }

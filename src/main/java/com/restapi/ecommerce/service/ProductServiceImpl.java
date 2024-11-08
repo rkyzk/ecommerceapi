@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 		Product productToUpdate = storedProduct
 				.orElseThrow(()
 						-> new ResourceNotFoundException("Product", "productId", prodId));
-	    productToUpdate.setName(productDTO.getName());
+	    productToUpdate.setProductName(productDTO.getProductName());
 		Product updatedProduct = productRepository.save(productToUpdate);
 		ProductDTO updatedProdDTO = modelMapper.map(updatedProduct, ProductDTO.class);
 		return updatedProdDTO;
