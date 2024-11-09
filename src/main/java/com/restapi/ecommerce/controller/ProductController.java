@@ -60,9 +60,15 @@ public class ProductController {
 	    return new ResponseEntity<> (productDTO, HttpStatus.OK);
 	}
 	
-	@GetMapping("/public/categories/{categoryId}/products")
-	public ResponseEntity<ProductResponse> searchProductsByCategory(@PathVariable Long categoryId) {
-		ProductResponse response = productService.searchByCategory(categoryId);
-		return new ResponseEntity<> (response, HttpStatus.OK);
+//	@GetMapping("/public/categories/{categoryId}/products")
+//	public ResponseEntity<ProductResponse> searchProductsByCategory(@PathVariable Long categoryId) {
+//		ProductResponse response = productService.searchByCategory(categoryId);
+//		return new ResponseEntity<> (response, HttpStatus.OK);
+//	}
+	
+	@GetMapping("/public/products/keyword/{keyword}")
+	public ResponseEntity<ProductResponse> searchProductsByKeyword(@PathVariable String keyword) {
+		ProductResponse response = productService.searchProductsByKeyword(keyword);
+		return new ResponseEntity<> (response, HttpStatus.FOUND);
 	}
 }

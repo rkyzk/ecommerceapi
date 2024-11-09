@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.restapi.ecommerce.entity.Category;
 import com.restapi.ecommerce.entity.Product;
 import com.restapi.ecommerce.exceptions.APIException;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
@@ -89,16 +88,37 @@ public class ProductServiceImpl implements ProductService {
 		return deletedProdDTO;
 	}
 	
-	@Override
-	public ProductResponse searchByCategory(Long categoryId) {
+//	@Override
+//	public ProductResponse searchByCategory(Long categoryId) {
 //		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
 //				? Sort.by(sortBy).ascending()
 //				: Sort.by(sortBy).descending();
 //		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-		Category category = categoryRepository.findById(categoryId)
-				.orElseThrow(() ->
-						new ResourceNotFoundException("Category", "categoryId",categoryId));
-		List<Product> products = productRepository.findByCategory(category);
+//		Category category = categoryRepository.findById(categoryId)
+//				.orElseThrow(() ->
+//						new ResourceNotFoundException("Category", "categoryId",categoryId));
+//		List<Product> products = productRepository.findByCategory(category);
+//		if (products.isEmpty()) {
+//			throw new APIException("No products present");
+//		}
+//		List<ProductDTO> productDTOs = products.stream()
+//				.map(product -> modelMapper.map(product, ProductDTO.class))
+//				.toList();
+//		ProductResponse response = new ProductResponse();
+//		response.setContent(productDTOs);
+		// set pagination data
+//		response.setPageNumber(productPage.getNumber());
+//		response.setPageSize(productPage.getSize());
+//		response.setTotalElements(productPage.getTotalElements());
+//		response.setTotalPages(productPage.getTotalPages());
+//		response.setLastPage(productPage.isLast());
+//		return response;
+//	};
+	
+	@Override
+	public ProductResponse searchProductsByKeyword(String keyword) {
+		List<Product> products = productRepository
+				.findByProductNameContainingIgnoreCase(keyword);
 		if (products.isEmpty()) {
 			throw new APIException("No products present");
 		}
@@ -107,12 +127,6 @@ public class ProductServiceImpl implements ProductService {
 				.toList();
 		ProductResponse response = new ProductResponse();
 		response.setContent(productDTOs);
-		// set pagination data
-//		response.setPageNumber(productPage.getNumber());
-//		response.setPageSize(productPage.getSize());
-//		response.setTotalElements(productPage.getTotalElements());
-//		response.setTotalPages(productPage.getTotalPages());
-//		response.setLastPage(productPage.isLast());
 		return response;
-	};
+	}
 }
