@@ -4,9 +4,10 @@ import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
 
 public interface ProductService {
-	ProductResponse getProducts(Integer pageNumber, Integer pageSize,
+	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder);
-	public ProductDTO createProduct(ProductDTO productDTO);
+	public ProductDTO addProduct(ProductDTO productDTO);
 	public ProductDTO updateProduct(ProductDTO productDTO, Long prodId);
 	public ProductDTO deleteProduct(Long prodId);
+	public ProductResponse searchByCategory(Long categoryId);
 }

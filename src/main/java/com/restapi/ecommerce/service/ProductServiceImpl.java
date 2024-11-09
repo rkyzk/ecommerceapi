@@ -12,17 +12,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import com.restapi.ecommerce.entity.Category;
 import com.restapi.ecommerce.entity.Product;
 import com.restapi.ecommerce.exceptions.APIException;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
+import com.restapi.ecommerce.repository.CategoryRepository;
 import com.restapi.ecommerce.repository.ProductRepository;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -54,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 	};
 	
 	@Override
-	public ProductDTO createProduct(ProductDTO productDTO) {
+	public ProductDTO addProduct(ProductDTO productDTO) {
 		Product product = modelMapper.map(productDTO, Product.class);
 		Product savedProduct = productRepository.save(product);
 		return modelMapper.map(savedProduct, ProductDTO.class);
@@ -83,4 +88,31 @@ public class ProductServiceImpl implements ProductService {
 		ProductDTO deletedProdDTO = modelMapper.map(deletedProd, ProductDTO.class);
 		return deletedProdDTO;
 	}
+	
+	@Override
+	public ProductResponse searchByCategory(Long categoryId) {
+//		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+//				? Sort.by(sortBy).ascending()
+//				: Sort.by(sortBy).descending();
+//		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+		Category category = categoryRepository.findById(categoryId)
+				.orElseThrow(() ->
+						new ResourceNotFoundException("Category", "categoryId",categoryId));
+		List<Product> products = productRepository.findByCategory(category);
+		if (products.isEmpty()) {
+			throw new APIException("No products present");
+		}
+		List<ProductDTO> productDTOs = products.stream()
+				.map(product -> modelMapper.map(product, ProductDTO.class))
+				.toList();
+		ProductResponse response = new ProductResponse();
+		response.setContent(productDTOs);
+		// set pagination data
+//		response.setPageNumber(productPage.getNumber());
+//		response.setPageSize(productPage.getSize());
+//		response.setTotalElements(productPage.getTotalElements());
+//		response.setTotalPages(productPage.getTotalPages());
+//		response.setLastPage(productPage.isLast());
+		return response;
+	};
 }
