@@ -39,6 +39,12 @@ public class ProductController {
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
 	
+	@GetMapping("/public/categories/{categoryId}/products")
+	public ResponseEntity<ProductResponse> getProductsByCategory(@PathVariable Long categoryId) {
+		ProductResponse response = productService.getProductsByCategory(categoryId);
+		return new ResponseEntity<> (response, HttpStatus.OK);
+	}
+	
 	@PostMapping("/admin/products")
 	public ResponseEntity<ProductDTO> postProduct(@Valid @RequestBody ProductDTO productDTO) {
 		ProductDTO savedProduct = productService.addProduct(productDTO);
@@ -59,12 +65,6 @@ public class ProductController {
 		// return ResponseEntity.ok(status);
 	    return new ResponseEntity<> (productDTO, HttpStatus.OK);
 	}
-	
-//	@GetMapping("/public/categories/{categoryId}/products")
-//	public ResponseEntity<ProductResponse> searchProductsByCategory(@PathVariable Long categoryId) {
-//		ProductResponse response = productService.searchByCategory(categoryId);
-//		return new ResponseEntity<> (response, HttpStatus.OK);
-//	}
 	
 	@GetMapping("/public/products/keyword/{keyword}")
 	public ResponseEntity<ProductResponse> searchProductsByKeyword(@PathVariable String keyword) {

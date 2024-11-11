@@ -7,4 +7,5 @@ import com.restapi.ecommerce.entity.Category;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long>{
+	Category findById(long categoryId);
 }

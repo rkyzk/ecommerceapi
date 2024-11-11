@@ -3,9 +3,8 @@ package com.restapi.ecommerce.entity;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,19 +31,7 @@ public class Category {
 	@Size(min = 3)
 	private String categoryName;
 
-	@ManyToMany(mappedBy = "categories", cascade = CascadeType.MERGE)
-	@JsonBackReference
+	@ManyToMany(mappedBy = "categories")
+	@JsonIgnore
 	private Set<Product> products = new HashSet<>();
-	
-	public void addProducts(Product product) {
-		product.getCategories().add(this);
-		this.products.add(product);
-	}
-	
-	public void removeProducts(Long productId) {
-		Product product = this.products.stream().filter(
-				prod -> prod.getProductId() == productId)
-		        .findFirst().orElse(null);
-		if (product != null) this.products.remove(product);		
-	}
 }

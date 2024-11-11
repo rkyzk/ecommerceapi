@@ -4,8 +4,6 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -18,6 +16,7 @@ import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,18 +34,23 @@ public class Product {
 	private Long productId;
 
 	@NotBlank
-	@Size(min=3, max=50)
+	@Size(min=3, max=40)
 	private String productName;
 	
+	@NotNull
 	@Max(99999)
 	@Min(0)
 	private Integer stock;
 	
 	@Digits(integer=10, fraction=0)
+	@Min(1)
 	private double price;
 	
 	@Size(max=200)
 	private String description;
+	
+	@Size(max=30)
+	private String image_name;
 
 	private Instant createdAt;
 
@@ -59,13 +63,12 @@ public class Product {
 			name = "product_category",
 			joinColumns = @JoinColumn(name = "product_id"),
 			inverseJoinColumns = @JoinColumn(name = "category_id")
-	)
-	@JsonManagedReference
+    )
 	private Set<Category> categories = new HashSet<>();
-	
+
 	public void addCategory(Category category) {
 		category.getProducts().add(this);
-		this.categories.add(category);
+	    this.categories.add(category);   
 	}
 	
 	public void removeCategory(long categoryId) {
