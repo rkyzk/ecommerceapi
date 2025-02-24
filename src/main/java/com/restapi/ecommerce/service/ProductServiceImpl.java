@@ -26,13 +26,16 @@ import com.restapi.ecommerce.repository.ProductRepository;
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductRepository productRepository;
-	
+
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
+	@Autowired
+	private ImgUploadService imgUploadService;
+
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Override
 	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder) {
@@ -163,7 +166,23 @@ public class ProductServiceImpl implements ProductService {
 		return response;
 	}
 
-	// To DO
+	/**
+	 * Upload image on S3 Bucket.
+	 * 
+	 * @param imageName
+	 * @param file
+	 * @param categoryName
+	 * @return image path
+	 */
 	private String uploadImage(String imageName, MultipartFile file, String categoryName) {
-		return imageName;};
+		// store it in S3 bucket
+		String imagePath = imgUploadService.uploadImg(
+			file, categoryName, // specify the folder 
+			imageName);
+		// if upload fails, set error response
+		if (imagePath == null) { 
+			// to do
+		}
+		return imagePath;
+	}
 }
