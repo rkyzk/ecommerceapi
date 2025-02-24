@@ -1,7 +1,5 @@
 package com.restapi.ecommerce.repository;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +11,6 @@ import com.restapi.ecommerce.entity.Product;
 public interface ProductRepository extends JpaRepository<Product, Long>{
 	Product findByProductName(String prodName);
 	Page<Product> findByCategoryCategoryId(Long categoryId, Pageable pageDetails);
-	List<Product> findByProductNameContainingIgnoreCase(String keyword);
+	Page<Product> findByProductNameContainingIgnoreCase(String keyword,
+			Pageable pageDetails);
 }

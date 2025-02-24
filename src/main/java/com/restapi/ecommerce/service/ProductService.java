@@ -11,5 +11,7 @@ public interface ProductService {
 	public ProductDTO deleteProduct(Long prodId);
 	public ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber,
 			Integer pageSize, String sortBy, String sortOrder);
-	public ProductResponse searchProductsByKeyword(String keyword);
+	public ProductResponse searchProductsByKeyword(String keyword,
+			Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+	
 }
