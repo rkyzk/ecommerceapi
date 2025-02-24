@@ -24,9 +24,23 @@ import jakarta.validation.Valid;
 public class ProductController {
 	@Autowired
 	ProductService productService;
-	
+
 	@GetMapping("/public/products")
 	public ResponseEntity<ProductResponse> getProducts(
+			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
+			    required=false) Integer pageNumber,
+			@RequestParam (name = "pageSize", defaultValue = AppConstants.PAGE_SIZE,
+			    required=false) Integer pageSize,
+			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,
+			    required=false) String sortBy,
+			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
+			    required=false) String sortOrder) {
+		ProductResponse response = productService.getProducts(pageNumber, pageSize, sortBy, sortOrder);
+		return new ResponseEntity<> (response, HttpStatus.OK);
+	}
+
+	@GetMapping("/public/categories/{categoryId}/products")
+	public ResponseEntity<ProductResponse> getProductsByCategory(@PathVariable Long categoryId,
 			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
 			    required=false) Integer pageNumber,
 			@RequestParam (name = "pageSize", defaultValue = AppConstants.PAGE_SIZE,
@@ -35,23 +49,24 @@ public class ProductController {
 			    required=false) String sortBy,
 			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
 			    required=false) String sortOrder) {
-		ProductResponse response = productService.getProducts(pageNumber, pageSize, sortBy, sortOrder);
+		ProductResponse response = productService.getProductsByCategory(categoryId, pageNumber,
+				pageSize, sortBy, sortOrder);
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/admin/products")
 	public ResponseEntity<ProductDTO> postProduct(@Valid @RequestBody ProductDTO productDTO) {
 		ProductDTO savedProduct = productService.addProduct(productDTO);
 		return new ResponseEntity<> (savedProduct, HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping("/admin/products/{prodId}")
 	public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
 			@PathVariable Long prodId) {
 		ProductDTO updatedProdDTO = productService.updateProduct(productDTO, prodId);
 		return new ResponseEntity<> (updatedProdDTO, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/admin/products/delete/{prodId}")
 	public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long prodId) {
 		ProductDTO productDTO = productService.deleteProduct(prodId);
@@ -59,13 +74,7 @@ public class ProductController {
 		// return ResponseEntity.ok(status);
 	    return new ResponseEntity<> (productDTO, HttpStatus.OK);
 	}
-	
-//	@GetMapping("/public/categories/{categoryId}/products")
-//	public ResponseEntity<ProductResponse> searchProductsByCategory(@PathVariable Long categoryId) {
-//		ProductResponse response = productService.searchByCategory(categoryId);
-//		return new ResponseEntity<> (response, HttpStatus.OK);
-//	}
-	
+
 	@GetMapping("/public/products/keyword/{keyword}")
 	public ResponseEntity<ProductResponse> searchProductsByKeyword(@PathVariable String keyword) {
 		ProductResponse response = productService.searchProductsByKeyword(keyword);
