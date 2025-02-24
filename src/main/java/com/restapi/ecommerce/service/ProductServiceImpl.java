@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
 				? Sort.by(sortBy).ascending()
 				: Sort.by(sortBy).descending();
 		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-		Page<Product> productPage = productRepository.findAll(pageDetails);
+		Page<Product> productPage = productRepository.findByDeletedAtIsNull(pageDetails);
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
 			throw new APIException("No products present");
