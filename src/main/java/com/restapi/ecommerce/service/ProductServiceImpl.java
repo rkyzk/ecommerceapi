@@ -11,7 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.restapi.ecommerce.entity.Category;
 import com.restapi.ecommerce.entity.Product;
 import com.restapi.ecommerce.exceptions.APIException;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
@@ -84,9 +86,27 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ProductDTO addProduct(ProductDTO productDTO) {
-		Product product = modelMapper.map(productDTO, Product.class);
-		Product savedProduct = productRepository.save(product);
+	public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
+		Category category = categoryRepository.findById(categoryId)
+				.orElseThrow(() -> new ResourceNotFoundException(
+						"Category", "categoryId", categoryId));
+		Product product = productRepository.findByProductName(productDTO.getProductName());
+		if (product != null)
+			throw new APIException("Product with the given name exists");
+		productDTO.setCategory(category);
+		double specialPrice = productDTO.getPrice() * (1 - productDTO.getDiscount() * 0.01);
+		productDTO.setSpecialPrice(specialPrice);
+		MultipartFile file = productDTO.getImgFile();
+		// if image was added:
+		if (file != null && !file.isEmpty()) {
+			String imageName = productDTO.getImgFile().getOriginalFilename();
+			// store it in S3 bucket
+			String imagePath = uploadImage(imageName, file, category.getCategoryName());
+			productDTO.setImageName(imageName);
+		    productDTO.setImagePath(imagePath);
+		}
+		Product prodData = modelMapper.map(productDTO, Product.class);
+		Product savedProduct = productRepository.save(prodData);
 		return modelMapper.map(savedProduct, ProductDTO.class);
 	}
 
@@ -128,4 +148,8 @@ public class ProductServiceImpl implements ProductService {
 		response.setContent(productDTOs);
 		return response;
 	}
+
+	// To DO
+	private String uploadImage(String imageName, MultipartFile file, String categoryName) {
+		return imageName;};
 }
