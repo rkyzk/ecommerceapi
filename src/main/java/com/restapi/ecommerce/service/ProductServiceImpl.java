@@ -56,14 +56,40 @@ public class ProductServiceImpl implements ProductService {
 		response.setLastPage(productPage.isLast());
 		return response;
 	};
-	
+
+	@Override
+	public ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber,
+			Integer pageSize, String sortBy, String sortOrder) {
+		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+				? Sort.by(sortBy).ascending()
+				: Sort.by(sortBy).descending();
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+		Page<Product> productPage = productRepository.findByCategoryCategoryId(categoryId, pageDetails);
+		List<Product> products = productPage.getContent();
+		if (products.isEmpty()) {
+			throw new APIException("No products present");
+		}
+		List<ProductDTO> productDTOs = products.stream()
+				.map(product -> modelMapper.map(product, ProductDTO.class))
+				.toList();
+		ProductResponse response = new ProductResponse();
+		response.setContent(productDTOs);
+		// set pagination data
+		response.setPageNumber(productPage.getNumber());
+		response.setPageSize(productPage.getSize());
+		response.setTotalElements(productPage.getTotalElements());
+		response.setTotalPages(productPage.getTotalPages());
+		response.setLastPage(productPage.isLast());
+		return response;	
+	}
+
 	@Override
 	public ProductDTO addProduct(ProductDTO productDTO) {
 		Product product = modelMapper.map(productDTO, Product.class);
 		Product savedProduct = productRepository.save(product);
 		return modelMapper.map(savedProduct, ProductDTO.class);
 	}
-	
+
 	@Override
 	public ProductDTO updateProduct(ProductDTO productDTO, Long prodId) {
 		Optional<Product> storedProduct = productRepository.findById(prodId);
@@ -75,7 +101,7 @@ public class ProductServiceImpl implements ProductService {
 		ProductDTO updatedProdDTO = modelMapper.map(updatedProduct, ProductDTO.class);
 		return updatedProdDTO;
 	}
-	
+
 	@Override
 	public ProductDTO deleteProduct(Long prodId) {
 		Optional<Product> storedProduct = productRepository.findById(prodId);	
@@ -87,34 +113,7 @@ public class ProductServiceImpl implements ProductService {
 		ProductDTO deletedProdDTO = modelMapper.map(deletedProd, ProductDTO.class);
 		return deletedProdDTO;
 	}
-	
-//	@Override
-//	public ProductResponse searchByCategory(Long categoryId) {
-//		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
-//				? Sort.by(sortBy).ascending()
-//				: Sort.by(sortBy).descending();
-//		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-//		Category category = categoryRepository.findById(categoryId)
-//				.orElseThrow(() ->
-//						new ResourceNotFoundException("Category", "categoryId",categoryId));
-//		List<Product> products = productRepository.findByCategory(category);
-//		if (products.isEmpty()) {
-//			throw new APIException("No products present");
-//		}
-//		List<ProductDTO> productDTOs = products.stream()
-//				.map(product -> modelMapper.map(product, ProductDTO.class))
-//				.toList();
-//		ProductResponse response = new ProductResponse();
-//		response.setContent(productDTOs);
-		// set pagination data
-//		response.setPageNumber(productPage.getNumber());
-//		response.setPageSize(productPage.getSize());
-//		response.setTotalElements(productPage.getTotalElements());
-//		response.setTotalPages(productPage.getTotalPages());
-//		response.setLastPage(productPage.isLast());
-//		return response;
-//	};
-	
+
 	@Override
 	public ProductResponse searchProductsByKeyword(String keyword) {
 		List<Product> products = productRepository
