@@ -116,7 +116,21 @@ public class ProductServiceImpl implements ProductService {
 		Product productToUpdate = storedProduct
 				.orElseThrow(()
 						-> new ResourceNotFoundException("Product", "productId", prodId));
+		MultipartFile file = productDTO.getImgFile();
+		// if image was added:
+		if (file != null && !file.isEmpty()) {
+			String imageName = productDTO.getImgFile().getOriginalFilename();
+			// store it in S3 bucket
+			String imagePath = uploadImage(imageName, file,
+					productDTO.getCategory().getCategoryName());
+			productDTO.setImageName(imageName);
+		    productDTO.setImagePath(imagePath);
+		}
 	    productToUpdate.setProductName(productDTO.getProductName());
+	    productToUpdate.setQuantity(productDTO.getQuantity());
+	    productToUpdate.setPrice(productDTO.getPrice());
+	    productToUpdate.setDescription(productDTO.getDescription());
+	    productToUpdate.setCategory(productDTO.getCategory());
 		Product updatedProduct = productRepository.save(productToUpdate);
 		ProductDTO updatedProdDTO = modelMapper.map(updatedProduct, ProductDTO.class);
 		return updatedProdDTO;
