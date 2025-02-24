@@ -145,6 +145,11 @@ public class ProductServiceImpl implements ProductService {
 		Product productToDelete = storedProduct
 				.orElseThrow(()
 						-> new ResourceNotFoundException("Product", "productId", prodId));
+		String imageName = productToDelete.getImageName();
+		// if there's an image file, delete it from S3 bucket. 
+		if (!(imageName == "") || !(imageName == null)) {
+			imgUploadService.deleteImg(imageName);
+		}
 	    productToDelete.setDeletedAt(Instant.now());
 		Product deletedProd = productRepository.save(productToDelete);
 		ProductDTO deletedProdDTO = modelMapper.map(deletedProd, ProductDTO.class);

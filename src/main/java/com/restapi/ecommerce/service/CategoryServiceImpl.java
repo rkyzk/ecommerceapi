@@ -22,10 +22,10 @@ import com.restapi.ecommerce.repository.CategoryRepository;
 public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Override
 	public CategoryResponse getCategories(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder) {
@@ -51,14 +51,14 @@ public class CategoryServiceImpl implements CategoryService {
 		response.setLastPage(categoryPage.isLast());
 		return response;
 	};
-	
+
 	@Override
 	public CategoryDTO createCategory(CategoryDTO categoryDTO) {
 		Category category = modelMapper.map(categoryDTO, Category.class);
 		Category savedCategory = categoryRepository.save(category);
 		return modelMapper.map(savedCategory, CategoryDTO.class);
 	}
-	
+
 	@Override
 	public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId) {
 		Optional<Category> storedCategory = categoryRepository.findById(categoryId);
