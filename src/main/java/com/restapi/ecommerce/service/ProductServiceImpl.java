@@ -17,12 +17,16 @@ import com.restapi.ecommerce.exceptions.APIException;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
+import com.restapi.ecommerce.repository.CategoryRepository;
 import com.restapi.ecommerce.repository.ProductRepository;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -54,23 +58,9 @@ public class ProductServiceImpl implements ProductService {
 	};
 	
 	@Override
-	public ProductResponse getProductsByCategory(Long categoryId) {
-		List<Product> products = productRepository.findByCategory(categoryId);
-		List<ProductDTO> productDTOs = products.stream()
-				.map(product -> modelMapper.map(product, ProductDTO.class))
-				.toList();
-		ProductResponse response = new ProductResponse();
-		response.setContent(productDTOs);
-		return response;	
-	}
-	
-	@Override
 	public ProductDTO addProduct(ProductDTO productDTO) {
-		Product product = productRepository.findByProductName(productDTO.getProductName());
-		if (product != null)
-			throw new APIException("Product with the given name exists");
-		Product prodData = modelMapper.map(productDTO, Product.class);
-		Product savedProduct = productRepository.save(prodData);
+		Product product = modelMapper.map(productDTO, Product.class);
+		Product savedProduct = productRepository.save(product);
 		return modelMapper.map(savedProduct, ProductDTO.class);
 	}
 	
@@ -81,10 +71,6 @@ public class ProductServiceImpl implements ProductService {
 				.orElseThrow(()
 						-> new ResourceNotFoundException("Product", "productId", prodId));
 	    productToUpdate.setProductName(productDTO.getProductName());
-	    productToUpdate.setStock(productDTO.getStock());
-	    productToUpdate.setPrice(productDTO.getPrice());
-	    productToUpdate.setDescription(productDTO.getDescription());
-	    productToUpdate.setCategories(productDTO.getCategories());
 		Product updatedProduct = productRepository.save(productToUpdate);
 		ProductDTO updatedProdDTO = modelMapper.map(updatedProduct, ProductDTO.class);
 		return updatedProdDTO;
