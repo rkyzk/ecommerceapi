@@ -9,6 +9,7 @@ import com.restapi.ecommerce.entity.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>{
+	Page<Product> findByDeletedAtIsNull(Pageable pageDetails);
 	Product findByProductName(String prodName);
 	Page<Product> findByCategoryCategoryId(Long categoryId, Pageable pageDetails);
 	Page<Product> findByProductNameContainingIgnoreCase(String keyword,
