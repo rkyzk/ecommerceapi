@@ -26,13 +26,16 @@ import com.restapi.ecommerce.repository.ProductRepository;
 public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ProductRepository productRepository;
-	
+
 	@Autowired
 	private CategoryRepository categoryRepository;
-	
+
+	@Autowired
+	private ImgUploadService imgUploadService;
+
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	@Override
 	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder) {
@@ -116,7 +119,21 @@ public class ProductServiceImpl implements ProductService {
 		Product productToUpdate = storedProduct
 				.orElseThrow(()
 						-> new ResourceNotFoundException("Product", "productId", prodId));
+		MultipartFile file = productDTO.getImgFile();
+		// if image was added:
+		if (file != null && !file.isEmpty()) {
+			String imageName = productDTO.getImgFile().getOriginalFilename();
+			// store it in S3 bucket
+			String imagePath = uploadImage(imageName, file,
+					productDTO.getCategory().getCategoryName());
+			productDTO.setImageName(imageName);
+		    productDTO.setImagePath(imagePath);
+		}
 	    productToUpdate.setProductName(productDTO.getProductName());
+	    productToUpdate.setQuantity(productDTO.getQuantity());
+	    productToUpdate.setPrice(productDTO.getPrice());
+	    productToUpdate.setDescription(productDTO.getDescription());
+	    productToUpdate.setCategory(productDTO.getCategory());
 		Product updatedProduct = productRepository.save(productToUpdate);
 		ProductDTO updatedProdDTO = modelMapper.map(updatedProduct, ProductDTO.class);
 		return updatedProdDTO;
@@ -128,6 +145,11 @@ public class ProductServiceImpl implements ProductService {
 		Product productToDelete = storedProduct
 				.orElseThrow(()
 						-> new ResourceNotFoundException("Product", "productId", prodId));
+		String imageName = productToDelete.getImageName();
+		// if there's an image file, delete it from S3 bucket. 
+		if (!(imageName == "") || !(imageName == null)) {
+			imgUploadService.deleteImg(imageName);
+		}
 	    productToDelete.setDeletedAt(Instant.now());
 		Product deletedProd = productRepository.save(productToDelete);
 		ProductDTO deletedProdDTO = modelMapper.map(deletedProd, ProductDTO.class);
@@ -135,9 +157,15 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ProductResponse searchProductsByKeyword(String keyword) {
-		List<Product> products = productRepository
-				.findByProductNameContainingIgnoreCase(keyword);
+	public ProductResponse searchProductsByKeyword(String keyword,
+			Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+				? Sort.by(sortBy).ascending()
+				: Sort.by(sortBy).descending();
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+		Page<Product> productPage =
+				productRepository.findByProductNameContainingIgnoreCase(keyword, pageDetails);
+		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
 			throw new APIException("No products present");
 		}
@@ -146,10 +174,32 @@ public class ProductServiceImpl implements ProductService {
 				.toList();
 		ProductResponse response = new ProductResponse();
 		response.setContent(productDTOs);
+		// set pagination data
+		response.setPageNumber(productPage.getNumber());
+		response.setPageSize(productPage.getSize());
+		response.setTotalElements(productPage.getTotalElements());
+		response.setTotalPages(productPage.getTotalPages());
+		response.setLastPage(productPage.isLast());
 		return response;
 	}
 
-	// To DO
+	/**
+	 * Upload image on S3 Bucket.
+	 * 
+	 * @param imageName
+	 * @param file
+	 * @param categoryName
+	 * @return image path
+	 */
 	private String uploadImage(String imageName, MultipartFile file, String categoryName) {
-		return imageName;};
+		// store it in S3 bucket
+		String imagePath = imgUploadService.uploadImg(
+			file, categoryName, // specify the folder 
+			imageName);
+		// if upload fails, set error response
+		if (imagePath == null) { 
+			// to do
+		}
+		return imagePath;
+	}
 }
