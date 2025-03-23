@@ -1,9 +1,9 @@
 package com.restapi.ecommerce.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-import com.amazonaws.services.identitymanagement.model.Role;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
@@ -71,10 +72,10 @@ public class User {
 			inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<Role>();
 
-//	@Getter
-//	@Setter
-//	@OneToMany(mappedBy = "user",
-//			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
-//			orphanRemoval = true)
-//	private List<Address> addresses = new ArrayList<>();
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "user",
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+			orphanRemoval = true)
+	private List<Address> addresses = new ArrayList<>();
 }
