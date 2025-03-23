@@ -17,7 +17,7 @@ import com.restapi.ecommerce.repository.ProductRepository;
 public class DataInitializer {
 	private final CategoryRepository categoryRepository;
 	private final ProductRepository productRepository;
-	
+
 	public DataInitializer(CategoryRepository categoryRepository,
 			ProductRepository productRepository) {
 		this.categoryRepository = categoryRepository;
@@ -33,14 +33,14 @@ public class DataInitializer {
 			Category category1 = new Category();
 			Category category2 = new Category();
 			Category category3 = new Category();
-			
+
 			category1.setCategoryName("cat1");
 			category2.setCategoryName("cat2");
 			category3.setCategoryName("cat3");
 			categoryRepository.save(category1);
 			categoryRepository.save(category2);
 			categoryRepository.save(category3);
-			
+
 			// create 5 products
 			Product product1 = new Product();
 			product1.setProductName("white tulips");
@@ -49,7 +49,7 @@ public class DataInitializer {
 			product1.setSpecialPrice(1400.00);
 			product1.setCategory(category1);
 			productRepository.save(product1);
-			
+
 			Product product2 = new Product();
 			product2.setProductName("yellow tulips");
 			product2.setQuantity(30);
@@ -57,7 +57,7 @@ public class DataInitializer {
 			product1.setSpecialPrice(1000.00);
 			product2.setCategory(category1);
 			productRepository.save(product2);
-			
+
 			Product product3 = new Product();
 			product3.setProductName("purple hyacinth");
 			product3.setQuantity(25);
@@ -65,7 +65,7 @@ public class DataInitializer {
 			product1.setSpecialPrice(1400.00);
 			product3.setCategory(category2);
 			productRepository.save(product3);
-			
+
 			Product product4 = new Product();
 			product4.setProductName("yellow crocus");
 			product4.setQuantity(40);
@@ -73,7 +73,7 @@ public class DataInitializer {
 			product1.setSpecialPrice(1200.00);
 			product4.setCategory(category3);
 			productRepository.save(product4);
-			
+
 			Product product5 = new Product();
 			product5.setProductName("white crocus");
 			product5.setQuantity(20);
@@ -81,17 +81,17 @@ public class DataInitializer {
 			product1.setSpecialPrice(1000.00);
 			product5.setCategory(category3);
 			productRepository.save(product5);
-			
+
 			Set<Product> products1 = new HashSet<>();
 			products1.add(product1);
 			products1.add(product4);
 			category1.setProducts(products1);
-			
+
 			Set<Product> products2 = new HashSet<>();
 			products2.add(product3);
 			products2.add(product5);
 			category2.setProducts(products2);
-			
+
 			Set<Product> products3 = new HashSet<>();
 			products3.add(product2);
 			category3.setProducts(products3);
