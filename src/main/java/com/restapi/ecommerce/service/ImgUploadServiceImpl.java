@@ -29,7 +29,9 @@ public class ImgUploadServiceImpl implements ImgUploadService {
 	/*
 	 * Upload file on AWS S3 bucket
 	 * 
-	 * @params fileName
+	 * @params multipartFile
+	 *         folder
+	 *         fileName
 	 * @return return code
 	 */
 	public String uploadImg(MultipartFile multipartFile,

@@ -25,7 +25,7 @@ import jakarta.validation.Valid;
 public class CategoryController {
 	@Autowired
 	CategoryService categoryService;
-	
+
 	@GetMapping("/admin/categories")
 	public ResponseEntity<CategoryResponse> getCategories(
 			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
@@ -39,20 +39,20 @@ public class CategoryController {
 		CategoryResponse response = categoryService.getCategories(pageNumber, pageSize, sortBy, sortOrder);
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
-	
+
 	@PostMapping("/admin/categories")
 	public ResponseEntity<CategoryDTO> postCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
 		CategoryDTO savedCategory = categoryService.createCategory(categoryDTO);
 		return new ResponseEntity<> (savedCategory, HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping("/admin/categories/{categoryId}")
 	public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO,
 			@PathVariable Long categoryId) {
 		CategoryDTO updatedProdDTO = categoryService.updateCategory(categoryDTO, categoryId);
 		return new ResponseEntity<> (updatedProdDTO, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/admin/categories/delete/{categoryId}")
 	public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
 		categoryService.deleteCategory(categoryId);

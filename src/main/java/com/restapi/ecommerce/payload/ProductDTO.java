@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ProductDTO {
 	@Autowired
 	private ModelMapper modelMapper;
-	
+
 	private Long productId;
 	private String productName;
 	private Integer quantity;
@@ -32,7 +32,7 @@ public class ProductDTO {
 //	@FileType
 //	@FileSize(maxSize = 819200)
 	private MultipartFile imgFile;
-	
+
 //	public void addCategory(Category category) {
 //		category.getProducts().add(modelMapper.map(this, Product.class));
 //		this.categories.add(category);

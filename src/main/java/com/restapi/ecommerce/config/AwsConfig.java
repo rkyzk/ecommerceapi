@@ -21,10 +21,10 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 public class AwsConfig {	
 	@Value("${aws.access.key.id}")
 	private String accessKey;
-	
+
 	@Value("${aws.secret.access.key}")
 	private String secretKey;
-	
+
 	@Value("${aws.s3.region}")
 	private String region;
 
