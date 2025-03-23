@@ -1,4 +1,4 @@
-package com.restapi.ecommerce.service;
+package com.restapi.ecommerce.security.jwt.service;
 
 import java.util.Collection;
 import java.util.List;

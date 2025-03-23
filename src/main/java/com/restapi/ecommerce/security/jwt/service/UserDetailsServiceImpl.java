@@ -1,4 +1,4 @@
-package com.restapi.ecommerce.service;
+package com.restapi.ecommerce.security.jwt.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
