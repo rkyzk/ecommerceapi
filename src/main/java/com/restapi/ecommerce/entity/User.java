@@ -83,4 +83,11 @@ public class User {
 			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
 			orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
+
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "user",
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+			orphanRemoval = true)
+	private Set<Product> products = new HashSet<>();
 }

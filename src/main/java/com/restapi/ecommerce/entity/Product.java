@@ -74,6 +74,10 @@ public class Product {
 	@JoinColumn(name="category_id")
 	private Category category;
 
+	@ManyToOne
+	@JoinColumn(name="seller_id")
+	private User user;
+
 //	public void addCategory(Category category) {
 //		category.getProducts().add(this);
 //	    this.categories.add(category);   
