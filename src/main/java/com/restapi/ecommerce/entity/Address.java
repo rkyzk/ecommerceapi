@@ -13,12 +13,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
 @Table(name = "addresses")
 @Setter
 @Getter
+@ToString
 public class Address {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,8 +44,10 @@ public class Address {
 	private String countryCode;
 
 	@NotBlank
+	@Size(min = 2)
 	private String postalCode;
 
+	@ToString.Exclude
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@NotNull
@@ -51,6 +55,7 @@ public class Address {
 
 	public Address(String streetAddress1, String streetAddress2,
 			String city, String province, String countryCode, String postalCode) {
+		this.user= user; 
 		this.streetAddress1 = streetAddress1;
 		this.streetAddress2 = streetAddress2;
 		this.city = city;

@@ -26,6 +26,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -34,7 +35,8 @@ import lombok.Setter;
 		uniqueConstraints = {
 	    @UniqueConstraint(columnNames = "username"),
 	    @UniqueConstraint(columnNames = "email")
-        })	   
+        })
+@ToString
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,13 +62,6 @@ public class User {
 	@NotNull
 	private boolean enabled;
 
-	public User(String username, String email, String password) {
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.enabled = true;
-	}
-
 	@Getter
 	@Setter
 	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -84,10 +79,18 @@ public class User {
 			orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
 
+	@ToString.Exclude
 	@Getter
 	@Setter
 	@OneToMany(mappedBy = "user",
 			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
 			orphanRemoval = true)
 	private Set<Product> products = new HashSet<>();
+
+	public User(String username, String email, String password) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.enabled = true;
+	}
 }
