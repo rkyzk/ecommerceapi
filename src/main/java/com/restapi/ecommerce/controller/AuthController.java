@@ -13,15 +13,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.restapi.ecommerce.payload.LoginRequest;
-import com.restapi.ecommerce.payload.LoginResponse;
 import com.restapi.ecommerce.security.jwt.JwtUtils;
+import com.restapi.ecommerce.security.jwt.service.UserDetailsImpl;
+import com.restapi.ecommerce.security.request.LoginRequest;
+import com.restapi.ecommerce.security.response.UserInfoResponse;
 
+@RequestMapping("/api/auth")
 @RestController
 public class AuthController {
 	@Autowired
@@ -45,12 +47,13 @@ public class AuthController {
 		}
 		// set authentication for the session
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 		String jwtToken = jwtUtils.generateTokenFromUsername(userDetails.getUsername());
 		List<String> roles = userDetails.getAuthorities().stream()
 				.map(item -> item.getAuthority())
 				.collect(Collectors.toList());
-		LoginResponse resp = new LoginResponse(userDetails.getUsername(), roles, jwtToken);
+		UserInfoResponse resp = new UserInfoResponse(userDetails.getId(),
+				userDetails.getUsername(), roles, jwtToken);
 		return ResponseEntity.ok(resp);
 	}
 }

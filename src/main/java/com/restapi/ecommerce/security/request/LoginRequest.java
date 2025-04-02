@@ -1,4 +1,4 @@
-package com.restapi.ecommerce.payload;
+package com.restapi.ecommerce.security.request;
 
 import lombok.Getter;
 import lombok.Setter;

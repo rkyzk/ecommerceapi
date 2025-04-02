@@ -37,7 +37,7 @@ public class Product {
 	@Max(99999)
 	@Min(0)
 	private Integer quantity;
-	
+
 	@Digits(integer=10, fraction=0)
 	@Min(0)
 	private double price;
@@ -72,10 +72,12 @@ public class Product {
 	
 	@ManyToOne
 	@JoinColumn(name="category_id")
+	@NotNull
 	private Category category;
 
 	@ManyToOne
 	@JoinColumn(name="seller_id")
+	//@NotNull
 	private User user;
 
 //	public void addCategory(Category category) {
