@@ -55,7 +55,8 @@ public class WebSecurityConfig {
 			.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth ->
-					auth.requestMatchers("/signin").permitAll()
+					auth.requestMatchers("/api/auth/**").permitAll()
+					    .requestMatchers("/api/admin/**").permitAll() // during devlopment
 						.requestMatchers("/h2-console/**").permitAll()
 						.anyRequest().authenticated()
 			);
@@ -66,6 +67,7 @@ public class WebSecurityConfig {
 		return http.build();
 	}
 
+	// access from these addresses will be excluded from the security filter chain.
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web -> web.ignoring().requestMatchers("/v2/api-docs",

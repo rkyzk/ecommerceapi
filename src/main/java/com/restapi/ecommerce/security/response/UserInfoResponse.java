@@ -1,8 +1,21 @@
-package com.restapi.ecommerce.payload;
+package com.restapi.ecommerce.security.response;
 
 import java.util.List;
 
-public class LoginResponse {
+public class UserInfoResponse {
+	private Long id;
+	private String username;
+	private String jwtToken;
+	private List<String> roles;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -27,11 +40,8 @@ public class LoginResponse {
 		this.roles = roles;
 	}
 
-	private String username;
-	private String jwtToken;
-	private List<String> roles;
-
-	public LoginResponse(String username, List<String> roles, String jwtToken) {
+	public UserInfoResponse(Long id, String username, List<String> roles, String jwtToken) {
+		this.id = id;
 		this.username = username;
 		this.roles = roles;
 		this.jwtToken = jwtToken;
