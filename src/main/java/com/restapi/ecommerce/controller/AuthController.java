@@ -30,6 +30,7 @@ import com.restapi.ecommerce.security.jwt.JwtUtils;
 import com.restapi.ecommerce.security.jwt.service.UserDetailsImpl;
 import com.restapi.ecommerce.security.request.LoginRequest;
 import com.restapi.ecommerce.security.request.SignUpRequest;
+import com.restapi.ecommerce.security.response.MessageResponse;
 import com.restapi.ecommerce.security.response.UserInfoResponse;
 
 import jakarta.validation.Valid;
@@ -80,11 +81,12 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest req) {
 		if (userRepository.existsByUsername(req.getUsername())) {
-			//return ResponseEntity.badRequest().body();
-					// new MessageResponse("User name is already taken."));
+			return ResponseEntity.badRequest().body(
+					new MessageResponse("User name is already taken."));
 		}
 		if (userRepository.existsByEmail(req.getEmail())) {
-			//return ResponseEntity.badRequest().body();
+			return ResponseEntity.badRequest().body(
+					new MessageResponse("Email is already taken."));
 		}
 
 		User user = new User(req.getUsername(),
@@ -120,7 +122,6 @@ public class AuthController {
 		}
 		user.setRoles(roles);
 		userRepository.save(user);
-		return ResponseEntity.ok(null); // to be corrected
-		
+		return ResponseEntity.ok(new MessageResponse("User registered successfully"));
 	}
 }
