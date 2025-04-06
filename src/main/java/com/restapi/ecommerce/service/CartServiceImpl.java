@@ -1,0 +1,74 @@
+package com.restapi.ecommerce.service;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.restapi.ecommerce.entity.Cart;
+import com.restapi.ecommerce.entity.CartItem;
+import com.restapi.ecommerce.entity.Product;
+import com.restapi.ecommerce.exceptions.APIException;
+import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
+import com.restapi.ecommerce.payload.CartDTO;
+import com.restapi.ecommerce.repository.CartItemRepository;
+import com.restapi.ecommerce.repository.CartRepository;
+import com.restapi.ecommerce.repository.ProductRepository;
+
+@Service
+public class CartServiceImpl implements CartService {
+	@Autowired
+	CartRepository cartRepository;
+
+	@Autowired
+	ProductRepository productRepository;
+
+	@Autowired
+	CartItemRepository cartItemRepository;
+
+	@Autowired
+	ModelMapper modelMapper;
+
+	public CartDTO addProductToCart(Long productId, Integer quantity) {
+		// Get the user's cart.  If there isn't one, make a new one.
+		Cart cart = getCart();
+
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+		Integer productStock = product.getQuantity();
+
+		if (productStock == 0) {
+			new APIException("We're sorry.  The Product is out of stock");
+		}
+		if (quantity > productStock) {
+			// TO BE CORRECTED!  Return message, not excpetion
+			new APIException("There are only " + productStock + " in the stock."
+					+ "Would you like to order " + productStock + " of this product?");
+		}
+
+		CartItem item = cartItemRepository.findCartItemByProductIdAndCartId(productId, cart.getId());
+		if (item != null) {
+			item.setQuantity(item.getQuantity() + quantity);
+		} else {
+			cart.getCartItems().add(new CartItem(product, quantity, cart));
+		}
+		cartItemRepository.save(item);
+		// set the new product quantity
+		product.setQuantity(productStock - quantity);
+		// update the total price in Cart entity
+		cart.setTotalPrice(cart.getTotalPrice() + product.getPrice() * quantity);
+		cartRepository.save(cart);
+		CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+		return cartDTO;
+	}
+
+	/**
+	 * TO DO!!!
+	 * If cart exists for the user, return it.
+	 * Otherwise create a new cart and return it.
+	 * @return Cart object
+	 */
+	public Cart getCart() {
+		return new Cart();
+	}
+
+}
