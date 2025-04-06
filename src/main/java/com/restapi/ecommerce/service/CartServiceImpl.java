@@ -13,6 +13,7 @@ import com.restapi.ecommerce.payload.CartDTO;
 import com.restapi.ecommerce.repository.CartItemRepository;
 import com.restapi.ecommerce.repository.CartRepository;
 import com.restapi.ecommerce.repository.ProductRepository;
+import com.restapi.ecommerce.utils.AuthUtil;
 
 @Service
 public class CartServiceImpl implements CartService {
@@ -27,6 +28,9 @@ public class CartServiceImpl implements CartService {
 
 	@Autowired
 	ModelMapper modelMapper;
+
+	@Autowired
+	AuthUtil authUtil;
 
 	public CartDTO addProductToCart(Long productId, Integer quantity) {
 		// Get the user's cart.  If there isn't one, make a new one.
@@ -62,13 +66,18 @@ public class CartServiceImpl implements CartService {
 	}
 
 	/**
-	 * TO DO!!!
-	 * If cart exists for the user, return it.
-	 * Otherwise create a new cart and return it.
+	 * If the user already has a cart, return it.
+	 * Otherwise create and return a new cart.
+	 * 
 	 * @return Cart object
 	 */
 	public Cart getCart() {
-		return new Cart();
+		Cart cart = cartRepository.findCartByUserEmail(authUtil.loggedinUser().getEmail());
+		if (cart == null) {
+			cart = new Cart(authUtil.loggedinUser());
+			cartRepository.save(cart);
+		}
+		return cart;
 	}
 
 }
