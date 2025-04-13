@@ -1,13 +1,18 @@
 package com.restapi.ecommerce.entity;
 
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -24,10 +29,11 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "products")
 public class Product {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long productId;
+	private Long id;
 
 	@NotBlank
 	@Size(min=3, max=40)
@@ -71,14 +77,19 @@ public class Product {
 //	private Set<Category> categories = new HashSet<>();
 	
 	@ManyToOne
-	@JoinColumn(name="category_id")
+	@JoinColumn(name = "category_id")
 	@NotNull
 	private Category category;
 
+	// later add @NotNull
 	@ManyToOne
-	@JoinColumn(name="seller_id")
-	//@NotNull
+	@JoinColumn(name = "seller_id")
 	private User user;
+
+	@OneToMany(mappedBy="product",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+			orphanRemoval = true)
+	Set<CartItem> cartItems = new HashSet<>();
 
 //	public void addCategory(Category category) {
 //		category.getProducts().add(this);
