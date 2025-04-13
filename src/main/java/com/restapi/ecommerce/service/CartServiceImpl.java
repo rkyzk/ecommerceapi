@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.restapi.ecommerce.entity.Cart;
 import com.restapi.ecommerce.entity.CartItem;
 import com.restapi.ecommerce.entity.Product;
+import com.restapi.ecommerce.entity.User;
 import com.restapi.ecommerce.exceptions.APIException;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.CartDTO;
@@ -67,6 +68,7 @@ public class CartServiceImpl implements CartService {
 		return cartDTO;
 	}
 
+
 	@Override
 	public List<CartDTO> getAllCarts() {
 		List<Cart> carts = cartRepository.findAll();
@@ -75,6 +77,19 @@ public class CartServiceImpl implements CartService {
 			return cartDTO;
 		}).collect(Collectors.toList());
 		return cartDTOs;
+	}
+
+	/**
+	 * Return cart of logged-in user
+	 * 
+	 * @return cart data
+	 */
+	@Override
+	public CartDTO getCartByUser() {
+		User user = authUtil.loggedinUser();
+		Cart cart = cartRepository.findCartByUserEmail(user.getEmail());
+		CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+		return cartDTO;
 	}
 
 	/**
