@@ -53,11 +53,9 @@ public class CartServiceImpl implements CartService {
 		if (item != null) {
 			item.setQuantity(item.getQuantity() + quantity);
 		} else {
-			cart.getCartItems().add(new CartItem(product, quantity, cart));
+			item = new CartItem(product, quantity, cart);
 		}
 		cartItemRepository.save(item);
-		// set the new product quantity
-		product.setQuantity(productStock - quantity);
 		// update the total price in Cart entity
 		cart.setTotalPrice(cart.getTotalPrice() + product.getPrice() * quantity);
 		cartRepository.save(cart);
@@ -79,5 +77,4 @@ public class CartServiceImpl implements CartService {
 		}
 		return cart;
 	}
-
 }
