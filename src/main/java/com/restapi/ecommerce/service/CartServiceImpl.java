@@ -1,5 +1,8 @@
 package com.restapi.ecommerce.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,9 +61,20 @@ public class CartServiceImpl implements CartService {
 		cartItemRepository.save(item);
 		// update the total price in Cart entity
 		cart.setTotalPrice(cart.getTotalPrice() + product.getPrice() * quantity);
+		
 		cartRepository.save(cart);
 		CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 		return cartDTO;
+	}
+
+	@Override
+	public List<CartDTO> getAllCarts() {
+		List<Cart> carts = cartRepository.findAll();
+		List<CartDTO> cartDTOs = carts.stream().map(cart -> {
+			CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
+			return cartDTO;
+		}).collect(Collectors.toList());
+		return cartDTOs;
 	}
 
 	/**

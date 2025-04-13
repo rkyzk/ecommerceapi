@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -89,6 +91,7 @@ public class Product {
 	@OneToMany(mappedBy="product",
 			cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
 			orphanRemoval = true)
+	@JsonIgnore
 	Set<CartItem> cartItems = new HashSet<>();
 
 //	public void addCategory(Category category) {
