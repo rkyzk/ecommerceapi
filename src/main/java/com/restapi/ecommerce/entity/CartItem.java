@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@Table(name="cart_item")
+@Table(name="cart_items")
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItem {
@@ -22,7 +22,8 @@ public class CartItem {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name="product_id")
+	@ManyToOne
+	@JoinColumn(name="product_id")
 	private Product product;
 
 	@Column(name="quantity")

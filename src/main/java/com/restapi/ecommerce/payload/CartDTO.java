@@ -1,17 +1,24 @@
 package com.restapi.ecommerce.payload;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.restapi.ecommerce.entity.CartItem;
 import com.restapi.ecommerce.entity.User;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CartDTO {
-	private long cartId;
+	private Long cartId;
 
 	private User user;
 
-	private List<CartItem> cartItems = new ArrayList<>();
+	private Set<CartItem> cartItems = new HashSet<>();
 
-	private double totalPrice = 0.0;
+	private Double totalPrice = 0.0;
 }

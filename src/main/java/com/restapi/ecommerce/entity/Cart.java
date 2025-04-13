@@ -1,7 +1,7 @@
 package com.restapi.ecommerce.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -33,7 +33,7 @@ public class Cart {
 	@OneToMany(mappedBy="cart",
 			cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
 			orphanRemoval = true)
-	private List<CartItem> cartItems = new ArrayList<>();
+	private Set<CartItem> cartItems = new HashSet<>();
 
 	private double totalPrice = 0.0;
 
