@@ -9,4 +9,6 @@ import com.restapi.ecommerce.entity.CartItem;
 public interface CartItemRepository extends JpaRepository<CartItem, Long>{
 	CartItem findCartItemByProductIdAndCartId(Long productId, Long cartId);
 
+	CartItem findByCartIdAndProductId(Long cartId, Long productId);
+
 }

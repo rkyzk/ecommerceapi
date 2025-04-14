@@ -80,6 +80,29 @@ public class CartServiceImpl implements CartService {
 	}
 
 	/**
+	 * update quantity of product in cart
+	 * 
+	 * @param productId
+	 * @param operation
+	 * @return cartDTO
+	 */
+	public CartDTO updateProductQuantityInCart(Long productId, int quantity) {
+		CartDTO cartDTO = getCartByUser();
+		Long cartId = cartDTO.getCartId();
+		CartItem cartItem = cartItemRepository.findByCartIdAndProductId(
+				cartId, productId);
+		if (cartItem == null) {
+			new ResourceNotFoundException("CartItem", "productId", productId);
+		}
+		if (quantity == 0) cartItemRepository.delete(cartItem);
+		cartItem.setQuantity(quantity);
+		cartItemRepository.save(cartItem);
+		Cart cart = updateTotalPrice(cartRepository.getReferenceById(cartId));
+		CartDTO updatedDTO = modelMapper.map(cart, CartDTO.class);
+		return updatedDTO;
+	}
+
+	/**
 	 * Return cart of logged-in user
 	 * 
 	 * @return cart data
@@ -87,7 +110,10 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public CartDTO getCartByUser() {
 		User user = authUtil.loggedinUser();
-		Cart cart = cartRepository.findCartByUserEmail(user.getEmail());
+		Cart cart = cartRepository.findCartByUserUserId(user.getUserId());
+		if (cart == null) {
+			throw new ResourceNotFoundException("Cart", "user", user.getUsername());
+		}
 		CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 		return cartDTO;
 	}
@@ -99,11 +125,25 @@ public class CartServiceImpl implements CartService {
 	 * @return Cart object
 	 */
 	public Cart getCart() {
-		Cart cart = cartRepository.findCartByUserEmail(authUtil.loggedinUser().getEmail());
+		Cart cart = cartRepository.findCartByUserUserId(authUtil.loggedinUser().getUserId());
 		if (cart == null) {
 			cart = new Cart(authUtil.loggedinUser());
 			cartRepository.save(cart);
 		}
 		return cart;
+	}
+
+	/**
+	 * update the total price of the cart
+	 */
+	@Override
+	public Cart updateTotalPrice(Cart cart) {
+		double price = 0.0;
+		for (CartItem item: cart.getCartItems()) {
+			price += item.getProduct().getPrice() * item.getQuantity();
+		}
+		cart.setTotalPrice(price);
+		cartRepository.save(cart);
+		return cartRepository.getReferenceById(cart.getId());
 	}
 }
