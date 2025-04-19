@@ -19,6 +19,8 @@ import com.restapi.ecommerce.repository.CartRepository;
 import com.restapi.ecommerce.repository.ProductRepository;
 import com.restapi.ecommerce.utils.AuthUtil;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CartServiceImpl implements CartService {
 	@Autowired
@@ -42,15 +44,16 @@ public class CartServiceImpl implements CartService {
 
 		Product product = productRepository.findById(productId)
 				.orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
-		Integer productStock = product.getQuantity();
+		Integer stock = product.getQuantity();
 
-		if (productStock == 0) {
-			new APIException("We're sorry.  The Product is out of stock");
+		if (stock == 0) {
+			throw new APIException("We're sorry.  The Product is out of stock");
 		}
-		if (quantity > productStock) {
+		if (quantity > stock) {
 			// TO BE CORRECTED!  Return message, not excpetion
-			new APIException("There are only " + productStock + " in the stock."
-					+ "Would you like to order " + productStock + " of this product?");
+			throw new APIException("Only " + stock +
+					(stock > 1 ? " are" : " is") + " available. " +
+					"Would you like to order " + stock + "?");
 		}
 
 		CartItem item = cartItemRepository.findCartItemByProductIdAndCartId(productId, cart.getId());
@@ -60,6 +63,8 @@ public class CartServiceImpl implements CartService {
 			item = new CartItem(product, quantity, cart);
 		}
 		cartItemRepository.save(item);
+		// update product quantity(stock)
+		product.setQuantity(stock - quantity);
 		// update the total price in Cart entity
 		cart.setTotalPrice(cart.getTotalPrice() + product.getPrice() * quantity);
 		
@@ -86,15 +91,34 @@ public class CartServiceImpl implements CartService {
 	 * @param operation
 	 * @return cartDTO
 	 */
-	public CartDTO updateProductQuantityInCart(Long productId, int quantity) {
+	@Transactional
+	@Override
+	public CartDTO updateProductQuantityInCart(Long productId, Integer quantity) {
+		// if product is not found, return error message
+		Product product = productRepository.findById(productId)
+				.orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
 		CartDTO cartDTO = getCartByUser();
 		Long cartId = cartDTO.getCartId();
 		CartItem cartItem = cartItemRepository.findByCartIdAndProductId(
 				cartId, productId);
 		if (cartItem == null) {
-			new ResourceNotFoundException("CartItem", "productId", productId);
+			throw new ResourceNotFoundException("CartItem", "productId", productId);
 		}
 		if (quantity == 0) cartItemRepository.delete(cartItem);
+		int origQty = cartItem.getQuantity();
+		int stock = product.getQuantity();
+		if (stock == 0) {
+			new APIException("We're sorry.  The product just got sold out.");
+		}
+		if (origQty + stock < quantity) {
+			throw new APIException("Only " + stock +
+					(stock > 1 ? " are" : " is") + " available. " +
+					"Would you like to order " + stock + "?");
+		}
+		// update product quantity(stock)
+		product.setQuantity(stock - (quantity - origQty));
+		productRepository.save(product);
+		// update cart item quantity
 		cartItem.setQuantity(quantity);
 		cartItemRepository.save(cartItem);
 		Cart cart = updateTotalPrice(cartRepository.getReferenceById(cartId));
