@@ -17,7 +17,7 @@ public class ProductDTO {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	private Long productId;
+	private Long id;
 	private String productName;
 	private Integer quantity;
 	private double price;
