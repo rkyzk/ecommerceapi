@@ -1,7 +1,7 @@
 package com.restapi.ecommerce.payload;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.time.Instant;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import com.restapi.ecommerce.entity.Category;
@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-	@Autowired
-	private ModelMapper modelMapper;
+//	@Autowired
+//	private ModelMapper modelMapper;
 
 	private Long id;
 	private String productName;
@@ -28,6 +28,7 @@ public class ProductDTO {
 	private Category category;
 //	private Set<Category> categories;
 	private String description;
+	private Instant deletedAt;
 //	@FileName(maxLength=30)
 //	@FileType
 //	@FileSize(maxSize = 819200)

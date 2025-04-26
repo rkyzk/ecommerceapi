@@ -135,7 +135,7 @@ public class CartServiceImpl implements CartService {
 		set.remove(item);
 		if (set.size() == 0) {
 			cartRepository.delete(cart);
-			throw new APIException("The cart is empty.");
+			return "The cart is empty.";
 		}
 		cart.setCartItems(set);
 		updateTotalPrice(cart);
@@ -174,7 +174,7 @@ public class CartServiceImpl implements CartService {
 	}
 
 	/**
-	 * update the total price of the cart
+	 * update the total price of a given cart
 	 */
 	@Override
 	public Cart updateTotalPrice(Cart cart) {
