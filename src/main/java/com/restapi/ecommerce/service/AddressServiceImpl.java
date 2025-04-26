@@ -1,5 +1,7 @@
 package com.restapi.ecommerce.service;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,5 +25,13 @@ public class AddressServiceImpl implements AddressService {
 		Address address = modelMapper.map(addressDTO, Address.class);
 		Address savedAddress = addressRepository.save(address);
 		return modelMapper.map(savedAddress, AddressDTO.class);
+	}
+
+	@Override
+	public List<AddressDTO> getUserAddresses(User user) {
+		List<Address> addresses = user.getAddresses();
+		return addresses.stream()
+				.map(address -> modelMapper.map(address, AddressDTO.class))
+								.toList();
 	}
 }
