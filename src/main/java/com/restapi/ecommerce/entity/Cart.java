@@ -1,7 +1,7 @@
 package com.restapi.ecommerce.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -36,7 +36,7 @@ public class Cart {
 			cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
 			orphanRemoval = true)
 	@JsonIgnoreProperties(value="cart")
-	private List<CartItem> cartItems = new ArrayList<>();
+	private Set<CartItem> cartItems = new HashSet<>();
 
 	private double totalPrice = 0.0;
 

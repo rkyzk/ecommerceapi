@@ -12,7 +12,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -34,6 +36,8 @@ public class CartItem {
 	@ManyToOne
 	@JoinColumn(name="cart_id")
 	@JsonIgnore
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
 	private Cart cart;
 
 	public CartItem(Product product, Integer quantity, Cart cart) {

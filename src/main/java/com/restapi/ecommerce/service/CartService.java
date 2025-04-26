@@ -5,10 +5,21 @@ import java.util.List;
 import com.restapi.ecommerce.entity.Cart;
 import com.restapi.ecommerce.payload.CartDTO;
 
+import jakarta.transaction.Transactional;
+
 public interface CartService {
+
 	CartDTO addProductToCart(Long productId, Integer quantity);
+
 	List<CartDTO> getAllCarts();
+
 	CartDTO getCartByUser();
-	CartDTO updateProductQuantityInCart(Long productId, int quantity);
+
+	@Transactional
+	CartDTO updateProductQuantityInCart(Long productId, Integer quantity);
+
 	Cart updateTotalPrice(Cart cart);
+
+	@Transactional
+	String deleteProductFromCart(Long cartId, Long productId);
 }
