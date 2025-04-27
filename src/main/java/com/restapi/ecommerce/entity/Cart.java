@@ -40,6 +40,8 @@ public class Cart {
 
 	private double totalPrice = 0.0;
 
+	private boolean ordered = false;
+
 	public Cart(User user) {
 		this.user = user;
 	}

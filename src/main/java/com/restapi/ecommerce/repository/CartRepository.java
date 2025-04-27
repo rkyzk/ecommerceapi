@@ -9,6 +9,6 @@ import com.restapi.ecommerce.entity.Cart;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long>{
-	Cart findCartByUserUserId(Long id);
-	List<Cart> findAll();
+	Cart findCartByUserUserIdAndOrderedIsFalse(Long id);
+	List<Cart> findAllByOrderedIsFalse();
 }

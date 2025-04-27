@@ -51,7 +51,7 @@ public class CartServiceImpl implements CartService {
 			throw new APIException("We're sorry.  The Product is out of stock");
 		}
 		if (quantity > stock) {
-			// TO BE CORRECTED!  Return message, not excpetion
+			// TO BE CORRECTED
 			throw new APIException("Only " + stock +
 					(stock > 1 ? " are" : " is") + " available. " +
 					"Would you like to order " + stock + "?");
@@ -75,7 +75,7 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public List<CartDTO> getAllCarts() {
-		List<Cart> carts = cartRepository.findAll();
+		List<Cart> carts = cartRepository.findAllByOrderedIsFalse();
 		List<CartDTO> cartDTOs = carts.stream().map(cart -> {
 			CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 			return cartDTO;
@@ -150,7 +150,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public CartDTO getCartByUser() {
 		User user = authUtil.loggedinUser();
-		Cart cart = cartRepository.findCartByUserUserId(user.getUserId());
+		Cart cart = cartRepository.findCartByUserUserIdAndOrderedIsFalse(user.getUserId());
 		if (cart == null) {
 			throw new ResourceNotFoundException("Cart", "user", user.getUsername());
 		}
@@ -165,7 +165,8 @@ public class CartServiceImpl implements CartService {
 	 * @return Cart object
 	 */
 	public Cart getCart() {
-		Cart cart = cartRepository.findCartByUserUserId(authUtil.loggedinUser().getUserId());
+		Cart cart = cartRepository.findCartByUserUserIdAndOrderedIsFalse(
+				authUtil.loggedinUser().getUserId());
 		if (cart == null) {
 			cart = new Cart(authUtil.loggedinUser());
 			cartRepository.save(cart);

@@ -21,4 +21,6 @@ public class CartDTO {
 	private Set<CartItem> cartItems = new HashSet<>();
 
 	private Double totalPrice = 0.0;
+
+	private boolean ordered = false;
 }
