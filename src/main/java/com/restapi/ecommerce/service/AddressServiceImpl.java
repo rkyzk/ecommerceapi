@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.restapi.ecommerce.entity.Address;
 import com.restapi.ecommerce.entity.User;
+import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.AddressDTO;
 import com.restapi.ecommerce.repository.AddressRepository;
 
@@ -33,5 +34,19 @@ public class AddressServiceImpl implements AddressService {
 		return addresses.stream()
 				.map(address -> modelMapper.map(address, AddressDTO.class))
 								.toList();
+	}
+
+	@Override
+	public AddressDTO updateAddress(Long addressId, AddressDTO addressDTO) {
+		Address addressInDB = addressRepository.findById(addressId)
+				.orElseThrow(() -> new ResourceNotFoundException("Address", "id", addressId));
+		addressInDB.setStreetAddress1(addressDTO.getStreetAddress1());
+		addressInDB.setStreetAddress2(addressDTO.getStreetAddress2());
+		addressInDB.setCity(addressDTO.getCity());
+		addressInDB.setProvince(addressDTO.getProvince());
+		addressInDB.setCountryCode(addressDTO.getCountryCode());
+		addressInDB.setPostalCode(addressDTO.getPostalCode());
+		Address updatedAddress = addressRepository.save(addressInDB);
+		return modelMapper.map(updatedAddress, AddressDTO.class);
 	}
 }

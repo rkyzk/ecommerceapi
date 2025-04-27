@@ -9,4 +9,5 @@ public interface AddressService {
 	AddressDTO addAddress(AddressDTO address, User user);
 
 	List<AddressDTO> getUserAddresses(User user);
+	AddressDTO updateAddress(Long addressId, AddressDTO addressDTO);
 }
