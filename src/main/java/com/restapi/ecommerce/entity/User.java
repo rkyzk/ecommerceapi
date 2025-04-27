@@ -59,6 +59,7 @@ public class User {
 	@NotBlank
 	@Size(max = 120)
 	@Column(name = "password")
+	@JsonIgnore
 	private String password;
 
 	@NotNull
