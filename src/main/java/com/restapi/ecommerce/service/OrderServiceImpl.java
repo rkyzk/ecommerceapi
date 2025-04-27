@@ -10,6 +10,7 @@ import com.restapi.ecommerce.entity.Address;
 import com.restapi.ecommerce.entity.Cart;
 import com.restapi.ecommerce.entity.Order;
 import com.restapi.ecommerce.entity.Payment;
+import com.restapi.ecommerce.entity.Product;
 import com.restapi.ecommerce.entity.User;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.OrderDTO;
@@ -19,6 +20,7 @@ import com.restapi.ecommerce.repository.AddressRepository;
 import com.restapi.ecommerce.repository.CartRepository;
 import com.restapi.ecommerce.repository.OrderRepository;
 import com.restapi.ecommerce.repository.PaymentRepository;
+import com.restapi.ecommerce.repository.ProductRepository;
 import com.restapi.ecommerce.utils.AuthUtil;
 
 import jakarta.transaction.Transactional;
@@ -36,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
 
 	@Autowired
 	PaymentRepository paymentRepository;
+
+	@Autowired
+	ProductRepository productRepository;
 
 	@Autowired
 	AuthUtil authUtil;
@@ -67,6 +72,12 @@ public class OrderServiceImpl implements OrderService {
 		Order savedOrder = orderRepository.save(order);
 		cart.setOrdered(true);
 		cartRepository.save(cart);
+		// reduce the product stock
+		cart.getCartItems().forEach(item -> {
+			Product product = item.getProduct();
+			product.setQuantity(item.getProduct().getQuantity() - item.getQuantity());
+			productRepository.save(product);
+		});
 		OrderDTO savedOrderDTO = modelMapper.map(savedOrder, OrderDTO.class);
 		savedOrderDTO.setPaymentDTO(paymentDTO);
 		return savedOrderDTO;
