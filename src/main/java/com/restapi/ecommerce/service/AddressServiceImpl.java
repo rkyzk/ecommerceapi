@@ -49,4 +49,12 @@ public class AddressServiceImpl implements AddressService {
 		Address updatedAddress = addressRepository.save(addressInDB);
 		return modelMapper.map(updatedAddress, AddressDTO.class);
 	}
+
+	@Override
+	public String deleteAddress(Long addressId) {
+		Address address = addressRepository.findById(addressId)
+				.orElseThrow(() -> new ResourceNotFoundException("Address", "id", addressId));
+		addressRepository.delete(address);
+		return "Address (address ID: " + addressId + ") was successfully deleted.";
+	}
 }
