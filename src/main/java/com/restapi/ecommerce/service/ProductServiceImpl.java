@@ -157,14 +157,27 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ProductResponse searchProductsByKeyword(String keyword,
+	public ProductResponse searchProductsByKeywords(String keywords,
 			Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
 		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
 				? Sort.by(sortBy).ascending()
 				: Sort.by(sortBy).descending();
+		System.out.println(keywords);
+		String[] kw = keywords.split("&");
+		String keyword = "";
+		String keyword2 = "";
+		String keyword3 = "";
+		keyword = kw[0];
+		System.out.println(keyword);
+		if (kw.length > 1) keyword2 = kw[1];
+		System.out.println(keyword2);
+		if (kw.length > 2) keyword3 = kw[2];
+		System.out.println(keyword3);
+		
 		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
 		Page<Product> productPage =
-				productRepository.findByProductNameContainingIgnoreCase(keyword, pageDetails);
+				productRepository.findProductsByKeywords(
+						keyword, keyword2, keyword3, pageDetails);
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
 			throw new APIException("No products present");
