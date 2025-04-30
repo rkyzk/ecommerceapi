@@ -36,14 +36,58 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	/**
+	 * Retrieve and return product data.
+	 * Filter by keywords and category
+	 * if the parameters are present.
+	 * 
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @param keywords
+	 * @param categoryId
+	 * 
+	 * @return product data
+	 */
 	@Override
 	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
-			String sortBy, String sortOrder) {
+			String sortBy, String sortOrder, String keywords, String categoryId) {
 		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
 				? Sort.by(sortBy).ascending()
 				: Sort.by(sortBy).descending();
 		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-		Page<Product> productPage = productRepository.findByDeletedAtIsNull(pageDetails);
+		Page<Product> productPage = null;
+		if (keywords == null || keywords.isEmpty()) {
+			if (categoryId == null || categoryId.isEmpty()) {
+			    // if both category and keywords aren't specified
+                productPage = productRepository.findByDeletedAtIsNull(pageDetails);
+		    } else {
+		    	// if category alone is specified
+		    	productPage = productRepository
+		    			.findByCategoryCategoryIdAndDeletedAtIsNull(
+		    					Long.valueOf(categoryId), pageDetails);
+		    }
+		} else {
+			// get three keywords
+			String[] kwArr = keywords.split("_");
+			String keyword = "";
+			String keyword2 = "";
+		    String keyword3 = "";
+	    	keyword = kwArr[0];
+			if (kwArr.length > 1) keyword2 = kwArr[1];
+			if (kwArr.length > 2) keyword3 = kwArr[2];
+			if (categoryId == null || categoryId.isEmpty()) {
+		        // only keywords are specified
+				productPage = productRepository
+	                    .findProductsByKeywords(keyword, keyword2, keyword3, pageDetails);
+			} else {
+				// both keywords and category are speicfied
+				productPage = productRepository
+						.findProductsByKeywordsAndCategory(
+								keyword, keyword2, keyword3, Long.valueOf(categoryId), pageDetails);
+			}
+		}
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
 			throw new APIException("No products present");
@@ -69,7 +113,7 @@ public class ProductServiceImpl implements ProductService {
 				? Sort.by(sortBy).ascending()
 				: Sort.by(sortBy).descending();
 		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-		Page<Product> productPage = productRepository.findByCategoryCategoryId(categoryId, pageDetails);
+		Page<Product> productPage = productRepository.findByCategoryCategoryIdAndDeletedAtIsNull(categoryId, pageDetails);
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
 			throw new APIException("No products present");

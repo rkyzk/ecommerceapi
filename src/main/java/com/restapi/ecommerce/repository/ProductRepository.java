@@ -13,32 +13,35 @@ import com.restapi.ecommerce.entity.Product;
 public interface ProductRepository extends JpaRepository<Product, Long>{
 	Page<Product> findByDeletedAtIsNull(Pageable pageDetails);
 	Product findByProductName(String prodName);
-	Page<Product> findByCategoryCategoryId(Long categoryId, Pageable pageDetails);
-	
-//	@Query(value = "SELECT p.id, p.product_name, p.quantity, p.price, "
-//			+ "p.special_price, p.image_path, p.category_id FROM products p WHERE "
-//			+ "(p.product_name LIKE '%keyword%' OR p.description LIKE '%keyword%') AND "
-//			+ "(p.product_name LIKE '%keyword2%' OR p.description LIKE '%keyword2%') AND "
-//			+ "(p.product_name LIKE '%keyword3%' OR p.description LIKE '%keyword3%')",
-//		   countQuery = "SELECT COUNT(*) FROM products p WHERE "
-//		    + "(p.product_name LIKE '%keyword%' OR p.description LIKE '%keyword%') AND "
-//			+ "(p.product_name LIKE '%keyword2%' OR p.description LIKE '%keyword2%') AND "
-//			+ "(p.product_name LIKE '%keyword3%' OR p.description LIKE '%keyword3%')",
-//		   nativeQuery=true)
-//	Page<Product> findProductsByKeywords(
-//			String keyword, String keyword2, String keyword3, Pageable pageDetails);
+	Page<Product> findByCategoryCategoryIdAndDeletedAtIsNull(Long categoryId, Pageable pageDetails);
 
 	@Query(value = "SELECT p.* FROM products p WHERE "
+			+ "p.deleted_at is null AND "
 			+ "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
 			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
 			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
 		   countQuery = "SELECT COUNT(*) FROM products p WHERE "
-			+ "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
+			+ "p.deleted_at is null AND "
+		    + "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
 			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
 			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
 		   nativeQuery=true)
 	Page<Product> findProductsByKeywords(
 			String keyword, String keyword2, String keyword3, Pageable pageDetails);
+
+	@Query(value = "SELECT p.* FROM products p WHERE "
+			+ "p.category_id = :categoryId AND p.deleted_at is null AND "
+			+ "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
+			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
+			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
+		   countQuery = "SELECT COUNT(*) FROM products p WHERE "
+            + "p.category_id = :categoryId AND p.deleted_at is null AND "
+			+ "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
+			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
+			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
+		   nativeQuery=true)
+	Page<Product> findProductsByKeywordsAndCategory(
+			String keyword, String keyword2, String keyword3, Long categoryId, Pageable pageDetails);
 
 	@Modifying
 	@Query(value="UPDATE products p SET p.quantity = ?2 "
