@@ -58,6 +58,9 @@ public class Product {
 	
 	@Size(max=200)
 	private String description;
+
+	@NotNull
+	private boolean featured = false;
 	
 	@Size(max=100)
 	private String imagePath;

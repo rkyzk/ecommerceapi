@@ -23,10 +23,10 @@ public class ProductDTO {
 	private double price;
 	private double discount;
 	private double specialPrice;
+	private boolean featured;
 	private String imageName;
 	private String imagePath;
 	private Category category;
-//	private Set<Category> categories;
 	private String description;
 	private Instant deletedAt;
 //	@FileName(maxLength=30)

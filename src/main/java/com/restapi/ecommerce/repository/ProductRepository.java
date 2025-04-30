@@ -1,5 +1,7 @@
 package com.restapi.ecommerce.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,6 +44,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 		   nativeQuery=true)
 	Page<Product> findProductsByKeywordsAndCategory(
 			String keyword, String keyword2, String keyword3, Long categoryId, Pageable pageDetails);
+
+	List<Product> findByFeaturedIsTrue();
 
 	@Modifying
 	@Query(value="UPDATE products p SET p.quantity = ?2 "

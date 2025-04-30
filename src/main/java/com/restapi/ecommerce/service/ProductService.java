@@ -1,5 +1,7 @@
 package com.restapi.ecommerce.service;
 
+import java.util.List;
+
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
 
@@ -11,6 +13,7 @@ public interface ProductService {
 	public ProductDTO deleteProduct(Long prodId);
 	public ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber,
 			Integer pageSize, String sortBy, String sortOrder);
-	public ProductResponse searchProductsByKeywords(String keywords,
-			Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+//	public ProductResponse searchProductsByKeywords(String keywords,
+//			Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+	public List<ProductDTO> getFeaturedProducts();
 }

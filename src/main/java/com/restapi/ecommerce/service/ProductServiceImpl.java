@@ -201,43 +201,16 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ProductResponse searchProductsByKeywords(String keywords,
-			Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
-		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
-				? Sort.by(sortBy).ascending()
-				: Sort.by(sortBy).descending();
-		System.out.println(keywords);
-		String[] kw = keywords.split("&");
-		String keyword = "";
-		String keyword2 = "";
-		String keyword3 = "";
-		keyword = kw[0];
-		System.out.println(keyword);
-		if (kw.length > 1) keyword2 = kw[1];
-		System.out.println(keyword2);
-		if (kw.length > 2) keyword3 = kw[2];
-		System.out.println(keyword3);
-		
-		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-		Page<Product> productPage =
-				productRepository.findProductsByKeywords(
-						keyword, keyword2, keyword3, pageDetails);
-		List<Product> products = productPage.getContent();
+	public List<ProductDTO> getFeaturedProducts() {	
+		List<Product> products =
+				productRepository.findByFeaturedIsTrue();
 		if (products.isEmpty()) {
-			throw new APIException("No products present");
+			throw new APIException("No featured products present");
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
 				.toList();
-		ProductResponse response = new ProductResponse();
-		response.setContent(productDTOs);
-		// set pagination data
-		response.setPageNumber(productPage.getNumber());
-		response.setPageSize(productPage.getSize());
-		response.setTotalElements(productPage.getTotalElements());
-		response.setTotalPages(productPage.getTotalPages());
-		response.setLastPage(productPage.isLast());
-		return response;
+		return productDTOs;
 	}
 
 	/**
