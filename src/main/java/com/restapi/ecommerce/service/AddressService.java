@@ -7,6 +7,8 @@ import com.restapi.ecommerce.payload.AddressDTO;
 
 public interface AddressService {
 	AddressDTO addAddress(AddressDTO address, User user);
-
 	List<AddressDTO> getUserAddresses(User user);
+	AddressDTO updateAddress(Long addressId, AddressDTO addressDTO);
+	AddressDTO getAddress(Long addressId);
+	String deleteAddress(Long addressId);
 }
