@@ -43,4 +43,13 @@ public class Order {
 	@ManyToOne
 	@JoinColumn(name="address_id")
 	private Address address;
+
+	public Order(Instant orderDate, Cart cart, User user, Payment payment, Address address) {
+		this.orderDate = orderDate;
+		this.orderStatus = "placed";
+		this.cart = cart;
+		this.user = user;
+		this.payment = payment;
+		this.address = address;
+	}
 }

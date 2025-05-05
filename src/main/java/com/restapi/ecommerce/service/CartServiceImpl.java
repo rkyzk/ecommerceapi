@@ -75,7 +75,7 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public List<CartDTO> getAllCarts() {
-		List<Cart> carts = cartRepository.findAllByOrderedIsFalse();
+		List<Cart> carts = cartRepository.findAllByOrderedAtIsNull();
 		List<CartDTO> cartDTOs = carts.stream().map(cart -> {
 			CartDTO cartDTO = modelMapper.map(cart, CartDTO.class);
 			return cartDTO;
@@ -150,7 +150,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public CartDTO getCartByUser() {
 		User user = authUtil.loggedinUser();
-		Cart cart = cartRepository.findCartByUserUserIdAndOrderedIsFalse(user.getUserId());
+		Cart cart = cartRepository.findCartByUserUserIdAndOrderedAtIsNull(user.getUserId());
 		if (cart == null) {
 			throw new ResourceNotFoundException("Cart", "user", user.getUsername());
 		}
@@ -165,7 +165,7 @@ public class CartServiceImpl implements CartService {
 	 * @return Cart object
 	 */
 	public Cart getCart() {
-		Cart cart = cartRepository.findCartByUserUserIdAndOrderedIsFalse(
+		Cart cart = cartRepository.findCartByUserUserIdAndOrderedAtIsNull(
 				authUtil.loggedinUser().getUserId());
 		if (cart == null) {
 			cart = new Cart(authUtil.loggedinUser());

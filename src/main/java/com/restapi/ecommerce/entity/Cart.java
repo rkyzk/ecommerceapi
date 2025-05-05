@@ -1,5 +1,6 @@
 package com.restapi.ecommerce.entity;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ public class Cart {
 
 	private double totalPrice = 0.0;
 
-	private boolean ordered = false;
+	private Instant orderedAt;
 
 	public Cart(User user) {
 		this.user = user;
