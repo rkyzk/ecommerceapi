@@ -27,6 +27,12 @@ public class Address {
 
 	@NotBlank
 	@Size(min = 2)
+	private String fullname;
+
+	private boolean billingAddress;
+
+	@NotBlank
+	@Size(min = 2)
 	private String streetAddress1;
 
 	private String streetAddress2;
@@ -51,9 +57,10 @@ public class Address {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	public Address(User user, String streetAddress1, String streetAddress2,
+	public Address(User user, String fullname, String streetAddress1, String streetAddress2,
 			String city, String province, String countryCode, String postalCode) {
-		this.user= user; 
+		this.user= user;
+		this.fullname = fullname;
 		this.streetAddress1 = streetAddress1;
 		this.streetAddress2 = streetAddress2;
 		this.city = city;

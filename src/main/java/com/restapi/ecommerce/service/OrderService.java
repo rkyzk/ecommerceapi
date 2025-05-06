@@ -12,4 +12,10 @@ public interface OrderService {
 
 	@Transactional
 	OrderDTO placeOrderAsGuest(OrderRequestByGuestDTO orderRequestByGuestDTO);
+
+	@Transactional
+	OrderDTO placeOrderAsUser(OrderRequestByGuestDTO orderRequestDTO);
+
+	@Transactional
+	OrderDTO placeOrderAsUserAddAddress(OrderRequestByGuestDTO orderRequestDTO);
 }

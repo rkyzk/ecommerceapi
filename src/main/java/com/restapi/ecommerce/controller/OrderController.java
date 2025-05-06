@@ -43,6 +43,20 @@ public class OrderController {
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	@PostMapping("/order")
+	public ResponseEntity<OrderDTO> placeOrderAsUser(@RequestBody
+			OrderRequestByGuestDTO orderRequestDTO) {
+		OrderDTO placedOrderDTO = orderService.placeOrderAsUser(orderRequestDTO);
+		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
+	}
+
+	@PostMapping("/order/newaddress")
+	public ResponseEntity<OrderDTO> placeOrderAsUserAddAddress(@RequestBody
+			OrderRequestByGuestDTO orderRequestDTO) {
+		OrderDTO placedOrderDTO = orderService.placeOrderAsUserAddAddress(orderRequestDTO);
+		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
+	}
+
     @PostMapping("/order/stripe-client-secret")
     public ResponseEntity<String> createStripeClientSecret(@RequestBody StripePaymentDTO stripePaymentDto)
     		throws StripeException {

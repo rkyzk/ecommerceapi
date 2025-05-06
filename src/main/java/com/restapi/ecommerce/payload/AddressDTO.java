@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 public class AddressDTO {
 	private Long addressId;
 	@NotBlank
+	private String fullname;
+	private boolean billingAddress;
+	@NotBlank
 	private String streetAddress1;
 	private String streetAddress2;
 	@NotBlank
