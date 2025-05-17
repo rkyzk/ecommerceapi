@@ -24,10 +24,10 @@ import jakarta.validation.Valid;
 @RequestMapping("/api")
 public class OrderController {
 	@Autowired
-	OrderService orderService;
+	private OrderService orderService;
 
 	@Autowired
-	StripeService stripeService;
+	private StripeService stripeService;
 
 	@PostMapping("/order/cart/{cartId}")
 	public ResponseEntity<OrderDTO> createOrder(@PathVariable Long cartId,
@@ -50,7 +50,7 @@ public class OrderController {
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
-	@PostMapping("/order/newaddress")
+	@PostMapping("/order/address/add")
 	public ResponseEntity<OrderDTO> placeOrderAsUserAddAddress(@RequestBody
 			OrderRequestByGuestDTO orderRequestDTO) {
 		OrderDTO placedOrderDTO = orderService.placeOrderAsUserAddAddress(orderRequestDTO);
