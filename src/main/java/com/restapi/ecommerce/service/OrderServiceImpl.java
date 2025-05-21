@@ -12,6 +12,7 @@ import com.restapi.ecommerce.entity.Address;
 import com.restapi.ecommerce.entity.Cart;
 import com.restapi.ecommerce.entity.CartItem;
 import com.restapi.ecommerce.entity.Order;
+import com.restapi.ecommerce.entity.Payment;
 import com.restapi.ecommerce.entity.User;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.AddressDTO;
@@ -189,7 +190,12 @@ public class OrderServiceImpl implements OrderService {
 		cartToUpdate.setOrderedAt(currTime);
 		cart.setUser(user);
 		Cart savedCart = cartRepository.save(cart);
-		Order newOrder = new Order(currTime, savedCart, user, null, savedSAddress, savedBAddress);
+
+		Payment payment = new Payment(orderRequestDTO.getPgPaymentId(),
+				orderRequestDTO.getPgStatus(), orderRequestDTO.getPgResponseMessage(),
+				orderRequestDTO.getPgName());
+		Payment savedPayment = paymentRepository.save(payment);
+		Order newOrder = new Order(currTime, savedCart, user, savedPayment, savedSAddress, savedBAddress);
 		Order placedOrder = orderRepository.save(newOrder);
 		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
 		return placedOrderDTO;
