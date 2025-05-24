@@ -17,8 +17,8 @@ import com.restapi.ecommerce.entity.User;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.AddressDTO;
 import com.restapi.ecommerce.payload.OrderDTO;
-import com.restapi.ecommerce.payload.OrderRequestByGuestDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
+import com.restapi.ecommerce.payload.OrderRequestWithSavedAddressDTO;
 import com.restapi.ecommerce.repository.AddressRepository;
 import com.restapi.ecommerce.repository.CartItemRepository;
 import com.restapi.ecommerce.repository.CartRepository;
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public OrderDTO placeOrder(Long cartId, OrderRequestDTO orderRequestDTO) {
+	public OrderDTO placeOrder(Long cartId, OrderRequestWithSavedAddressDTO orderRequestDTO) {
 //		User user = authUtil.loggedinUser();
 //		Cart cart = cartRepository.findById(cartId)
 //				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", cartId));
@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional
 	@Override
-	public OrderDTO placeOrderAsGuest(OrderRequestByGuestDTO orderRequestByGuestDTO) {
+	public OrderDTO placeOrderAsGuest(OrderRequestDTO orderRequestByGuestDTO) {
 		List<AddressDTO> addressDTOList = orderRequestByGuestDTO.getAddressDTOList();
 		Address shippingAddress = modelMapper.map(addressDTOList.get(0),Address.class);
 		Address savedSAddress = addressRepository.save(shippingAddress);
@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional
 	@Override
-	public OrderDTO placeOrderAsUser(OrderRequestByGuestDTO orderRequestDTO) {
+	public OrderDTO placeOrderAsUser(OrderRequestDTO orderRequestDTO) {
 		User user = authUtil.loggedinUser();
 		List<AddressDTO> addressDTOList = orderRequestDTO.getAddressDTOList();
 		Address shippingAddress = addressRepository.findById(addressDTOList.get(0).getAddressId())
@@ -164,7 +164,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional
 	@Override
-	public OrderDTO placeOrderAsUserAddAddress(OrderRequestByGuestDTO orderRequestDTO) {
+	public OrderDTO placeOrderAsUserAddAddress(OrderRequestDTO orderRequestDTO) {
 		User user = authUtil.loggedinUser();
 		List<AddressDTO> addressDTOList = orderRequestDTO.getAddressDTOList();
 		Address shippingAddress = modelMapper.map(addressDTOList.get(0), Address.class);
