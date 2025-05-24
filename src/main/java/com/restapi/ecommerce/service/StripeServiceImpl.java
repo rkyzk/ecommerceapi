@@ -12,6 +12,7 @@ import com.stripe.param.PaymentIntentCreateParams;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 
+/** stripe service implementation */
 @Service
 @Transactional
 public class StripeServiceImpl implements StripeService {
@@ -23,6 +24,12 @@ public class StripeServiceImpl implements StripeService {
 		Stripe.apiKey = this.stripeApiKey;
 	}
 
+	/**
+	 * create payment intent and return it
+	 *
+	 * @param stripePaymentDto
+	 * @return payment intent
+	 */
     public PaymentIntent paymentIntent(StripePaymentDTO stripePaymentDto) throws StripeException {
         PaymentIntentCreateParams params =
 	            PaymentIntentCreateParams.builder()

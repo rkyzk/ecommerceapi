@@ -22,6 +22,7 @@ import com.restapi.ecommerce.payload.ProductResponse;
 import com.restapi.ecommerce.repository.CategoryRepository;
 import com.restapi.ecommerce.repository.ProductRepository;
 
+/** product service implementation */
 @Service
 public class ProductServiceImpl implements ProductService {
 	@Autowired
@@ -37,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 	private ModelMapper modelMapper;
 
 	/**
-	 * Retrieve and return product data.
+	 * get product data.
 	 * Filter by keywords and category
 	 * if the parameters are present.
 	 * 
@@ -106,6 +107,9 @@ public class ProductServiceImpl implements ProductService {
 		return response;
 	};
 
+	/**
+	 * get products by category
+	 */
 	@Override
 	public ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber,
 			Integer pageSize, String sortBy, String sortOrder) {
@@ -132,6 +136,9 @@ public class ProductServiceImpl implements ProductService {
 		return response;	
 	}
 
+	/**
+	 * add a new product
+	 */
 	@Override
 	public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
 		Category category = categoryRepository.findById(categoryId)
@@ -157,6 +164,10 @@ public class ProductServiceImpl implements ProductService {
 		return modelMapper.map(savedProduct, ProductDTO.class);
 	}
 
+	/**
+	 * update product
+	 *
+	 */
 	@Override
 	public ProductDTO updateProduct(ProductDTO productDTO, Long prodId) {
 		Optional<Product> storedProduct = productRepository.findById(prodId);
@@ -183,6 +194,9 @@ public class ProductServiceImpl implements ProductService {
 		return updatedProdDTO;
 	}
 
+	/**
+	 * delete product
+	 */
 	@Override
 	public ProductDTO deleteProduct(Long prodId) {
 		Optional<Product> storedProduct = productRepository.findById(prodId);	
@@ -200,6 +214,9 @@ public class ProductServiceImpl implements ProductService {
 		return deletedProdDTO;
 	}
 
+	/**
+	 * get featured products
+	 */
 	@Override
 	public List<ProductDTO> getFeaturedProducts() {	
 		List<Product> products =

@@ -6,6 +6,7 @@ import com.restapi.ecommerce.payload.OrderRequestWithSavedAddressDTO;
 
 import jakarta.transaction.Transactional;
 
+/** order service interface */
 public interface OrderService {
 	@Transactional
 	OrderDTO placeOrder(Long cartId, OrderRequestWithSavedAddressDTO orderRequestDTO);

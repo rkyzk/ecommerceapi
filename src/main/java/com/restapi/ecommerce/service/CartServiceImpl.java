@@ -22,6 +22,7 @@ import com.restapi.ecommerce.utils.AuthUtil;
 
 import jakarta.transaction.Transactional;
 
+/** cart service implementation */
 @Service
 public class CartServiceImpl implements CartService {
 	@Autowired
@@ -39,6 +40,13 @@ public class CartServiceImpl implements CartService {
 	@Autowired
 	AuthUtil authUtil;
 
+	/**
+	 * add product to cart
+	 *
+	 * @param productId
+	 * @param quantity
+	 * return cartDTO
+	 */
 	@Override
 	public CartDTO addProductToCart(Long productId, Integer quantity) {
 		// Get the user's cart.  If there isn't one, make a new one.
@@ -73,6 +81,11 @@ public class CartServiceImpl implements CartService {
 		return modelMapper.map(cart, CartDTO.class);
 	}
 
+	/**
+	 * get all carts
+     *
+	 * return list of carts
+	 */
 	@Override
 	public List<CartDTO> getAllCarts() {
 		List<Cart> carts = cartRepository.findAllByOrderedAtIsNull();
@@ -87,7 +100,7 @@ public class CartServiceImpl implements CartService {
 	 * update quantity of product in cart
 	 * 
 	 * @param productId
-	 * @param operation
+	 * @param quantity
 	 * @return cartDTO
 	 */
 	@Transactional
@@ -121,6 +134,11 @@ public class CartServiceImpl implements CartService {
 		return modelMapper.map(updatedCart, CartDTO.class);
 	}
 
+	/**
+	 * delete product from cart
+	 * @param cartId
+	 * @param productId
+	 */
 	@Transactional
 	@Override
 	public String deleteProductFromCart(Long cartId, Long productId) {
@@ -160,9 +178,9 @@ public class CartServiceImpl implements CartService {
 
 	/**
 	 * If the user already has a cart, return it.
-	 * Otherwise create and return a new cart.
+	 * Otherwise create one and return it.
 	 * 
-	 * @return Cart object
+	 * @return cart object
 	 */
 	public Cart getCart() {
 		Cart cart = cartRepository.findCartByUserUserIdAndOrderedAtIsNull(
@@ -176,6 +194,7 @@ public class CartServiceImpl implements CartService {
 
 	/**
 	 * update the total price of a given cart
+	 * @param cart
 	 */
 	@Override
 	public Cart updateTotalPrice(Cart cart) {
