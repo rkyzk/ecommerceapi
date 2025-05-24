@@ -27,6 +27,17 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 
+	/**
+	 * get all products
+	 *
+	 * @param keywords
+	 * @param categoryId
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @return
+	 */
 	@GetMapping("/public/products")
 	public ResponseEntity<ProductResponse> getProducts(
 			@RequestParam (name = "keywords", required=false) String keywords,
@@ -44,12 +55,28 @@ public class ProductController {
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
 
+	/**
+	 * get featured products
+	 *
+	 * @return
+	 */
 	@GetMapping("/public/products/featured")
 	public ResponseEntity<List<ProductDTO>> getFeaturedProducts() {
 		List<ProductDTO> products = productService.getFeaturedProducts();
 		return new ResponseEntity<List<ProductDTO>> (products, HttpStatus.OK);
 	}
 
+	/**
+	 * get products by keywords (not used at the moment)
+	 * (for search, use instead getProducts with parameter 'keywords ')
+	 *
+	 * @param keywords
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @return
+	 */
 //	@GetMapping("/public/products/keywords/{keywords}")
 //	public ResponseEntity<ProductResponse> searchProductsByKeyword(@PathVariable String keywords,
 //			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
@@ -65,6 +92,16 @@ public class ProductController {
 //		return new ResponseEntity<> (response, HttpStatus.OK);
 //	}
 
+	/**
+	 * get products by category
+	 *
+	 * @param categoryId
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @return
+	 */
 	@GetMapping("/public/categories/{categoryId}/products")
 	public ResponseEntity<ProductResponse> getProductsByCategory(@PathVariable Long categoryId,
 			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
@@ -80,7 +117,13 @@ public class ProductController {
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
 
-
+    /**
+     * add product
+     *
+     * @param productDTO
+     * @param categoryId
+     * @return
+     */
 	@PostMapping("/admin/category/{categoryId}/product")
 	public ResponseEntity<ProductDTO> postProduct(@Valid @RequestBody ProductDTO productDTO,
 			@PathVariable Long categoryId) {
@@ -88,6 +131,13 @@ public class ProductController {
 		return new ResponseEntity<> (savedProduct, HttpStatus.CREATED);
 	}
 
+	/**
+	 * update product
+	 *
+	 * @param productDTO
+	 * @param prodId
+	 * @return
+	 */
 	@PutMapping("/admin/products/{prodId}")
 	public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO,
 			@PathVariable Long prodId) {
@@ -95,6 +145,12 @@ public class ProductController {
 		return new ResponseEntity<> (updatedProdDTO, HttpStatus.OK);
 	}
 
+	/**
+	 * delete product
+	 *
+	 * @param prodId
+	 * @return
+	 */
 	@PutMapping("/admin/products/delete/{prodId}")
 	public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long prodId) {
 		ProductDTO productDTO = productService.deleteProduct(prodId);

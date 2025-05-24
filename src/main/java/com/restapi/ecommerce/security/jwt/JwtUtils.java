@@ -54,13 +54,13 @@ public class JwtUtils {
 				.path("/api")
 				.maxAge(24 * 60 * 60)
 				.httpOnly(false)
-				.secure(false)
+				.secure(false) // development
 				.build();
 		return cookie;
 	}
 
 	/**
-	 * Return a builder for a server-defined cookie with the given name and the path
+	 * Return a builder for a server-defined cookie with an empty token and the path
 	 * (The value and other attributes will be set later via builder methods.
 	 */
 	public ResponseCookie getCleanJwtCookie() {

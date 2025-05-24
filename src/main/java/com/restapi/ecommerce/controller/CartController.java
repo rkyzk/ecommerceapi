@@ -28,7 +28,7 @@ public class CartController {
 	 *
 	 * @param productId
 	 * @param quantity
-	 * @return
+	 * @return cart
 	 */
 	@PostMapping("/cart/products/{productId}/quantity/{quantity}")
 	public ResponseEntity<CartDTO> addProductToCart(@PathVariable Long productId,
@@ -52,6 +52,13 @@ public class CartController {
 		return new ResponseEntity<CartDTO>(cartDTO, HttpStatus.OK);
 	}
 
+	/**
+	 * delete a product from a given cart
+	 * 
+	 * @param cartId
+	 * @param productId
+	 * @return
+	 */
 	@DeleteMapping("/carts/{cartId}/products/{productId}")
 	public ResponseEntity<String> deleteProductFromCart(@PathVariable Long cartId,
 			@PathVariable Long productId) {
@@ -59,12 +66,21 @@ public class CartController {
 		return new ResponseEntity<String>(status, HttpStatus.OK);
 	}
 
+	/**
+	 * get all carts that haven't been checked out
+	 *
+	 * @return list of carts
+	 */
 	@GetMapping("/carts")
 	public ResponseEntity<List<CartDTO>> getAllCarts() {
 		List<CartDTO> carts = cartService.getAllCarts();
 		return new ResponseEntity<>(carts, HttpStatus.FOUND);
 	}
 
+	/**
+	 * get cart of logged in user
+	 * @return cartDTO
+	 */
 	@GetMapping("/carts/user/cart")
 	public ResponseEntity<CartDTO> getCartByUser() {
 		CartDTO cartDTO = cartService.getCartByUser();

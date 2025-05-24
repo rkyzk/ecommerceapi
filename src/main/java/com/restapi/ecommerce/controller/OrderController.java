@@ -29,6 +29,13 @@ public class OrderController {
 	@Autowired
 	private StripeService stripeService;
 
+	/**
+	 * place order
+	 *
+	 * @param cartId
+	 * @param orderRequestDTO
+	 * @return
+	 */
 	@PostMapping("/order/cart/{cartId}")
 	public ResponseEntity<OrderDTO> createOrder(@PathVariable Long cartId,
 			@Valid @RequestBody OrderRequestDTO orderRequestDTO) {
@@ -36,6 +43,12 @@ public class OrderController {
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	/**
+	 * place order as guest
+	 *
+	 * @param orderRequestByGuestDTO
+	 * @return
+	 */
 	@PostMapping("/order/guest")
 	public ResponseEntity<OrderDTO> placeOrderAsGuest(@RequestBody
 			OrderRequestByGuestDTO orderRequestByGuestDTO) {
@@ -43,6 +56,12 @@ public class OrderController {
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	/**
+	 * place order as logged in user (use saved addresses)
+	 *
+	 * @param orderRequestDTO
+	 * @return
+	 */
 	@PostMapping("/order")
 	public ResponseEntity<OrderDTO> placeOrderAsUser(@RequestBody
 			OrderRequestByGuestDTO orderRequestDTO) {
@@ -50,6 +69,13 @@ public class OrderController {
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	/**
+	 * place order as logged in user
+	 * (update shipping address or billing address or both)
+	 *
+	 * @param orderRequestDTO
+	 * @return
+	 */
 	@PostMapping("/order/address/add")
 	public ResponseEntity<OrderDTO> placeOrderAsUserAddAddress(@RequestBody
 			OrderRequestByGuestDTO orderRequestDTO) {
@@ -57,6 +83,13 @@ public class OrderController {
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	/**
+	 * create payment intent and return client secret
+	 *
+	 * @param stripePaymentDto
+	 * @return
+	 * @throws StripeException
+	 */
     @PostMapping("/order/stripe-client-secret")
     public ResponseEntity<String> createStripeClientSecret(@RequestBody StripePaymentDTO stripePaymentDto)
     		throws StripeException {
