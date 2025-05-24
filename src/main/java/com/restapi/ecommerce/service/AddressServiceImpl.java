@@ -12,6 +12,7 @@ import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.AddressDTO;
 import com.restapi.ecommerce.repository.AddressRepository;
 
+/** address service implementation */
 @Service
 public class AddressServiceImpl implements AddressService {
 	@Autowired
@@ -20,6 +21,9 @@ public class AddressServiceImpl implements AddressService {
 	@Autowired
 	AddressRepository addressRepository;
 
+	/**
+	 * add a address
+	 */
 	@Override
 	public AddressDTO addAddress(AddressDTO addressDTO, User user) {
 		addressDTO.setUser(user);
@@ -28,6 +32,9 @@ public class AddressServiceImpl implements AddressService {
 		return modelMapper.map(savedAddress, AddressDTO.class);
 	}
 
+	/**
+	 * get a list of given user's addresses
+	 */
 	@Override
 	public List<AddressDTO> getUserAddresses(User user) {
 		List<Address> addresses = user.getAddresses();
@@ -36,6 +43,9 @@ public class AddressServiceImpl implements AddressService {
 								.toList();
 	}
 
+	/**
+	 * get address by address id
+	 */
 	@Override
 	public AddressDTO getAddress(Long addressId) {
 		Address address = addressRepository.findById(addressId)
@@ -43,6 +53,9 @@ public class AddressServiceImpl implements AddressService {
 		return modelMapper.map(address, AddressDTO.class);
 	}
 
+	/**
+	 * update address
+	 */
 	@Override
 	public AddressDTO updateAddress(Long addressId, AddressDTO addressDTO) {
 		Address addressInDB = addressRepository.findById(addressId)
@@ -57,6 +70,9 @@ public class AddressServiceImpl implements AddressService {
 		return modelMapper.map(updatedAddress, AddressDTO.class);
 	}
 
+	/**
+	 * delete address
+	 */
 	@Override
 	public String deleteAddress(Long addressId) {
 		Address address = addressRepository.findById(addressId)

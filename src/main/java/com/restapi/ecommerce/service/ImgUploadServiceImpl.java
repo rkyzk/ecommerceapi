@@ -15,8 +15,8 @@ import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 
-/*
- * Upload and delete files on AWS S3 bucket.
+/**
+ * image upload service implementation
  */
 @Service
 public class ImgUploadServiceImpl implements ImgUploadService {
@@ -26,7 +26,7 @@ public class ImgUploadServiceImpl implements ImgUploadService {
 	@Value("${aws.s3.bucket.name}")
     private String bucketName;
 
-	/*
+	/**
 	 * Upload file on AWS S3 bucket
 	 * 
 	 * @params multipartFile
@@ -52,7 +52,7 @@ public class ImgUploadServiceImpl implements ImgUploadService {
 		return filePath;
 	}
 	
-	/*
+	/**
 	 * Delete file from AWS S3 bucket
 	 * 
 	 * @params fileName
@@ -75,7 +75,7 @@ public class ImgUploadServiceImpl implements ImgUploadService {
 	    return true;
 	}
 
-	/*
+	/**
 	 * Convert multipart file to file.
 	 * 
 	 * @params file: multipart file

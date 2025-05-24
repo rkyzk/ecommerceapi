@@ -7,6 +7,7 @@ import com.restapi.ecommerce.payload.CartDTO;
 
 import jakarta.transaction.Transactional;
 
+/** cart service interface */
 public interface CartService {
 
 	CartDTO addProductToCart(Long productId, Integer quantity);

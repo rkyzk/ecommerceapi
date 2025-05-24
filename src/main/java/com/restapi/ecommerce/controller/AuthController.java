@@ -56,6 +56,15 @@ public class AuthController {
 	@Autowired
 	PasswordEncoder encoder;
 
+	/**
+	 * authenticate user using given username and password.
+	 * generate jwt Cookie from user details
+	 * set jwt cookie to the header and return the body with
+	 * user details
+	 *
+	 * @param loginReq
+	 * @return
+	 */
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginReq) {
 		Authentication authentication;
@@ -83,6 +92,13 @@ public class AuthController {
 				.body(resp);
 	}
 
+	/**
+	 * check if the given username and email haven't been registered,
+	 * and if not, set roles and save user
+	 *
+	 * @param req
+	 * @return
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest req) {
 		if (userRepository.existsByUsername(req.getUsername())) {
@@ -130,6 +146,12 @@ public class AuthController {
 		return ResponseEntity.ok(new MessageResponse("User registered successfully"));
 	}
 
+	/**
+	 * get and return logged in user's name
+	 *
+	 * @param authentication
+	 * @return
+	 */
 	@GetMapping("/username")
 	public String currentUsername(Authentication authentication) {
 		if (authentication != null)
@@ -138,6 +160,11 @@ public class AuthController {
 			return "";
 	}
 
+	/**
+	 * get and return logged in user's user details
+	 * @param authentication
+	 * @return
+	 */
 	@GetMapping("/user")
 	public ResponseEntity<?> getUserDetails(Authentication authentication) {
 		UserDetailsImpl userDetails = (UserDetailsImpl)authentication.getPrincipal();
@@ -148,7 +175,13 @@ public class AuthController {
 				userDetails.getUsername(), roles);
 		return ResponseEntity.ok().body(resp);
 	}
-	
+
+	/**
+	 * sign out user.
+	 *
+	 * @param authentication
+	 * @return
+	 */
 	@PostMapping("/signout")
 	public ResponseEntity<?> signoutUser(Authentication authentication) {
 		ResponseCookie cleanJwtCookie = jwtUtils.getCleanJwtCookie();

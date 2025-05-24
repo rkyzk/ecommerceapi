@@ -26,6 +26,15 @@ public class CategoryController {
 	@Autowired
 	CategoryService categoryService;
 
+	/**
+	 * get all categories
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @return
+	 */
 	@GetMapping("/admin/categories")
 	public ResponseEntity<CategoryResponse> getCategories(
 			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
@@ -37,16 +46,28 @@ public class CategoryController {
 			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
 			    required=false) String sortOrder) {
 		CategoryResponse response = categoryService.getCategories(pageNumber, pageSize, sortBy, sortOrder);
-		System.out.println("cat: " + response);
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
 
+	/**
+	 * add category
+	 *
+	 * @param categoryDTO
+	 * @return
+	 */
 	@PostMapping("/admin/categories")
 	public ResponseEntity<CategoryDTO> postCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
 		CategoryDTO savedCategory = categoryService.createCategory(categoryDTO);
 		return new ResponseEntity<> (savedCategory, HttpStatus.CREATED);
 	}
 
+	/**
+	 * update category
+	 *
+	 * @param categoryDTO
+	 * @param categoryId
+	 * @return
+	 */
 	@PutMapping("/admin/categories/{categoryId}")
 	public ResponseEntity<CategoryDTO> updateCategory(@Valid @RequestBody CategoryDTO categoryDTO,
 			@PathVariable Long categoryId) {
@@ -54,6 +75,12 @@ public class CategoryController {
 		return new ResponseEntity<> (updatedProdDTO, HttpStatus.OK);
 	}
 
+	/**
+	 * delete category
+	 *
+	 * @param categoryId
+	 * @return
+	 */
 	@DeleteMapping("/admin/categories/delete/{categoryId}")
 	public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
 		categoryService.deleteCategory(categoryId);

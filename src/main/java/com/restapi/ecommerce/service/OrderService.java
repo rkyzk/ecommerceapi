@@ -1,21 +1,22 @@
 package com.restapi.ecommerce.service;
 
 import com.restapi.ecommerce.payload.OrderDTO;
-import com.restapi.ecommerce.payload.OrderRequestByGuestDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
+import com.restapi.ecommerce.payload.OrderRequestWithSavedAddressDTO;
 
 import jakarta.transaction.Transactional;
 
+/** order service interface */
 public interface OrderService {
 	@Transactional
-	OrderDTO placeOrder(Long cartId, OrderRequestDTO orderRequestDTO);
+	OrderDTO placeOrder(Long cartId, OrderRequestWithSavedAddressDTO orderRequestDTO);
 
 	@Transactional
-	OrderDTO placeOrderAsGuest(OrderRequestByGuestDTO orderRequestByGuestDTO);
+	OrderDTO placeOrderAsGuest(OrderRequestDTO orderRequestByGuestDTO);
 
 	@Transactional
-	OrderDTO placeOrderAsUser(OrderRequestByGuestDTO orderRequestDTO);
+	OrderDTO placeOrderAsUser(OrderRequestDTO orderRequestDTO);
 
 	@Transactional
-	OrderDTO placeOrderAsUserAddAddress(OrderRequestByGuestDTO orderRequestDTO);
+	OrderDTO placeOrderAsUserAddAddress(OrderRequestDTO orderRequestDTO);
 }

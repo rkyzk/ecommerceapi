@@ -12,12 +12,13 @@ import com.restapi.ecommerce.entity.Address;
 import com.restapi.ecommerce.entity.Cart;
 import com.restapi.ecommerce.entity.CartItem;
 import com.restapi.ecommerce.entity.Order;
+import com.restapi.ecommerce.entity.Payment;
 import com.restapi.ecommerce.entity.User;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
 import com.restapi.ecommerce.payload.AddressDTO;
 import com.restapi.ecommerce.payload.OrderDTO;
-import com.restapi.ecommerce.payload.OrderRequestByGuestDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
+import com.restapi.ecommerce.payload.OrderRequestWithSavedAddressDTO;
 import com.restapi.ecommerce.repository.AddressRepository;
 import com.restapi.ecommerce.repository.CartItemRepository;
 import com.restapi.ecommerce.repository.CartRepository;
@@ -28,6 +29,7 @@ import com.restapi.ecommerce.utils.AuthUtil;
 
 import jakarta.transaction.Transactional;
 
+/** order service implementation */
 @Service
 public class OrderServiceImpl implements OrderService {
 	@Autowired
@@ -59,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public OrderDTO placeOrder(Long cartId, OrderRequestDTO orderRequestDTO) {
+	public OrderDTO placeOrder(Long cartId, OrderRequestWithSavedAddressDTO orderRequestDTO) {
 //		User user = authUtil.loggedinUser();
 //		Cart cart = cartRepository.findById(cartId)
 //				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", cartId));
@@ -100,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional
 	@Override
-	public OrderDTO placeOrderAsGuest(OrderRequestByGuestDTO orderRequestByGuestDTO) {
+	public OrderDTO placeOrderAsGuest(OrderRequestDTO orderRequestByGuestDTO) {
 		List<AddressDTO> addressDTOList = orderRequestByGuestDTO.getAddressDTOList();
 		Address shippingAddress = modelMapper.map(addressDTOList.get(0),Address.class);
 		Address savedSAddress = addressRepository.save(shippingAddress);
@@ -130,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional
 	@Override
-	public OrderDTO placeOrderAsUser(OrderRequestByGuestDTO orderRequestDTO) {
+	public OrderDTO placeOrderAsUser(OrderRequestDTO orderRequestDTO) {
 		User user = authUtil.loggedinUser();
 		List<AddressDTO> addressDTOList = orderRequestDTO.getAddressDTOList();
 		Address shippingAddress = addressRepository.findById(addressDTOList.get(0).getAddressId())
@@ -163,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Transactional
 	@Override
-	public OrderDTO placeOrderAsUserAddAddress(OrderRequestByGuestDTO orderRequestDTO) {
+	public OrderDTO placeOrderAsUserAddAddress(OrderRequestDTO orderRequestDTO) {
 		User user = authUtil.loggedinUser();
 		List<AddressDTO> addressDTOList = orderRequestDTO.getAddressDTOList();
 		Address shippingAddress = modelMapper.map(addressDTOList.get(0), Address.class);
@@ -189,7 +191,12 @@ public class OrderServiceImpl implements OrderService {
 		cartToUpdate.setOrderedAt(currTime);
 		cart.setUser(user);
 		Cart savedCart = cartRepository.save(cart);
-		Order newOrder = new Order(currTime, savedCart, user, null, savedSAddress, savedBAddress);
+
+		Payment payment = new Payment(orderRequestDTO.getPgPaymentId(),
+				orderRequestDTO.getPgStatus(), orderRequestDTO.getPgResponseMessage(),
+				orderRequestDTO.getPgName());
+		Payment savedPayment = paymentRepository.save(payment);
+		Order newOrder = new Order(currTime, savedCart, user, savedPayment, savedSAddress, savedBAddress);
 		Order placedOrder = orderRepository.save(newOrder);
 		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
 		return placedOrderDTO;

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restapi.ecommerce.payload.OrderDTO;
-import com.restapi.ecommerce.payload.OrderRequestByGuestDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
+import com.restapi.ecommerce.payload.OrderRequestWithSavedAddressDTO;
 import com.restapi.ecommerce.payload.StripePaymentDTO;
 import com.restapi.ecommerce.service.OrderService;
 import com.restapi.ecommerce.service.StripeService;
@@ -24,39 +24,72 @@ import jakarta.validation.Valid;
 @RequestMapping("/api")
 public class OrderController {
 	@Autowired
-	OrderService orderService;
+	private OrderService orderService;
 
 	@Autowired
-	StripeService stripeService;
+	private StripeService stripeService;
 
+	/**
+	 * place order
+	 *
+	 * @param cartId
+	 * @param orderRequestDTO
+	 * @return
+	 */
 	@PostMapping("/order/cart/{cartId}")
 	public ResponseEntity<OrderDTO> createOrder(@PathVariable Long cartId,
-			@Valid @RequestBody OrderRequestDTO orderRequestDTO) {
+			@Valid @RequestBody OrderRequestWithSavedAddressDTO orderRequestDTO) {
 		OrderDTO placedOrderDTO = orderService.placeOrder(cartId, orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	/**
+	 * place order as guest
+	 *
+	 * @param orderRequestByGuestDTO
+	 * @return
+	 */
 	@PostMapping("/order/guest")
 	public ResponseEntity<OrderDTO> placeOrderAsGuest(@RequestBody
-			OrderRequestByGuestDTO orderRequestByGuestDTO) {
-		OrderDTO placedOrderDTO = orderService.placeOrderAsGuest(orderRequestByGuestDTO);
+			OrderRequestDTO orderRequestDTO) {
+		OrderDTO placedOrderDTO = orderService.placeOrderAsGuest(orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	/**
+	 * place order as logged in user (use saved addresses)
+	 *
+	 * @param orderRequestDTO
+	 * @return
+	 */
 	@PostMapping("/order")
 	public ResponseEntity<OrderDTO> placeOrderAsUser(@RequestBody
-			OrderRequestByGuestDTO orderRequestDTO) {
+			OrderRequestDTO orderRequestDTO) {
 		OrderDTO placedOrderDTO = orderService.placeOrderAsUser(orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
-	@PostMapping("/order/newaddress")
+	/**
+	 * place order as logged in user
+	 * (update shipping address or billing address or both)
+	 *
+	 * @param orderRequestDTO
+	 * @return
+	 */
+	@PostMapping("/order/address/add")
 	public ResponseEntity<OrderDTO> placeOrderAsUserAddAddress(@RequestBody
-			OrderRequestByGuestDTO orderRequestDTO) {
+			OrderRequestDTO orderRequestDTO) {
 		OrderDTO placedOrderDTO = orderService.placeOrderAsUserAddAddress(orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
+	/**
+	 * create payment intent and return client secret
+	 *
+	 * @param stripePaymentDto
+	 * @return
+	 * @throws StripeException
+	 */
     @PostMapping("/order/stripe-client-secret")
     public ResponseEntity<String> createStripeClientSecret(@RequestBody StripePaymentDTO stripePaymentDto)
     		throws StripeException {

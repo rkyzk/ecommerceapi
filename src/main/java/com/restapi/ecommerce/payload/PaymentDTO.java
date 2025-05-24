@@ -13,4 +13,12 @@ public class PaymentDTO {
 	private String pgStatus;
 	private String pgResponseMessage;
 	private String pgName;
+
+	public PaymentDTO(String pgPaymentId, String pgStatus,
+			String pgResponseMessage, String pgName) {
+		this.pgPaymentId = pgPaymentId;
+		this.pgStatus = pgStatus;
+		this.pgResponseMessage = pgResponseMessage;
+		this.pgName = pgName;
+	};
 }

@@ -3,6 +3,7 @@ package com.restapi.ecommerce.service;
 import com.restapi.ecommerce.payload.CategoryDTO;
 import com.restapi.ecommerce.payload.CategoryResponse;
 
+/** category service interface */
 public interface CategoryService {
 	public CategoryResponse getCategories(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder);

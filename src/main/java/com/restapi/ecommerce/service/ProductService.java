@@ -5,6 +5,7 @@ import java.util.List;
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
 
+/** product service interface */
 public interface ProductService {
 	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder, String keywords, String categoryId);
