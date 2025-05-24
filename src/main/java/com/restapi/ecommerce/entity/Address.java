@@ -8,7 +8,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +24,12 @@ public class Address {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long addressId;
+
+	@NotBlank
+	@Size(min = 2)
+	private String fullname;
+
+	private boolean billingAddress;
 
 	@NotBlank
 	@Size(min = 2)
@@ -50,12 +55,12 @@ public class Address {
 	@ToString.Exclude
 	@ManyToOne
 	@JoinColumn(name = "user_id")
-	@NotNull
 	private User user;
 
-	public Address(String streetAddress1, String streetAddress2,
+	public Address(User user, String fullname, String streetAddress1, String streetAddress2,
 			String city, String province, String countryCode, String postalCode) {
-		this.user= user; 
+		this.user= user;
+		this.fullname = fullname;
 		this.streetAddress1 = streetAddress1;
 		this.streetAddress2 = streetAddress2;
 		this.city = city;

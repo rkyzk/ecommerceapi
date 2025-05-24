@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restapi.ecommerce.payload.OrderDTO;
+import com.restapi.ecommerce.payload.OrderRequestByGuestDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
+import com.restapi.ecommerce.payload.StripePaymentDTO;
 import com.restapi.ecommerce.service.OrderService;
+import com.restapi.ecommerce.service.StripeService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 
 import jakarta.validation.Valid;
 
@@ -21,10 +26,41 @@ public class OrderController {
 	@Autowired
 	OrderService orderService;
 
+	@Autowired
+	StripeService stripeService;
+
 	@PostMapping("/order/cart/{cartId}")
 	public ResponseEntity<OrderDTO> createOrder(@PathVariable Long cartId,
 			@Valid @RequestBody OrderRequestDTO orderRequestDTO) {
 		OrderDTO placedOrderDTO = orderService.placeOrder(cartId, orderRequestDTO);
-		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);		
+		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
+
+	@PostMapping("/order/guest")
+	public ResponseEntity<OrderDTO> placeOrderAsGuest(@RequestBody
+			OrderRequestByGuestDTO orderRequestByGuestDTO) {
+		OrderDTO placedOrderDTO = orderService.placeOrderAsGuest(orderRequestByGuestDTO);
+		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
+	}
+
+	@PostMapping("/order")
+	public ResponseEntity<OrderDTO> placeOrderAsUser(@RequestBody
+			OrderRequestByGuestDTO orderRequestDTO) {
+		OrderDTO placedOrderDTO = orderService.placeOrderAsUser(orderRequestDTO);
+		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
+	}
+
+	@PostMapping("/order/newaddress")
+	public ResponseEntity<OrderDTO> placeOrderAsUserAddAddress(@RequestBody
+			OrderRequestByGuestDTO orderRequestDTO) {
+		OrderDTO placedOrderDTO = orderService.placeOrderAsUserAddAddress(orderRequestDTO);
+		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
+	}
+
+    @PostMapping("/order/stripe-client-secret")
+    public ResponseEntity<String> createStripeClientSecret(@RequestBody StripePaymentDTO stripePaymentDto)
+    		throws StripeException {
+            PaymentIntent paymentIntent = stripeService.paymentIntent(stripePaymentDto);
+            return new ResponseEntity<>(paymentIntent.getClientSecret(), HttpStatus.CREATED);
+    }
 }

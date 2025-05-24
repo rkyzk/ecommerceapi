@@ -10,6 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +31,7 @@ public class Order {
 
 	@OneToOne
 	@JoinColumn(name="cart_id")
+	@NotNull
 	private Cart cart;
 
 	@ManyToOne
@@ -41,6 +43,22 @@ public class Order {
 	private Payment payment;
 
 	@ManyToOne
-	@JoinColumn(name="address_id")
-	private Address address;
+	@JoinColumn(name="shipping_address_id")
+	@NotNull
+	private Address shippingAddress;
+
+	@ManyToOne
+	@JoinColumn(name="billing_address_id")
+	private Address billingAddress;
+
+	public Order(Instant orderDate, Cart cart, User user, Payment payment,
+			Address shippingAddress, Address billingAddress) {
+		this.orderDate = orderDate;
+		this.orderStatus = "placed";
+		this.cart = cart;
+		this.user = user;
+		this.payment = payment;
+		this.shippingAddress = shippingAddress;
+		this.billingAddress = billingAddress;
+	}
 }

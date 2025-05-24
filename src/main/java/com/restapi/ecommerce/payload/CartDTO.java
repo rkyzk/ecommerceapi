@@ -1,5 +1,6 @@
 package com.restapi.ecommerce.payload;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,5 +23,5 @@ public class CartDTO {
 
 	private Double totalPrice = 0.0;
 
-	private boolean ordered = false;
+	private Instant ordered_at;
 }

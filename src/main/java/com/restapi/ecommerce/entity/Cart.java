@@ -1,5 +1,6 @@
 package com.restapi.ecommerce.entity;
 
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,8 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,7 +29,7 @@ public class Cart {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="user_id")
 	private User user;
 
@@ -40,7 +41,7 @@ public class Cart {
 
 	private double totalPrice = 0.0;
 
-	private boolean ordered = false;
+	private Instant orderedAt;
 
 	public Cart(User user) {
 		this.user = user;

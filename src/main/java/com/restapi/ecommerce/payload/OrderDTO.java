@@ -16,5 +16,6 @@ public class OrderDTO {
 	private Cart cart;
 	private User user;
 	private PaymentDTO paymentDTO;
-	private Address address;
+	private Address shippingAddress;
+	private Address billingAddress;
 }

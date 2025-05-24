@@ -87,11 +87,11 @@ public class AuthController {
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest req) {
 		if (userRepository.existsByUsername(req.getUsername())) {
 			return ResponseEntity.badRequest().body(
-					new MessageResponse("User name is already taken."));
+					new MessageResponse("Username is already used."));
 		}
 		if (userRepository.existsByEmail(req.getEmail())) {
 			return ResponseEntity.badRequest().body(
-					new MessageResponse("Email is already taken."));
+					new MessageResponse("Email is already used."));
 		}
 
 		User user = new User(req.getUsername(),
