@@ -3,13 +3,14 @@
 The REST API is deployed on AWS
 at http://ecommerce-rest-api-2025.ap-northeast-1.elasticbeanstalk.com
 
+The front end is being developed as of May 2025.
+
 ### Contents
 1. Overview
 2. Technologies used
 3. Features
 4. Entity Relations
-
-
+5. Credits
 
 ### Overview
 REST API for an ecommerce application
@@ -17,7 +18,7 @@ REST API for an ecommerce application
 
 ### Technologies used
 Java(Spring Boot)
-postgresql
+PostgreSQL
 
 ### Features
 
