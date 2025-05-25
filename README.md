@@ -1,10 +1,15 @@
 # Ecommerce REST API
 
+The REST API is deployed on AWS
+at http://ecommerce-rest-api-2025.ap-northeast-1.elasticbeanstalk.com
+
 ### Contents
 1. Overview
 2. Technologies used
 3. Features
 4. Entity Relations
+
+
 
 ### Overview
 REST API for an ecommerce application
@@ -19,9 +24,9 @@ postgresql
 #### AuthController
 | Nr| Feature                 | API Endpoint        | method |
 | - | :------------------ | :------------------ |:-----|
-| 1 |Sign up              | /api/auth/signup         |post|
-| 2 |Sign in              | /api/auth/signin         |post|
-| 3 |Sign out             | /api/auth/signout        |post|
+| 1 |sign up              | /api/auth/signup         |post|
+| 2 |sign in              | /api/auth/signin         |post|
+| 3 |sign out             | /api/auth/signout        |post|
 | 4 |get current username | /api/auth/username       |get |
 | 5 |get current user details | /api/auth/user         |get |
 
@@ -52,17 +57,16 @@ postgresql
 | 20 |update product by id | /admin/products/{prodId}  |put|
 | 21 |delete product by id (insert date in col 'deleted_at') | /admin/products/delete/{prodId}  |put|
 
-- Sign up, Sign in/out for users, sellers, administrators
-- authentication and role based authorization
+#### OrderController
+| Nr| Feature                        | API Endpoint        | method |
+| - | :----------------------------- | :------------------ | :----- |
+| 22 |place order        | /order/cart/{cartId}|post|
+| 23 |place order as guest | /order/guest |post|
+| 24 |place order as user | /order |post|
+| 25 |add new addresses and place order as user | /order/address/add  |post|
+| 26 |create payment intent and return client secret | /order/stripe-client-secret  |post|
 
-#### for administrators
-- add, update, delete products
-
-#### for users
-- browse through products
-- add, update, delete items in shopping cart
-- place orders
-- 
+ 
 
 ### ER diagram
 <img src="./src/main/resources/ER.png" alt="er-diagram" width="800px" />
