@@ -45,6 +45,20 @@ public class AddressController {
 	}
 
 	/**
+	 * add an address in addresses table without user data
+	 * and return the address
+	 * 
+	 * @param addressDTO
+	 * @return addressDTO
+	 */
+	@PostMapping("/addresses/anonym")
+	public ResponseEntity<AddressDTO> addAddressWithoutUser(@Valid @RequestBody AddressDTO addressDTO) {
+		AddressDTO addedDTO = addressService.addAddress(addressDTO, null);
+		return new ResponseEntity<AddressDTO>(addedDTO, HttpStatus.CREATED);
+	}
+	
+
+	/**
 	 * get address list of the logged in user
 	 *
 	 * @return list of addresses

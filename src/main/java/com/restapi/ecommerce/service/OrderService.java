@@ -18,5 +18,6 @@ public interface OrderService {
 	OrderDTO placeOrderAsUser(OrderRequestDTO orderRequestDTO);
 
 	@Transactional
-	OrderDTO placeOrderAsUserAddAddress(OrderRequestDTO orderRequestDTO);
+	OrderDTO placeOrderWithNewAddresses(OrderRequestDTO orderRequestDTO);
+
 }

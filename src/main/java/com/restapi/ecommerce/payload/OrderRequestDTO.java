@@ -1,7 +1,5 @@
 package com.restapi.ecommerce.payload;
 
-import java.util.List;
-
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequestDTO {
-	@NotNull
-	private List<AddressDTO> addressDTOList;
+	private Long shippingAddressId;
+	private Long billingAddressId;
 	@NotNull
 	private CartDTO cartDTO;
 	private String pgName;
