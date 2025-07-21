@@ -1,7 +1,9 @@
 package com.restapi.ecommerce.entity;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,6 +27,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Setter
@@ -55,9 +58,6 @@ public class Product {
 	@Digits(integer=10, fraction=0)
 	@Min(0)
 	private double specialPrice;
-	
-	@Size(max=200)
-	private String description;
 
 	@NotNull
 	private boolean featured = false;
@@ -73,13 +73,15 @@ public class Product {
 
 	private Instant deletedAt;
 	
-//	@ManyToMany(cascade = CascadeType.MERGE)
-//	@JoinTable(
-//			name = "product_category",
-//			joinColumns = @JoinColumn(name = "product_id"),
-//			inverseJoinColumns = @JoinColumn(name = "category_id")
-//    )
-//	private Set<Category> categories = new HashSet<>();
+	@ToString.Exclude
+	@JsonIgnore
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "product",
+			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+			orphanRemoval = true)
+	private List<ProductDescription> productDescriptions = new ArrayList<>();
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
