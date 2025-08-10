@@ -80,9 +80,8 @@ public class Product {
 	@OneToMany(mappedBy = "product",
 			cascade = {CascadeType.PERSIST, CascadeType.MERGE},
 			orphanRemoval = true)
-	private List<ProductDescription> productDescriptions = new ArrayList<>();
-	
-	
+	private List<ProductDetail> productDetailList = new ArrayList<>();
+
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	@NotNull

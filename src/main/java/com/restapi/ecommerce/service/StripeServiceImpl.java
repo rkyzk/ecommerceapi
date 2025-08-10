@@ -31,7 +31,7 @@ public class StripeServiceImpl implements StripeService {
 	 * @return payment intent
 	 */
     public PaymentIntent paymentIntent(StripePaymentDTO stripePaymentDto) throws StripeException {
-        PaymentIntentCreateParams params =
+    	PaymentIntentCreateParams params =
 	            PaymentIntentCreateParams.builder()
 	                .setAmount(stripePaymentDto.getAmount())
 	                .setCurrency(stripePaymentDto.getCurrency())

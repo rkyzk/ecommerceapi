@@ -1,5 +1,7 @@
 # Ecommerce REST API
 
+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
+
 The REST API is deployed on AWS
 at http://ecommerce-rest-api-2025.ap-northeast-1.elasticbeanstalk.com
 
@@ -77,3 +79,7 @@ PostgreSQL
 
 I leaned the methods to build this app with Udemy course "Java Spring Boot professional eCommerce project master class"</br>
 https://github.com/EmbarkXOfficial/spring-boot-course
+
+Product Descriptions are taken from following websites:
+
+https://www.sarahraven.com/products/tulipa-whittallii?srsltid=AfmBOor-8ebD1y54HUaz5pb0V_RNpwp12nB5E3S6ak-L3nn57mopU9rt

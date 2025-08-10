@@ -1,6 +1,7 @@
 package com.restapi.ecommerce.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.restapi.ecommerce.config.AppConstants;
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
+import com.restapi.ecommerce.service.ProductDetailService;
 import com.restapi.ecommerce.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -26,6 +28,9 @@ import jakarta.validation.Valid;
 public class ProductController {
 	@Autowired
 	ProductService productService;
+
+	@Autowired
+	ProductDetailService productDetailService;
 
 	/**
 	 * get all products
@@ -67,8 +72,19 @@ public class ProductController {
 	}
 
 	/**
+	 * get product detail
+	 *
+	 * @return
+	 */
+	@GetMapping("/public/product/detail/{productId}")
+	public ResponseEntity<Map<String, String>> getProductDetail(@PathVariable Long productId) {
+		Map<String, String> productDetail = productDetailService.getProductDetail(productId);
+		return new ResponseEntity<Map<String, String>> (productDetail, HttpStatus.OK);
+	}
+
+	/**
 	 * get products by keywords (not used at the moment)
-	 * (for search, use instead getProducts with parameter 'keywords ')
+	 * (use parameter 'keywords' in url)
 	 *
 	 * @param keywords
 	 * @param pageNumber

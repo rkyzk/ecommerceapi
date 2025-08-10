@@ -79,7 +79,8 @@ public class ProductServiceImpl implements ProductService {
 			if (kwArr.length > 1) keyword2 = kwArr[1];
 			if (kwArr.length > 2) keyword3 = kwArr[2];
 			if (categoryId == null || categoryId.isEmpty()) {
-		        // only keywords are specified
+				System.out.println(keyword);
+		        // if keywords alone are specified
 				productPage = productRepository
 	                    .findProductsByKeywords(keyword, keyword2, keyword3, pageDetails);
 			} else {
