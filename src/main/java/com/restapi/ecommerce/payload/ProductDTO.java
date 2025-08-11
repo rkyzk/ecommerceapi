@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-//	@Autowired
-//	private ModelMapper modelMapper;
 
 	private Long id;
 	private String productName;
@@ -27,7 +25,6 @@ public class ProductDTO {
 	private String imageName;
 	private String imagePath;
 	private Category category;
-	private String description;
 	private Instant deletedAt;
 //	@FileName(maxLength=30)
 //	@FileType
