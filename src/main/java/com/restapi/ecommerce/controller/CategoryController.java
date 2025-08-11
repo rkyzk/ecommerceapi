@@ -35,7 +35,7 @@ public class CategoryController {
 	 * @param sortOrder
 	 * @return
 	 */
-	@GetMapping("/admin/categories")
+	@GetMapping("/public/categories")
 	public ResponseEntity<CategoryResponse> getCategories(
 			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
 			    required=false) Integer pageNumber,
