@@ -27,7 +27,6 @@ public class ProductDTO {
 	private String imageName;
 	private String imagePath;
 	private Category category;
-	private String description;
 	private Instant deletedAt;
 //	@FileName(maxLength=30)
 //	@FileType
