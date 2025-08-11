@@ -17,11 +17,11 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "product_detail")
+@Table(name = "product_description")
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductDetail {
+public class ProductDescription {
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
@@ -38,7 +38,7 @@ public class ProductDetail {
 	@Size(min=2, max=300)
 	private String value;
 
-	public ProductDetail(Product product, String key, String value) {
+	public ProductDescription(Product product, String key, String value) {
 		this.product = product;
 		this.key = key;
 		this.value = value;
