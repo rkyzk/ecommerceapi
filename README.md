@@ -1,5 +1,7 @@
 # Ecommerce REST API
 
+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
+
 The REST API is deployed on AWS
 at http://ecommerce-rest-api-2025.ap-northeast-1.elasticbeanstalk.com
 
