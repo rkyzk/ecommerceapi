@@ -27,6 +27,9 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 
+		@Autowired
+	ProductDetailService productDetailService;
+
 	/**
 	 * get all products
 	 *
@@ -64,6 +67,18 @@ public class ProductController {
 	public ResponseEntity<List<ProductDTO>> getFeaturedProducts() {
 		List<ProductDTO> products = productService.getFeaturedProducts();
 		return new ResponseEntity<List<ProductDTO>> (products, HttpStatus.OK);
+	}
+
+    /**
+	 * get product detail
+	 *
+	 * @param productId
+	 * @return ResponseEntity
+	 */
+	@GetMapping("/public/product/detail/{productId}")
+	public ResponseEntity<Map<String,String>> getProductId(@PathVariable Long productId) {
+		Map<String, String> productDetail = productDetailService.getProductDetail(productId);
+		return new ResponseEntity<Map<String,String>> (productDetail, HttpStatus.OK);
 	}
 
 	/**
