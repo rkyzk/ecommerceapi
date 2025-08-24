@@ -31,8 +31,8 @@ public class AddressController {
 	AuthUtil authUtil;
 
 	/**
-	 * add an address in addresses table
-	 * and return the address
+	 * 住所データをテーブルに追加、返却
+	 * 
 	 * 
 	 * @param addressDTO
 	 * @return addressDTO
@@ -45,7 +45,7 @@ public class AddressController {
 	}
 
 	/**
-	 * get address list of the logged in user
+	 * ログイン中ユーザの住所データリストを返却
 	 *
 	 * @return list of addresses
 	 */
@@ -57,7 +57,7 @@ public class AddressController {
 	}
 
 	/**
-	 * get address by id
+	 * 住所をIDにより取得
 	 *
 	 * @param addressId
 	 * @return addressDTO
@@ -69,7 +69,7 @@ public class AddressController {
 	}
 
 	/**
-	 * update address with the given id
+	 * ID指定する住所を更新、住所データを返却
 	 *
 	 * @param addressId
 	 * @param addressDTO
@@ -83,7 +83,7 @@ public class AddressController {
 	}
 
 	/**
-	 * delete address with the given id
+	 * ID指定する住所を削除
 	 *
 	 * @param addressId
 	 * @return
