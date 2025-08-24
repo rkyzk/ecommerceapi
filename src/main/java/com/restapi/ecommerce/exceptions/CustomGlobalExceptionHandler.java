@@ -12,9 +12,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.restapi.ecommerce.payload.APIResponse;
 
+/**
+ * カスタムグローバル例外のクラス
+ */
 @RestControllerAdvice
 public class CustomGlobalExceptionHandler {
-	
+
+	/**
+     * 引数不正の例外を発生させる
+     */
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e){
 		Map<String, String> response = new HashMap<>();
@@ -26,13 +32,19 @@ public class CustomGlobalExceptionHandler {
 	    return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
 	}
 	
+	/**
+     * リソース不在の例外を発生させる
+     */
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<APIResponse> handleResourceNotFoundException(ResourceNotFoundException e) {
 		String message = e.getMessage();
 		APIResponse apiResponse = new APIResponse(message , false);
 		return new ResponseEntity<> (apiResponse, HttpStatus.NOT_FOUND);
 	}
-	
+
+	/**
+     * APiExceptionを発生させる
+     */
 	@ExceptionHandler(APIException.class)
 	public ResponseEntity<APIResponse> handleAPIException(APIException e) {
 		String message = e.getMessage();

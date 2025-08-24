@@ -11,7 +11,6 @@ import com.restapi.ecommerce.entity.CartItem;
 public interface CartItemRepository extends JpaRepository<CartItem, Long>{
 	CartItem findByCartIdAndProductId(Long cartId, Long productId);
 
-	// may not need this
 	@Modifying
 	@Query("DELETE FROM CartItem ci WHERE ci.cart.id = ?1 AND ci.product.id = ?2")
 	void deleteCartItemByCartIdAndProductId(Long cartId, Long productId);

@@ -73,20 +73,11 @@ public class Product {
 
 	private Instant deletedAt;
 	
-//	@ManyToMany(cascade = CascadeType.MERGE)
-//	@JoinTable(
-//			name = "product_category",
-//			joinColumns = @JoinColumn(name = "product_id"),
-//			inverseJoinColumns = @JoinColumn(name = "category_id")
-//    )
-//	private Set<Category> categories = new HashSet<>();
-	
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	@NotNull
 	private Category category;
 
-	// later add @NotNull
 	@ManyToOne
 	@JoinColumn(name = "seller_id")
 	private User user;
@@ -96,16 +87,4 @@ public class Product {
 			orphanRemoval = true)
 	@JsonIgnore
 	Set<CartItem> cartItems = new HashSet<>();
-
-//	public void addCategory(Category category) {
-//		category.getProducts().add(this);
-//	    this.categories.add(category);   
-//	}
-	
-//	public void removeCategory(long categoryId) {
-//		Category category = this.categories.stream()
-//				.filter(elem -> elem.getCategoryId() == categoryId)
-//				.findFirst().orElse(null);
-//		if (category != null) this.categories.remove(category);		
-//	}
 }

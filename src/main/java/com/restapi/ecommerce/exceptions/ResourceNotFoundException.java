@@ -1,5 +1,8 @@
 package com.restapi.ecommerce.exceptions;
 
+/**
+ * リソース不在の例外クラス
+ */
 public class ResourceNotFoundException extends RuntimeException {
 	String resourceName;
 	String field;
@@ -10,14 +13,14 @@ public class ResourceNotFoundException extends RuntimeException {
 	}
 	
 	public ResourceNotFoundException(String resourceName, String field, String fieldName) {
-		super(String.format("%s not found with %s: %s", resourceName, field, fieldName));
+		super(String.format("%sが%sの%sは見つかりません。", fieldName, field, resourceName));
 		this.resourceName = resourceName;
 		this.field = field;
 		this.fieldName = fieldName;
 	}
 	
 	public ResourceNotFoundException(String resourceName, String field, Long fieldId) {
-		super(String.format("%s not found with %s: %d", resourceName, field, fieldId));
+		super(String.format("%sが%dの%sは見つかりません。", field, fieldId, resourceName));
 		this.resourceName = resourceName;
 		this.field = field;
 		this.fieldId = fieldId;

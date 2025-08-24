@@ -11,12 +11,14 @@ import org.springframework.stereotype.Repository;
 
 import com.restapi.ecommerce.entity.Product;
 
+/** 商品のリポジトリ */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>{
 	Page<Product> findByDeletedAtIsNull(Pageable pageDetails);
 	Product findByProductName(String prodName);
 	Page<Product> findByCategoryCategoryIdAndDeletedAtIsNull(Long categoryId, Pageable pageDetails);
 
+	/** キーワードが商品名か商品詳細に含まれる商品データを返却 */
 	@Query(value = "SELECT DISTINCT p.* FROM products p INNER JOIN product_detail pd ON "
 			+ "p.id = pd.product_id WHERE p.deleted_at is null AND "
 			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword,'%')) OR (pd.key = 'Description' AND "
@@ -37,6 +39,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 	Page<Product> findProductsByKeywords(
 			String keyword, String keyword2, String keyword3, Pageable pageDetails);
 
+	/** キーワードが商品名か商品詳細に含まれ、かつ指定されたカテゴリの商品データを返却 */
 	@Query(value = "SELECT DISTINCT p.* FROM products p INNER JOIN product_detail pd ON "
 			+ "p.id = pd.product_id WHERE p.category_id = :categoryId AND p.deleted_at is null AND "
 			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword,'%')) OR (pd.key = 'Description' AND "
@@ -57,8 +60,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 	Page<Product> findProductsByKeywordsAndCategory(
 			String keyword, String keyword2, String keyword3, Long categoryId, Pageable pageDetails);
 
+    /** お勧め商品を取得 */
 	List<Product> findByFeaturedIsTrue();
 
+	 /** 商品の在庫数を更新 */
 	@Modifying
 	@Query(value="UPDATE products p SET p.quantity = ?2 "
 			+ "where p.id = ?1", nativeQuery=true)
