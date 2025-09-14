@@ -70,7 +70,7 @@ public class WebSecurityConfig {
 		return http.build();
 	}
 
-	// access from these addresses will be excluded from the security filter chain.
+	// 下URLからのアクセスはフィルタチェーンから除外する
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web -> web.ignoring().requestMatchers("/v2/api-docs",
