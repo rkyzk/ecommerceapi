@@ -76,9 +76,9 @@ public class ProductController {
 	 * @return ResponseEntity
 	 */
 	@GetMapping("/public/product/detail/{productId}")
-	public ResponseEntity<Map<String,String>> getProductId(@PathVariable Long productId) {
-		Map<String, String> productDetail = productDetailService.getProductDetail(productId);
-		return new ResponseEntity<Map<String,String>> (productDetail, HttpStatus.OK);
+	public ResponseEntity<List<ProductDetail>> getProductDetail(@PathVariable Long productId) {
+		List<ProductDetail> productDetail = productDetailService.getProductDetail(productId);
+		return new ResponseEntity<List<ProductDetail>> (productDetail, HttpStatus.OK);
 	}
 
 	/**
