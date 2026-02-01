@@ -3,6 +3,7 @@ package com.restapi.ecommerce.security.jwt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -20,17 +21,27 @@ import com.restapi.ecommerce.security.jwt.service.UserDetailsServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+	/** ユーザ情報を取得するサービス */
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
 
+	/** 例外を処理するクラス */
 	@Autowired
 	private AuthEntryPointJwt unauthorizedHandler;
 
+	/** authenticationJWTトークンフィルター */
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
 	}
 
+	/**
+	 * authenticationProviderとして
+	 * UserDetailsServiceとPasswordEncoderを設定し、
+	 * DaoAuthenticationProviderを返す
+	 * @return
+	 *
+	 */
 	@Bean
 	public DaoAuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -39,29 +50,45 @@ public class WebSecurityConfig {
 		return authProvider;
 	}
 
+	/**
+	 * authConfigに基づく AuthenticationManagerを取得し返す
+	 * @return
+	 */
 	@Bean
 	public AuthenticationManager authenticationManager(
 			AuthenticationConfiguration authConfig) throws Exception {
 		return authConfig.getAuthenticationManager();
 	}
 
+	/**
+	 * BCryptPasswordエンコーダーを返す
+	 * @return
+	 */
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
+	/**
+	 * SecurityFilterChainを設定し返却する
+	 *
+	 * @return
+	 */
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf.disable())
-			.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeHttpRequests(auth ->
-					auth.requestMatchers("/api/**").permitAll() // during devlopment
-					    // .requestMatchers("/api/admin/**").permitAll() // during devlopment
-						.requestMatchers("/h2-console/**").permitAll()
-						.anyRequest().authenticated()
-			);
+		    .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+		     // Stateless: SecurityContextはリクエストをプロセスした後、削除される。
+		    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		    .authorizeHttpRequests(auth ->
+	            auth.requestMatchers("/api/public/**", "/api/auth/**").permitAll()
+	        // .requestMatchers("/api/admin/**").permitAll() // during devlopment
+		    // .requestMatchers("/h2-console/**").permitAll()
+	                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		            .anyRequest().authenticated()
+		);
 		http.authenticationProvider(authenticationProvider());
+		// authenticationJwtTokenFilterをUsernamePasswordAuthenticationFilterの前に追加
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.headers(headers -> headers.frameOptions(
 				frameOptions -> frameOptions.sameOrigin()));
@@ -69,6 +96,7 @@ public class WebSecurityConfig {
 	}
 
 	// access from these addresses will be excluded from the security filter chain.
+	// 下記URLからのアクセスを許容する。
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web -> web.ignoring().requestMatchers("/v2/api-docs",
