@@ -54,6 +54,12 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>3.20.0</version>
+		    <scope>compile</scope>
+		</dependency>
+		<dependency>
 		    <groupId>com.stripe</groupId>
 		    <artifactId>stripe-java</artifactId>
 		    <version>29.1.0-beta.3</version>

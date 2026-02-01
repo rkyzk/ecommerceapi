@@ -14,7 +14,6 @@ import org.springframework.web.util.WebUtils;
 
 import com.restapi.ecommerce.security.jwt.service.UserDetailsImpl;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -36,8 +35,11 @@ public class JwtUtils {
 	@Value("${spring.app.jwtCookieName}")
 	private String jwtCookie;
 
-	public String getJwtFromCookies(HttpServletRequest request) {
-		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+	@Value("${spring.app.jwtRefreshCookieName}")
+	private String jwtRefreshCookie;
+
+	public String getCookieValueByName(HttpServletRequest request, String name) {
+		Cookie cookie = WebUtils.getCookie(request, name);
 		if (cookie != null) {
 			return cookie.getValue();
 		} else {
@@ -45,29 +47,53 @@ public class JwtUtils {
 		}
 	}
 
+	public String getJwtFromCookies(HttpServletRequest request) {
+		return getCookieValueByName(request, jwtCookie);
+	}
+
+	public String getJwtRefreshFromCookies(HttpServletRequest request) {
+		return getCookieValueByName(request, jwtRefreshCookie);
+	}
+
+	private ResponseCookie generateCookie(String name, String value, String path) {
+		ResponseCookie cookie = ResponseCookie.from(name, value)
+				.path(path)
+				.maxAge(24 * 60 * 60)
+				.httpOnly(true)
+				.secure(false) // development
+				.build();
+		return cookie;
+    }
+
 	/**
 	 * Set jwt value to coookie and return it
 	 */
 	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
 		String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-		ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt)
-				.path("/api")
-				.maxAge(24 * 60 * 60)
-				.httpOnly(false)
-				.secure(false) // development
-				.build();
-		return cookie;
+		return generateCookie(jwtCookie, jwt, "/api");
+	}
+
+	public ResponseCookie generateJwtRefreshCookie(String refreshToken) {
+		return generateCookie(jwtRefreshCookie, refreshToken, "/api/auth/refreshtoken");
 	}
 
 	/**
 	 * Return a builder for a server-defined cookie with an empty token and the path
 	 * (The value and other attributes will be set later via builder methods.
 	 */
-	public ResponseCookie getCleanJwtCookie() {
-		ResponseCookie cookie = ResponseCookie.from(jwtCookie, null)
-				.path("/api")
+	public ResponseCookie getCleanCookie(String name, String path) {
+		ResponseCookie cookie = ResponseCookie.from(name, null)
+				.path(path)
 				.build();
 		return cookie;
+	}
+
+	public ResponseCookie getCleanJwtCookie() {
+		return getCleanCookie(jwtCookie, "/api");
+	}
+
+	public ResponseCookie getCleanJwtRefreshCookie() {
+		return getCleanCookie(jwtRefreshCookie, "/api/auth/refreshtoken");
 	}
 
 	public String generateTokenFromUsername(String username) {
@@ -92,19 +118,22 @@ public class JwtUtils {
 		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 	}
 
-	public boolean validateJwtToken(String authToken) {
+	/**
+	 * jwtトークンを検証
+	 */
+	public boolean validateJwtToken(String authToken) throws Exception {
 		try {
 			Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(authToken);
 			return true;
 		} catch (MalformedJwtException e) {
-	        logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
+	        logger.error("JWTトークンが不正: {}", e.getMessage());
+	        throw e;
         } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
+            logger.error("JWTトークンがサポートされていません。: {}", e.getMessage());
+            throw e;
         } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
+            logger.error("JWTのclaimsの値が不正です。: {}", e.getMessage());
+            throw e;
         }
-        return false;
 	}
 }
