@@ -1,139 +1,111 @@
-package com.restapi.ecommerce.security.jwt;
+package com.restapi.ecommerce.security;
 
-import java.security.Key;
-import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.crypto.SecretKey;
+import com.restapi.ecommerce.security.jwt.AuthEntryPointJwt;
+import com.restapi.ecommerce.security.jwt.AuthTokenFilter;
+import com.restapi.ecommerce.security.jwt.service.UserDetailsServiceImpl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseCookie;
-import org.springframework.stereotype.Component;
-import org.springframework.web.util.WebUtils;
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig {
+	/** ユーザ情報を取得するサービス */
+	@Autowired
+	UserDetailsServiceImpl userDetailsService;
 
-import com.restapi.ecommerce.security.jwt.service.UserDetailsImpl;
+	/** 例外を処理するクラス */
+	@Autowired
+	private AuthEntryPointJwt unauthorizedHandler;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-
-@Component
-public class JwtUtils {
-	private static final Logger logger = (Logger) LoggerFactory.getLogger(JwtUtils.class);
-
-	@Value("${spring.app.jwtSecret}")
-	private String jwtSecret;
-
-	@Value("${spring.app.jwtExpirationMs}")
-	private int jwtExpirationMs;
-
-	@Value("${spring.app.jwtCookieName}")
-	private String jwtCookie;
-
-	@Value("${spring.app.jwtRefreshCookieName}")
-	private String jwtRefreshCookie;
-
-	public String getCookieValueByName(HttpServletRequest request, String name) {
-		Cookie cookie = WebUtils.getCookie(request, name);
-		if (cookie != null) {
-			return cookie.getValue();
-		} else {
-			return null;
-		}
-	}
-
-	public String getJwtFromCookies(HttpServletRequest request) {
-		return getCookieValueByName(request, jwtCookie);
-	}
-
-	public String getJwtRefreshFromCookies(HttpServletRequest request) {
-		return getCookieValueByName(request, jwtRefreshCookie);
-	}
-
-	private ResponseCookie generateCookie(String name, String value, String path) {
-		ResponseCookie cookie = ResponseCookie.from(name, value)
-				.path(path)
-				.maxAge(24 * 60 * 60)
-				.httpOnly(true)
-				.secure(false) // development
-				.build();
-		return cookie;
-    }
-
-	/**
-	 * Set jwt value to coookie and return it
-	 */
-	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
-		String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-		return generateCookie(jwtCookie, jwt, "/api");
-	}
-
-	public ResponseCookie generateJwtRefreshCookie(String refreshToken) {
-		return generateCookie(jwtRefreshCookie, refreshToken, "/api/auth/refreshtoken");
+	/** authenticationJWTトークンフィルター */
+	@Bean
+	public AuthTokenFilter authenticationJwtTokenFilter() {
+		return new AuthTokenFilter();
 	}
 
 	/**
-	 * Return a builder for a server-defined cookie with an empty token and the path
-	 * (The value and other attributes will be set later via builder methods.
+	 * authenticationProviderとして
+	 * UserDetailsServiceとPasswordEncoderを設定し、
+	 * DaoAuthenticationProviderを返す
+	 * @return
+	 *
 	 */
-	public ResponseCookie getCleanCookie(String name, String path) {
-		ResponseCookie cookie = ResponseCookie.from(name, null)
-				.path(path)
-				.build();
-		return cookie;
-	}
-
-	public ResponseCookie getCleanJwtCookie() {
-		return getCleanCookie(jwtCookie, "/api");
-	}
-
-	public ResponseCookie getCleanJwtRefreshCookie() {
-		return getCleanCookie(jwtRefreshCookie, "/api/auth/refreshtoken");
-	}
-
-	public String generateTokenFromUsername(String username) {
-		return Jwts.builder()
-				.subject(username)
-				.issuedAt(new Date())
-				.expiration(new Date((new Date()).getTime() + jwtExpirationMs))
-				.signWith(key())
-				.compact();
-	}
-
-	public String getUsernameFromJwtToken(String token) {
-		return Jwts.parser()
-				.verifyWith((SecretKey) key())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload()
-				.getSubject();
-	}
-
-	private Key key() {
-		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService);
+		authProvider.setPasswordEncoder(passwordEncoder());
+		return authProvider;
 	}
 
 	/**
-	 * jwtトークンを検証
+	 * authConfigに基づく AuthenticationManagerを取得し返す
+	 * @return
 	 */
-	public boolean validateJwtToken(String authToken) throws Exception {
-		try {
-			Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(authToken);
-			return true;
-		} catch (MalformedJwtException e) {
-	        logger.error("JWTトークンが不正: {}", e.getMessage());
-	        throw e;
-        } catch (UnsupportedJwtException e) {
-            logger.error("JWTトークンがサポートされていません。: {}", e.getMessage());
-            throw e;
-        } catch (IllegalArgumentException e) {
-            logger.error("JWTのclaimsの値が不正です。: {}", e.getMessage());
-            throw e;
-        }
+	@Bean
+	public AuthenticationManager authenticationManager(
+			AuthenticationConfiguration authConfig) throws Exception {
+		return authConfig.getAuthenticationManager();
+	}
+
+	/**
+	 * BCryptPasswordエンコーダーを返す
+	 * @return
+	 */
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+
+	/**
+	 * SecurityFilterChainを設定し返却する
+	 *
+	 * @return
+	 */
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		http.csrf(csrf -> csrf.disable())
+		    .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
+		     // Stateless: SecurityContextはリクエストをプロセスした後、削除される。
+		    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+		    .authorizeHttpRequests(auth ->
+	            auth.requestMatchers("/api/public/**", "/api/auth/**").permitAll()
+	        // .requestMatchers("/api/admin/**").permitAll() // during devlopment
+		    // .requestMatchers("/h2-console/**").permitAll()
+	                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+		            .anyRequest().authenticated()
+		);
+		http.authenticationProvider(authenticationProvider());
+		// authenticationJwtTokenFilterをUsernamePasswordAuthenticationFilterの前に追加
+		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.headers(headers -> headers.frameOptions(
+				frameOptions -> frameOptions.sameOrigin()));
+		return http.build();
+	}
+
+	// access from these addresses will be excluded from the security filter chain.
+	// 下記URLからのアクセスを許容する。
+	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+		return (web -> web.ignoring().requestMatchers("/v2/api-docs",
+				"/configuration/ui",
+				"/swagger-resources/**",
+				"/configuration/security",
+				"/swagger-ui.html",
+				"/webjars/**"));
 	}
 }

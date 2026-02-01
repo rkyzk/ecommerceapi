@@ -1,25 +1,32 @@
 package com.restapi.ecommerce.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.restapi.ecommerce.payload.APIResponse;
 import com.restapi.ecommerce.payload.OrderDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
-import com.restapi.ecommerce.payload.OrderRequestWithSavedAddressDTO;
+import com.restapi.ecommerce.payload.OrderRequestWithAddressesDTO;
 import com.restapi.ecommerce.payload.StripePaymentDTO;
 import com.restapi.ecommerce.service.OrderService;
 import com.restapi.ecommerce.service.StripeService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 
-import jakarta.validation.Valid;
-
+/**
+ * 注文に関するリクエストを処理するコントローラー
+ * 
+ * @author reikoyazaki
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class OrderController {
@@ -30,66 +37,52 @@ public class OrderController {
 	private StripeService stripeService;
 
 	/**
-	 * 注文データを追加
+	 * 注文データを受けDB登録処理を呼び出す
+	 * 注文データを返却する
 	 *
-	 * @param cartId
 	 * @param orderRequestDTO
-	 * @return OrderDTO
-	 */
-	@PostMapping("/order/cart/{cartId}")
-	public ResponseEntity<OrderDTO> createOrder(@PathVariable Long cartId,
-			@Valid @RequestBody OrderRequestWithSavedAddressDTO orderRequestDTO) {
-		OrderDTO placedOrderDTO = orderService.placeOrder(cartId, orderRequestDTO);
-		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
-	}
-
-	/**
-	 * place order
-   *
-	 * 注文データを追加（ゲスト）
-	 *
-	 * @param 
 	 * @return
 	 */
 	@PostMapping("/order")
 	public ResponseEntity<OrderDTO> placeOrder(@RequestBody
 			OrderRequestDTO orderRequestDTO) {
-		OrderDTO placedOrderDTO = orderService.placeOrderAsUser(orderRequestDTO);
+		OrderDTO placedOrderDTO = orderService.placeOrder(orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
 	/**
-	 * place order at new addresses
-	 * 注文データを追加（ログインユーザ・既存住所更新なし）
-	 *
+	 * 注文を受けDB登録処理を呼び出す(新規住所登録を含む)
+	 * 注文データを返却する
+	 * 
 	 * @param orderRequestDTO
 	 * @return
 	 */
 	@PostMapping("/order/newaddresses")
 	public ResponseEntity<OrderDTO> placeOrderWithNewAddresses(@RequestBody
-			OrderRequestDTO orderRequestDTO) {
-		System.out.println(orderRequestDTO.getShippingAddressId());
-		System.out.println(orderRequestDTO.getBillingAddressId());
+			OrderRequestWithAddressesDTO orderRequestDTO) {
 		OrderDTO placedOrderDTO = orderService.placeOrderWithNewAddresses(orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
 	/**
-	 * place order as guest
-	 * 注文データを追加（ログインユーザ・既存住所更新あり）
-	 *
+	 * 指定ユーザIDの過去注文データを取得し返却する
+	 * 
 	 * @param orderRequestDTO
 	 * @return
 	 */
-	@PostMapping("/order/guest")
-	public ResponseEntity<OrderDTO> placeOrderAsGuest(@RequestBody
-			OrderRequestDTO orderRequestDTO) {
-		OrderDTO placedOrderDTO = orderService.placeOrderAsGuest(orderRequestDTO);
-		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
+	@GetMapping("/order-history")
+	public ResponseEntity<?> getUserOrderHistory() {
+		List<OrderDTO> orderList = orderService.getUserOrderList();
+		if (orderList == null) {
+			APIResponse response = new APIResponse();
+			response.setMessage("購入履歴はありません。");
+			return new ResponseEntity<APIResponse>(response, HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<List<OrderDTO>>(orderList, HttpStatus.OK);
 	}
 
 	/**
-	 * ペイメントインテント作成、ClientSecretを返却
+	 * Stripe APIによりPayment intent作成し clientSecretを返却する
 	 *
 	 * @param stripePaymentDto
 	 * @return

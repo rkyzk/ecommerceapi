@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderRequestDTO {
+public class OrderRequestWithAddressesDTO {
 	@NotNull
-	private Long shippingAddressId;
-	private Long billingAddressId;
+	private AddressDTO shippingAddressDTO;
+	private AddressDTO billingAddressDTO;
 	@NotNull
 	private CartDTO cartDTO;
 	@NotNull

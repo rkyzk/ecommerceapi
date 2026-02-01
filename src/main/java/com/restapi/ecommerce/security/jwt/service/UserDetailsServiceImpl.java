@@ -24,4 +24,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("ユーザ名「" + username + "」のユーザを見つかりません。"));
         return UserDetailsImpl.build(user);
     }
+
 }

@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.restapi.ecommerce.config.AppConstants;
+import com.restapi.ecommerce.entity.ProductDetail;
+import com.restapi.ecommerce.payload.APIResponse;
 import com.restapi.ecommerce.payload.ProductDTO;
 import com.restapi.ecommerce.payload.ProductResponse;
+import com.restapi.ecommerce.service.ProductDetailService;
 import com.restapi.ecommerce.service.ProductService;
 
 import jakarta.validation.Valid;
@@ -27,11 +30,11 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 
-		@Autowired
+	@Autowired
 	ProductDetailService productDetailService;
 
 	/**
-	 * 商品リストを取得
+	 * 商品情報を返す。
 	 *
 	 * @param keywords
 	 * @param categoryId
@@ -42,9 +45,10 @@ public class ProductController {
 	 * @return
 	 */
 	@GetMapping("/public/products")
-	public ResponseEntity<ProductResponse> getProducts(
+	public ResponseEntity<?> getProducts(
 			@RequestParam (name = "keywords", required=false) String keywords,
 			@RequestParam (name = "category", required=false) String categoryId,
+			@RequestParam (name = "colors", required=false) String colors,
 			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
 			    required=false) Integer pageNumber,
 			@RequestParam (name = "pageSize", defaultValue = AppConstants.PAGE_SIZE,
@@ -53,13 +57,20 @@ public class ProductController {
 			    required=false) String sortBy,
 			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
 			    required=false) String sortOrder) {
+		System.out.println("!!!!!!! " + sortBy);
 		ProductResponse response = productService.getProducts(pageNumber, pageSize, sortBy,
-				                                              sortOrder, keywords, categoryId);
+				                                              sortOrder, keywords, categoryId, colors);
+		if (response == null) {
+			APIResponse resp = new APIResponse();
+			resp.setMessage("該当する商品がありません。");
+			resp.setStatus(false);
+			return new ResponseEntity<> (resp, HttpStatus.NOT_FOUND);
+		}
 		return new ResponseEntity<> (response, HttpStatus.OK);
 	}
 
 	/**
-	 * お勧め商品を取得
+	 * featuredフラグtrueの商品情報リストを返す。(未使用)
 	 *
 	 * @return
 	 */
@@ -69,10 +80,10 @@ public class ProductController {
 		return new ResponseEntity<List<ProductDTO>> (products, HttpStatus.OK);
 	}
 
-    /**
-	 * ID指定した商品の詳細を取得
+	/**
+	 * ID指定の商品情報詳細を返す。
 	 *
-	 * @param productId
+	 * @param product id
 	 * @return ResponseEntity
 	 */
 	@GetMapping("/public/product/detail/{productId}")
@@ -82,8 +93,8 @@ public class ProductController {
 	}
 
 	/**
-	 * キーワードで絞り商品情報を取得
-	 * (未使用)
+	 * 商品名か商品情報「description」のフィールドにキーワードが含まれる
+	 * 商品情報詳細を返す。(未使用)
 	 *
 	 * @param keywords
 	 * @param pageNumber
@@ -108,7 +119,7 @@ public class ProductController {
 //	}
 
 	/**
-	 * カテゴリーIDを指定し商品リストを取得
+	 * 指定カテゴリーの商品情報を返す
 	 *
 	 * @param categoryId
 	 * @param pageNumber
@@ -147,7 +158,7 @@ public class ProductController {
 	}
 
 	/**
-	 * 商品を更新
+	 * 商品データを更新
 	 *
 	 * @param productDTO
 	 * @param prodId
@@ -161,7 +172,7 @@ public class ProductController {
 	}
 
 	/**
-	 * 商品を削除
+	 * 商品データを削除
 	 *
 	 * @param prodId
 	 * @return

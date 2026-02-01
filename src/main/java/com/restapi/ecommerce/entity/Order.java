@@ -51,6 +51,10 @@ public class Order {
 	@JoinColumn(name="billing_address_id")
 	private Address billingAddress;
 
+	@OneToOne
+	@JoinColumn(name="review_id")
+	private Review review;
+
 	public Order(Instant orderDate, Cart cart, User user, Payment payment,
 			Address shippingAddress, Address billingAddress) {
 		this.orderDate = orderDate;

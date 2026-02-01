@@ -4,6 +4,7 @@ import java.time.Instant;
 
 import com.restapi.ecommerce.entity.Address;
 import com.restapi.ecommerce.entity.Cart;
+import com.restapi.ecommerce.entity.Review;
 import com.restapi.ecommerce.entity.User;
 
 import lombok.Data;
@@ -16,6 +17,7 @@ public class OrderDTO {
 	private Cart cart;
 	private User user;
 	private PaymentDTO paymentDTO;
+	private Review review;
 	private Address shippingAddress;
 	private Address billingAddress;
 }

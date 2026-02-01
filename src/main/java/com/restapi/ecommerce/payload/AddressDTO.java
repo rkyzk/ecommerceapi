@@ -1,5 +1,7 @@
 package com.restapi.ecommerce.payload;
 
+import java.time.LocalDateTime;
+
 import com.restapi.ecommerce.entity.User;
 
 import jakarta.validation.constraints.NotBlank;
@@ -14,17 +16,19 @@ public class AddressDTO {
 	private Long addressId;
 	@NotBlank
 	private String fullname;
-	private boolean billingAddress;
+	private boolean defaultAddressFlg;
+	private boolean shippingAddress;
 	@NotBlank
 	private String streetAddress1;
+	@NotBlank
 	private String streetAddress2;
+	private String streetAddress3;
 	@NotBlank
 	private String city;
 	@NotBlank
-	private String province;
-	@NotBlank
-	private String countryCode;
+	private String prefecture;
 	@NotBlank
 	private String postalCode;
 	private User user;
+	private LocalDateTime updateDate;
 }

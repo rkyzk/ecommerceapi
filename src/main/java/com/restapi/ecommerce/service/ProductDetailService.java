@@ -1,10 +1,9 @@
 package com.restapi.ecommerce.service;
 
-import java.util.Map;
+import java.util.List;
 
-import org.springframework.stereotype.Service;
+import com.restapi.ecommerce.entity.ProductDetail;
 
-@Service
 public interface ProductDetailService {
-	Map<String, String> getProductDetail(Long productId);
+	List<ProductDetail> getProductDetail(Long productId);
 }
