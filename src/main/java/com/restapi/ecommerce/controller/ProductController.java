@@ -27,8 +27,11 @@ public class ProductController {
 	@Autowired
 	ProductService productService;
 
+		@Autowired
+	ProductDetailService productDetailService;
+
 	/**
-	 * get all products
+	 * 商品リストを取得
 	 *
 	 * @param keywords
 	 * @param categoryId
@@ -56,7 +59,7 @@ public class ProductController {
 	}
 
 	/**
-	 * get featured products
+	 * お勧め商品を取得
 	 *
 	 * @return
 	 */
@@ -66,9 +69,21 @@ public class ProductController {
 		return new ResponseEntity<List<ProductDTO>> (products, HttpStatus.OK);
 	}
 
+    /**
+	 * ID指定した商品の詳細を取得
+	 *
+	 * @param productId
+	 * @return ResponseEntity
+	 */
+	@GetMapping("/public/product/detail/{productId}")
+	public ResponseEntity<List<ProductDetail>> getProductDetail(@PathVariable Long productId) {
+		List<ProductDetail> productDetail = productDetailService.getProductDetail(productId);
+		return new ResponseEntity<List<ProductDetail>> (productDetail, HttpStatus.OK);
+	}
+
 	/**
-	 * get products by keywords (not used at the moment)
-	 * (for search, use instead getProducts with parameter 'keywords ')
+	 * キーワードで絞り商品情報を取得
+	 * (未使用)
 	 *
 	 * @param keywords
 	 * @param pageNumber
@@ -93,7 +108,7 @@ public class ProductController {
 //	}
 
 	/**
-	 * get products by category
+	 * カテゴリーIDを指定し商品リストを取得
 	 *
 	 * @param categoryId
 	 * @param pageNumber
@@ -118,7 +133,7 @@ public class ProductController {
 	}
 
     /**
-     * add product
+     * 商品を追加
      *
      * @param productDTO
      * @param categoryId
@@ -132,7 +147,7 @@ public class ProductController {
 	}
 
 	/**
-	 * update product
+	 * 商品を更新
 	 *
 	 * @param productDTO
 	 * @param prodId
@@ -146,7 +161,7 @@ public class ProductController {
 	}
 
 	/**
-	 * delete product
+	 * 商品を削除
 	 *
 	 * @param prodId
 	 * @return

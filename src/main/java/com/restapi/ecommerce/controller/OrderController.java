@@ -30,11 +30,11 @@ public class OrderController {
 	private StripeService stripeService;
 
 	/**
-	 * place order
+	 * 注文データを追加
 	 *
 	 * @param cartId
 	 * @param orderRequestDTO
-	 * @return
+	 * @return OrderDTO
 	 */
 	@PostMapping("/order/cart/{cartId}")
 	public ResponseEntity<OrderDTO> createOrder(@PathVariable Long cartId,
@@ -45,6 +45,8 @@ public class OrderController {
 
 	/**
 	 * place order
+   *
+	 * 注文データを追加（ゲスト）
 	 *
 	 * @param 
 	 * @return
@@ -58,6 +60,7 @@ public class OrderController {
 
 	/**
 	 * place order at new addresses
+	 * 注文データを追加（ログインユーザ・既存住所更新なし）
 	 *
 	 * @param orderRequestDTO
 	 * @return
@@ -73,6 +76,7 @@ public class OrderController {
 
 	/**
 	 * place order as guest
+	 * 注文データを追加（ログインユーザ・既存住所更新あり）
 	 *
 	 * @param orderRequestDTO
 	 * @return
@@ -85,7 +89,7 @@ public class OrderController {
 	}
 
 	/**
-	 * create payment intent and return client secret
+	 * ペイメントインテント作成、ClientSecretを返却
 	 *
 	 * @param stripePaymentDto
 	 * @return

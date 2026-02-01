@@ -11,42 +11,59 @@ import org.springframework.stereotype.Repository;
 
 import com.restapi.ecommerce.entity.Product;
 
+/** 商品のリポジトリ */
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>{
 	Page<Product> findByDeletedAtIsNull(Pageable pageDetails);
 	Product findByProductName(String prodName);
 	Page<Product> findByCategoryCategoryIdAndDeletedAtIsNull(Long categoryId, Pageable pageDetails);
 
-	@Query(value = "SELECT p.* FROM products p WHERE "
-			+ "p.deleted_at is null AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
-		   countQuery = "SELECT COUNT(*) FROM products p WHERE "
-			+ "p.deleted_at is null AND "
-		    + "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
+	/** キーワードが商品名か商品詳細に含まれる商品データを返却 */
+	@Query(value = "SELECT DISTINCT p.* FROM products p INNER JOIN product_detail pd ON "
+			+ "p.id = pd.product_id WHERE p.deleted_at is null AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword,'%')) OR (pd.key = 'Description' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword,'%')))) AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword2,'%')) OR (pd.key = 'Description' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword2,'%')))) AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword3,'%')) OR (pd.key = 'Decription' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword3,'%'))))",
+		   countQuery = "SELECT COUNT(DISTINCT p.id) FROM products p INNER JOIN product_detail pd ON "
+		    + "p.id = pd.product_id WHERE p.deleted_at is null AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword,'%')) OR (pd.key = 'Description' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword,'%')))) AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword2,'%')) OR (pd.key = 'Description' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword2,'%')))) AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword3,'%')) OR (pd.key = 'Decription' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword3,'%'))))",
 		   nativeQuery=true)
 	Page<Product> findProductsByKeywords(
 			String keyword, String keyword2, String keyword3, Pageable pageDetails);
 
-	@Query(value = "SELECT p.* FROM products p WHERE "
-			+ "p.category_id = :categoryId AND p.deleted_at is null AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
-		   countQuery = "SELECT COUNT(*) FROM products p WHERE "
-            + "p.category_id = :categoryId AND p.deleted_at is null AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword,'%') OR p.description LIKE CONCAT('%',:keyword,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword2,'%') OR p.description LIKE CONCAT('%',:keyword2,'%')) AND "
-			+ "(p.product_name LIKE CONCAT('%',:keyword3,'%') OR p.description LIKE CONCAT('%',:keyword3,'%'))",
+	/** キーワードが商品名か商品詳細に含まれ、かつ指定されたカテゴリの商品データを返却 */
+	@Query(value = "SELECT DISTINCT p.* FROM products p INNER JOIN product_detail pd ON "
+			+ "p.id = pd.product_id WHERE p.category_id = :categoryId AND p.deleted_at is null AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword,'%')) OR (pd.key = 'Description' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword,'%')))) AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword2,'%')) OR (pd.key = 'Description' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword2,'%')))) AND "
+			+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword3,'%')) OR (pd.key = 'Decription' AND "
+			+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword3,'%'))))",
+		   countQuery = "SELECT COUNT(DISTINCT p.id) FROM products p INNER JOIN product_detail pd ON "
+			+ "p.id = pd.product_id WHERE p.category_id = :categoryId AND p.deleted_at is null AND "
+	   		+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword,'%')) OR (pd.key = 'Description' AND "
+	   		+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword,'%')))) AND "
+	   		+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword2,'%')) OR (pd.key = 'Description' AND "
+	   		+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword2,'%')))) AND "
+	   		+ "(LOWER(p.product_name) LIKE LOWER(CONCAT('%',:keyword3,'%')) OR (pd.key = 'Decription' AND "
+	   		+ "LOWER(pd.value) LIKE LOWER(CONCAT('%',:keyword3,'%'))))",
 		   nativeQuery=true)
 	Page<Product> findProductsByKeywordsAndCategory(
 			String keyword, String keyword2, String keyword3, Long categoryId, Pageable pageDetails);
 
+    /** お勧め商品を取得 */
 	List<Product> findByFeaturedIsTrue();
 
+	 /** 商品の在庫数を更新 */
 	@Modifying
 	@Query(value="UPDATE products p SET p.quantity = ?2 "
 			+ "where p.id = ?1", nativeQuery=true)

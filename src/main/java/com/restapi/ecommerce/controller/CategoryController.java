@@ -27,7 +27,7 @@ public class CategoryController {
 	CategoryService categoryService;
 
 	/**
-	 * get all categories
+	 * カテゴリーをすべて取得
 	 *
 	 * @param pageNumber
 	 * @param pageSize
@@ -35,7 +35,7 @@ public class CategoryController {
 	 * @param sortOrder
 	 * @return
 	 */
-	@GetMapping("/admin/categories")
+	@GetMapping("/public/categories")
 	public ResponseEntity<CategoryResponse> getCategories(
 			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
 			    required=false) Integer pageNumber,
@@ -50,7 +50,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * add category
+	 * カテゴリーを追加
 	 *
 	 * @param categoryDTO
 	 * @return
@@ -62,7 +62,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * update category
+	 * カテゴリーを更新
 	 *
 	 * @param categoryDTO
 	 * @param categoryId
@@ -76,7 +76,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * delete category
+	 * カテゴリーを削除
 	 *
 	 * @param categoryId
 	 * @return

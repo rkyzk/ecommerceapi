@@ -14,13 +14,12 @@ public class AuthUtil {
 	@Autowired
 	UserRepository userRepository;
 
+	/** ログイン中ユーザのデータを取得 */
 	public User loggedinUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = userRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(
-						"User with the name " + authentication.getName() + " is not found."));
+						"ユーザ名が「" + authentication.getName() + "」のユーザは見つかりません。"));
 		return user;
 	}
-	
-
 }
