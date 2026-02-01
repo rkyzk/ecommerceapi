@@ -38,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
 	private ModelMapper modelMapper;
 
 	/**
-	 * get product data.
-	 * Filter by keywords and category
-	 * if the parameters are present.
+	 * 商品データを取得し返却する。
+	 * カテゴリー、色、キーワード指定があるときは
+	 * フィルターしてデータを返却する。
 	 * 
 	 * @param pageNumber
 	 * @param pageSize
@@ -48,57 +48,114 @@ public class ProductServiceImpl implements ProductService {
 	 * @param sortOrder
 	 * @param keywords
 	 * @param categoryId
+	 * @param colors
 	 * 
 	 * @return product data
 	 */
 	@Override
 	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
-			String sortBy, String sortOrder, String keywords, String categoryId) {
-		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
-				? Sort.by(sortBy).ascending()
-				: Sort.by(sortBy).descending();
+			String sortBy, String sortOrder, String keywords, String categoryId, String colors) {
+		// ソート順を設定
+		Sort sortByAndOrder;
+		if (sortBy.equals("sales_count")) {
+			sortByAndOrder = Sort.unsorted(); // 売れ行き順の場合はSort設定せずクエリで並べ替えを実施
+		} else {
+			sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+					? Sort.by(sortBy).ascending()
+					: Sort.by(sortBy).descending();
+		}
 		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
 		Page<Product> productPage = null;
-		if (keywords == null || keywords.isEmpty()) {
+		if ((colors == null || colors.isEmpty()) &&
+			(keywords == null || keywords.isEmpty())) {
 			if (categoryId == null || categoryId.isEmpty()) {
-			    // if both category and keywords aren't specified
-                productPage = productRepository.findByDeletedAtIsNull(pageDetails);
-		    } else {
-		    	// if category alone is specified
-		    	productPage = productRepository
-		    			.findByCategoryCategoryIdAndDeletedAtIsNull(
-		    					Long.valueOf(categoryId), pageDetails);
-		    }
+				if (sortBy.equals("sales_count")) {
+					// 絞り込みなし、売れ行き順降順
+					productPage = productRepository.findByDeletedAtIsNullSortBySalesCount(pageDetails);
+				} else {
+					// 絞り込みなし、product_id昇順
+					productPage = productRepository.findByDeletedAtIsNull(pageDetails);
+				}
+			} else {
+				if (sortBy.equals("sales_count")) {
+					// カテゴリーでフィルター、売れ行き順降順
+			    	productPage = productRepository
+			    			.findByCategoryCategoryIdAndDeletedAtIsNullSortBySalesCount(
+			    					Long.valueOf(categoryId), pageDetails);
+				} else {
+					// カテゴリーでフィルター、product_id昇順
+					productPage = productRepository
+			    			.findByCategoryCategoryIdAndDeletedAtIsNull(
+			    					Long.valueOf(categoryId), pageDetails);
+				}
+			}
 		} else {
-			// get three keywords
-			String[] kwArr = keywords.split("_");
+			// カテゴリー、色、キーワードでフィルター
+			// キーワード設定
 			String keyword = "";
 			String keyword2 = "";
-		    String keyword3 = "";
-	    	keyword = kwArr[0];
-			if (kwArr.length > 1) keyword2 = kwArr[1];
-			if (kwArr.length > 2) keyword3 = kwArr[2];
-			if (categoryId == null || categoryId.isEmpty()) {
-		        // only keywords are specified
-				productPage = productRepository
-	                    .findProductsByKeywords(keyword, keyword2, keyword3, pageDetails);
-			} else {
-				// both keywords and category are speicfied
-				productPage = productRepository
-						.findProductsByKeywordsAndCategory(
-								keyword, keyword2, keyword3, Long.valueOf(categoryId), pageDetails);
+			String keyword3 = "";
+			if (keywords != null && !keywords.isEmpty()) {
+				// キーワードが指定されているとき設定
+				String[] kwArr = keywords.split("_");
+			    keyword = kwArr[0];
+				keyword2 = kwArr.length > 1 ? kwArr[1] : "";
+			    keyword3 = kwArr.length > 2 ? kwArr[2] : "";
 			}
+			// カテゴリー設定
+	    	Long categoryIdMin = (long)0;
+	    	Long categoryIdMax = (long)100;
+	    	if (categoryId != null && !categoryId.isEmpty()) {
+	    		// カテゴリー指定されているときカテゴリーIdを設定
+	    		categoryIdMin = Long.valueOf(categoryId);
+	    		categoryIdMax = Long.valueOf(categoryId);
+	    	}
+	    	// 色設定
+	    	Long colorId1 = (long)1;
+    		Long colorId2 = (long)2;
+    		Long colorId3 = (long)3;
+    		Long colorId4 = (long)4;
+    		Long colorId5 = (long)5;
+    		Long colorId6 = (long)6;
+    		Long colorId7 = (long)7;
+    		Long colorId8 = (long)8;
+	    	if (colors != null && !colors.isEmpty()) {
+		    	// 色指定を設定
+				String[] colorArr = colors.split("_");
+				colorId1 = Long.valueOf(colorArr[0]);
+				colorId2 = colorArr.length > 1 ? Long.valueOf(colorArr[1]) : (long)0;
+				colorId3 = colorArr.length > 2 ? Long.valueOf(colorArr[2]) : (long)0;
+				colorId4 = colorArr.length > 3 ? Long.valueOf(colorArr[3]) : (long)0;
+				colorId5 = colorArr.length > 4 ? Long.valueOf(colorArr[4]) : (long)0;
+				colorId6 = colorArr.length > 5 ? Long.valueOf(colorArr[5]) : (long)0;
+				colorId7 = colorArr.length > 6 ? Long.valueOf(colorArr[6]) : (long)0;
+				colorId8 = colorArr.length > 7 ? Long.valueOf(colorArr[7]) : (long)0;
+	    	}
+	    	if (sortBy.equals("sales_count")) {
+	    		// カテゴリー、色、キーワードでフィルター、売れ行き降順
+	    		productPage = productRepository
+						.findProductsByKeywordsAndCategoryAndColorsSortBySalesCount(
+								keyword, keyword2, keyword3, categoryIdMin, categoryIdMax,
+								colorId1, colorId2, colorId3, colorId4, colorId5, colorId6,
+								colorId7, colorId8, pageDetails);
+	    	} else {
+	    		// カテゴリー、色、キーワードでフィルター、product_id昇順
+				productPage = productRepository
+					.findProductsByKeywordsAndCategoryAndColors(
+							keyword, keyword2, keyword3, categoryIdMin, categoryIdMax,
+							colorId1, colorId2, colorId3, colorId4, colorId5, colorId6,
+							colorId7, colorId8, pageDetails);
+	    	}
 		}
 		List<Product> products = productPage.getContent();
-		if (products.isEmpty()) {
-			throw new APIException("No products present");
-		}
+		// 該当商品がない時はnullを返却
+		if (products.isEmpty()) return null;
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
 				.toList();
 		ProductResponse response = new ProductResponse();
 		response.setContent(productDTOs);
-		// set pagination data
+		// パジネーションデータ設定
 		response.setPageNumber(productPage.getNumber());
 		response.setPageSize(productPage.getSize());
 		response.setTotalElements(productPage.getTotalElements());
@@ -108,7 +165,15 @@ public class ProductServiceImpl implements ProductService {
 	};
 
 	/**
-	 * get products by category
+	 * カテゴリーでフィルターした商品データを取得し返却する。
+	 * 
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @param categoryId
+	 * 
+	 * @return product data
 	 */
 	@Override
 	public ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber,
