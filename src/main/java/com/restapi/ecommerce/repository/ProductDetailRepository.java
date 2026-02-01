@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.restapi.ecommerce.entity.ProductDetail;
 
 @Repository
-public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long>{
+public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
 	List<ProductDetail> findByProductIdOrderByIdAsc(Long productId);
 }
