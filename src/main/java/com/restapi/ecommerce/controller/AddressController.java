@@ -21,6 +21,9 @@ import com.restapi.ecommerce.utils.AuthUtil;
 
 import jakarta.validation.Valid;
 
+/**
+ * 住所の登録、更新、削除リクエストを処理するコントローラー
+ */
 @RestController
 @RequestMapping("/api")
 public class AddressController {
@@ -31,8 +34,7 @@ public class AddressController {
 	AuthUtil authUtil;
 
 	/**
-	 * add an address in addresses table
-	 * and return the address
+	 * 住所を登録し返却する。
 	 * 
 	 * @param addressDTO
 	 * @return addressDTO
@@ -45,8 +47,7 @@ public class AddressController {
 	}
 
 	/**
-	 * add an address in addresses table without user data
-	 * and return the address
+	 * 住所を登録し返却する。（ユーザと紐付けせずユーザIDをnullのままとする）
 	 * 
 	 * @param addressDTO
 	 * @return addressDTO
@@ -56,10 +57,9 @@ public class AddressController {
 		AddressDTO addedDTO = addressService.addAddress(addressDTO, null);
 		return new ResponseEntity<AddressDTO>(addedDTO, HttpStatus.CREATED);
 	}
-	
 
 	/**
-	 * get address list of the logged in user
+	 * ログインしているユーザの住所のリストを取得する
 	 *
 	 * @return list of addresses
 	 */
@@ -71,7 +71,7 @@ public class AddressController {
 	}
 
 	/**
-	 * get address by id
+	 * IDにより住所を取得する。
 	 *
 	 * @param addressId
 	 * @return addressDTO
@@ -83,7 +83,7 @@ public class AddressController {
 	}
 
 	/**
-	 * update address with the given id
+	 * 住所を更新する。
 	 *
 	 * @param addressId
 	 * @param addressDTO
@@ -97,7 +97,7 @@ public class AddressController {
 	}
 
 	/**
-	 * delete address with the given id
+	 * 住所を削除する。
 	 *
 	 * @param addressId
 	 * @return
