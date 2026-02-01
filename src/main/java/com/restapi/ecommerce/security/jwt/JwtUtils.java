@@ -22,6 +22,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
+/** JWTのユティリティクラス */
 @Component
 public class JwtUtils {
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(JwtUtils.class);
@@ -66,7 +67,7 @@ public class JwtUtils {
     }
 
 	/**
-	 * Set jwt value to coookie and return it
+	 * ユーザ名よりJWTを作成、クッキーに設定しクッキーを返す
 	 */
 	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
 		String jwt = generateTokenFromUsername(userPrincipal.getUsername());
@@ -78,8 +79,7 @@ public class JwtUtils {
 	}
 
 	/**
-	 * Return a builder for a server-defined cookie with an empty token and the path
-	 * (The value and other attributes will be set later via builder methods.
+	 * 空のトークンとパスからクッキーを作成し返す。
 	 */
 	public ResponseCookie getCleanCookie(String name, String path) {
 		ResponseCookie cookie = ResponseCookie.from(name, null)
@@ -105,6 +105,9 @@ public class JwtUtils {
 				.compact();
 	}
 
+	/**
+	 * JWTよりユーザ名を取得し返す
+	 */
 	public String getUsernameFromJwtToken(String token) {
 		return Jwts.parser()
 				.verifyWith((SecretKey) key())
@@ -114,6 +117,9 @@ public class JwtUtils {
 				.getSubject();
 	}
 
+	/**
+	 * jwtSecretをもとにキーを生成
+	 */
 	private Key key() {
 		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 	}

@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDTO {
-//	@Autowired
-//	private ModelMapper modelMapper;
 
 	private Long id;
 	private String productName;

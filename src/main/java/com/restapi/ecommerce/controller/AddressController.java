@@ -34,7 +34,8 @@ public class AddressController {
 	AuthUtil authUtil;
 
 	/**
-	 * 住所を登録し返却する。
+	 * 住所データをテーブルに追加、返却
+	 * 
 	 * 
 	 * @param addressDTO
 	 * @return addressDTO
@@ -71,7 +72,7 @@ public class AddressController {
 	}
 
 	/**
-	 * IDにより住所を取得する。
+	 * 住所をIDにより取得
 	 *
 	 * @param addressId
 	 * @return addressDTO
@@ -83,7 +84,7 @@ public class AddressController {
 	}
 
 	/**
-	 * 住所を更新する。
+	 * ID指定する住所を更新、住所データを返却
 	 *
 	 * @param addressId
 	 * @param addressDTO
@@ -97,7 +98,7 @@ public class AddressController {
 	}
 
 	/**
-	 * 住所を削除する。
+	 * ID指定する住所を削除
 	 *
 	 * @param addressId
 	 * @return

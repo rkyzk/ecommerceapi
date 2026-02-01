@@ -79,6 +79,10 @@ public class AuthController {
 	 * generate refresh token
 	 * set jwt cookie and refresh cookie to the header and return the body with
 	 * user details
+   *
+	 * 入力されたユーザ名とパスワードで認証する。
+	 * ユーザ詳細からJWT Cookie作成
+	 * JWT Cookieをヘッダに設定し、ユーザ詳細データを返却する。
 	 *
 	 * @param loginReq
 	 * @return
@@ -96,7 +100,7 @@ public class AuthController {
 			map.put("status", false);
 			return new ResponseEntity<Object> (map, HttpStatus.NOT_FOUND);
 		}
-		// set authentication for the session
+		// セッションに認証情報を設定
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 	    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
@@ -132,8 +136,8 @@ public class AuthController {
 	}
 
 	/**
-	 * check if the given username and email haven't been registered,
-	 * and if not, set roles and save user
+	 * ユーザ名、メールが存在しなかったら
+	 * ロールを設定しユーザを保存する。
 	 *
 	 * @param req
 	 * @return
@@ -183,7 +187,7 @@ public class AuthController {
 	}
 
 	/**
-	 * get and return logged in user's name
+	 * ログイン中のユーザ名を取得
 	 *
 	 * @param authentication
 	 * @return
@@ -197,7 +201,7 @@ public class AuthController {
 	}
 
 	/**
-	 * get and return logged in user's user details
+	 * ログイン中のユーザデータを取得
 	 * @param authentication
 	 * @return
 	 */
@@ -213,7 +217,7 @@ public class AuthController {
 	}
 
 	/**
-	 * sign out user.
+	 * ユーザをログアウトする。
 	 *
 	 * @param authentication
 	 * @return

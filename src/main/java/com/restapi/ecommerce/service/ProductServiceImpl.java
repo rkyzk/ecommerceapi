@@ -148,8 +148,9 @@ public class ProductServiceImpl implements ProductService {
 	    	}
 		}
 		List<Product> products = productPage.getContent();
-		// 該当商品がない時はnullを返却
-		if (products.isEmpty()) return null;
+		if (products.isEmpty()) {
+			throw new APIException("商品がありません");
+		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
 				.toList();
@@ -185,7 +186,7 @@ public class ProductServiceImpl implements ProductService {
 		Page<Product> productPage = productRepository.findByCategoryCategoryIdAndDeletedAtIsNull(categoryId, pageDetails);
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
-			throw new APIException("No products present");
+			throw new APIException("商品がありません");
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))

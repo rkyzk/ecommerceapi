@@ -18,7 +18,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 			+ "sc.date > CURRENT_DATE - 30 THEN sc.quantity ELSE 0 END) AS qty FROM products p "
 			+ "LEFT OUTER JOIN sales_count sc ON p.id = sc.product_id ";
 
-	/** 
+	/**
 	 * フィルターなし
 	 * @param pageDetails
 	 * @return
@@ -30,7 +30,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 			+ "WHERE p.deleted_at is null GROUP BY p.id ORDER BY qty DESC, p.id ASC";
 	String countQuery1 = "SELECT COUNT(p.id) FROM products p WHERE p.deleted_at is null"; 
 
-	/** 
+	/**
 	 * フィルターなし、売れ行き順
 	 * @param pageDetails
 	 * @return
@@ -109,7 +109,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 	 * @param colorId8
 	 * @param pageDetails
 	 * @return
-	 */ 
+	 */
 	@Query(value = query3,
 		   countQuery = countQuery3,
 		   nativeQuery=true)
@@ -175,7 +175,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
 
 	/**
 	 * 商品を取得
-	 * 
+	 *
 	 * @param productName
 	 * @return
 	 */

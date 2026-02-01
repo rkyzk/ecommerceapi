@@ -23,8 +23,7 @@ public class CartController {
 	CartService cartService;
 
 	/**
-	 * add a product to cart
-	 * and return the cart
+	 * カートに商品を追加し、カート情報を返却する。
 	 *
 	 * @param productId
 	 * @param quantity
@@ -38,7 +37,7 @@ public class CartController {
 	}
 
 	/**
-	 * update quantity of product in cart
+	 * カートの中の商品の個数を更新する。
 	 * 
 	 * @param productId
 	 * @param operation
@@ -53,7 +52,7 @@ public class CartController {
 	}
 
 	/**
-	 * delete a product from a given cart
+	 * カートから商品を削除
 	 * 
 	 * @param cartId
 	 * @param productId
@@ -67,7 +66,7 @@ public class CartController {
 	}
 
 	/**
-	 * get all carts that haven't been checked out
+	 * チェックアウトされていないカートのリストを取得
 	 *
 	 * @return list of carts
 	 */
@@ -78,7 +77,7 @@ public class CartController {
 	}
 
 	/**
-	 * get cart of logged in user
+	 * ログイン中ユーザのカートを取得
 	 * @return cartDTO
 	 */
 	@GetMapping("/carts/user/cart")

@@ -33,10 +33,6 @@ public class Category {
 	@NotBlank
 	@Size(min = 3, message="Category name must include at least 3 characters")
 	private String categoryName;
-
-//	@ManyToMany(mappedBy = "categories")
-//	@JsonIgnore
-//	private Set<Product> products = new HashSet<>();
 	
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
 	@JsonIgnore
