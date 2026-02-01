@@ -14,7 +14,6 @@ import org.springframework.web.util.WebUtils;
 
 import com.restapi.ecommerce.security.jwt.service.UserDetailsImpl;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -37,9 +36,11 @@ public class JwtUtils {
 	@Value("${spring.app.jwtCookieName}")
 	private String jwtCookie;
 
-	/** リクエストのCookieよりJWTを取得し返却 */
-	public String getJwtFromCookies(HttpServletRequest request) {
-		Cookie cookie = WebUtils.getCookie(request, jwtCookie);
+	@Value("${spring.app.jwtRefreshCookieName}")
+	private String jwtRefreshCookie;
+
+	public String getCookieValueByName(HttpServletRequest request, String name) {
+		Cookie cookie = WebUtils.getCookie(request, name);
 		if (cookie != null) {
 			return cookie.getValue();
 		} else {
@@ -47,33 +48,54 @@ public class JwtUtils {
 		}
 	}
 
+	public String getJwtFromCookies(HttpServletRequest request) {
+		return getCookieValueByName(request, jwtCookie);
+	}
+
+	public String getJwtRefreshFromCookies(HttpServletRequest request) {
+		return getCookieValueByName(request, jwtRefreshCookie);
+	}
+
+	private ResponseCookie generateCookie(String name, String value, String path) {
+		ResponseCookie cookie = ResponseCookie.from(name, value)
+				.path(path)
+				.maxAge(24 * 60 * 60)
+				.httpOnly(true)
+				.secure(false) // development
+				.build();
+		return cookie;
+    }
+
 	/**
 	 * ユーザ名よりJWTを作成、クッキーに設定しクッキーを返す
 	 */
 	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
 		String jwt = generateTokenFromUsername(userPrincipal.getUsername());
-		ResponseCookie cookie = ResponseCookie.from(jwtCookie, jwt)
-				.path("/api")
-				.maxAge(24 * 60 * 60)
-				.httpOnly(true) // XSSを防ぐ
-				.secure(true) // CookieがHttpsのみで送られる
-				.build();
-		return cookie;
+		return generateCookie(jwtCookie, jwt, "/api");
+	}
+
+	public ResponseCookie generateJwtRefreshCookie(String refreshToken) {
+		return generateCookie(jwtRefreshCookie, refreshToken, "/api/auth/refreshtoken");
 	}
 
 	/**
 	 * 空のトークンとパスからクッキーを作成し返す。
 	 */
-	public ResponseCookie getCleanJwtCookie() {
-		ResponseCookie cookie = ResponseCookie.from(jwtCookie, null)
-				.path("/api")
+	public ResponseCookie getCleanCookie(String name, String path) {
+		ResponseCookie cookie = ResponseCookie.from(name, null)
+				.path(path)
 				.build();
 		return cookie;
 	}
 
-	/**
-	 * ユーザ名よりJWTを生成して返す
-	 */
+	public ResponseCookie getCleanJwtCookie() {
+		return getCleanCookie(jwtCookie, "/api");
+	}
+
+	public ResponseCookie getCleanJwtRefreshCookie() {
+		return getCleanCookie(jwtRefreshCookie, "/api/auth/refreshtoken");
+	}
+
 	public String generateTokenFromUsername(String username) {
 		return Jwts.builder()
 				.subject(username)
@@ -105,19 +127,19 @@ public class JwtUtils {
 	/**
 	 * jwtトークンを検証
 	 */
-	public boolean validateJwtToken(String authToken) {
+	public boolean validateJwtToken(String authToken) throws Exception {
 		try {
 			Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(authToken);
 			return true;
 		} catch (MalformedJwtException e) {
 	        logger.error("JWTトークンが不正: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.error("JWTトークンが期限切れです: {}", e.getMessage());
+	        throw e;
         } catch (UnsupportedJwtException e) {
             logger.error("JWTトークンがサポートされていません。: {}", e.getMessage());
+            throw e;
         } catch (IllegalArgumentException e) {
             logger.error("JWTのclaimsの値が不正です。: {}", e.getMessage());
+            throw e;
         }
-        return false;
 	}
 }

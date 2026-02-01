@@ -1,7 +1,8 @@
 package com.restapi.ecommerce.service;
 
+
+
 import java.time.Instant;
-import java.util.List;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
@@ -15,7 +16,6 @@ import com.restapi.ecommerce.entity.Order;
 import com.restapi.ecommerce.entity.Payment;
 import com.restapi.ecommerce.entity.User;
 import com.restapi.ecommerce.exceptions.ResourceNotFoundException;
-import com.restapi.ecommerce.payload.AddressDTO;
 import com.restapi.ecommerce.payload.OrderDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
 import com.restapi.ecommerce.payload.OrderRequestWithSavedAddressDTO;
@@ -100,84 +100,45 @@ public class OrderServiceImpl implements OrderService {
 		return null;
 	}
 
-	@Transactional
-	@Override
-	public OrderDTO placeOrderAsGuest(OrderRequestDTO orderRequestByGuestDTO) {
-		List<AddressDTO> addressDTOList = orderRequestByGuestDTO.getAddressDTOList();
-		Address shippingAddress = modelMapper.map(addressDTOList.get(0),Address.class);
-		Address savedSAddress = addressRepository.save(shippingAddress);
-		Address billingAddress = null;
-		Address savedBAddress = null;
-		if (addressDTOList.size() > 1) {
-			billingAddress = modelMapper.map(addressDTOList.get(1),Address.class);
-		    savedBAddress = addressRepository.save(billingAddress);
-		}
-		Cart cart = modelMapper.map(orderRequestByGuestDTO.getCartDTO(), Cart.class);
-		Cart newCart = cartRepository.save(cart);
-		Set<CartItem> items = orderRequestByGuestDTO.getCartDTO().getCartItems();
-		for (CartItem item: items) {
-			item.setCart(newCart);
-			cartItemRepository.save(item);
-		}
-		Cart cartToUpdate = cartRepository.findById(newCart.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", newCart.getId()));
-		Instant currTime = Instant.now();
-		cartToUpdate.setOrderedAt(currTime);
-		Cart savedCart = cartRepository.save(cart);
-		Order newOrder = new Order(currTime, savedCart, null, null, savedSAddress, savedBAddress);
-		Order placedOrder = orderRepository.save(newOrder);
-		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
-		return placedOrderDTO;
-	}
+//	@Transactional
+//	@Override
+//	public OrderDTO placeOrderAsGuest(OrderRequestDTO orderRequestByGuestDTO) {
+//		List<AddressDTO> addressDTOList = orderRequestByGuestDTO.getAddressDTOList();
+//		Address shippingAddress = modelMapper.map(addressDTOList.get(0),Address.class);
+//		Address savedSAddress = addressRepository.save(shippingAddress);
+//		Address billingAddress = null;
+//		Address savedBAddress = null;
+//		if (addressDTOList.size() > 1) {
+//			billingAddress = modelMapper.map(addressDTOList.get(1),Address.class);
+//		    savedBAddress = addressRepository.save(billingAddress);
+//		}
+//		Cart cart = modelMapper.map(orderRequestByGuestDTO.getCartDTO(), Cart.class);
+//		Cart newCart = cartRepository.save(cart);
+//		Set<CartItem> items = orderRequestByGuestDTO.getCartDTO().getCartItems();
+//		for (CartItem item: items) {
+//			item.setCart(newCart);
+//			cartItemRepository.save(item);
+//		}
+//		Cart cartToUpdate = cartRepository.findById(newCart.getId())
+//				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", newCart.getId()));
+//		Instant currTime = Instant.now();
+//		cartToUpdate.setOrderedAt(currTime);
+//		Cart savedCart = cartRepository.save(cart);
+//		Order newOrder = new Order(currTime, savedCart, null, null, savedSAddress, savedBAddress);
+//		Order placedOrder = orderRepository.save(newOrder);
+//		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
+//		return placedOrderDTO;
+//	}
 
 	@Transactional
 	@Override
 	public OrderDTO placeOrderAsUser(OrderRequestDTO orderRequestDTO) {
 		User user = authUtil.loggedinUser();
-		List<AddressDTO> addressDTOList = orderRequestDTO.getAddressDTOList();
-		Address shippingAddress = addressRepository.findById(addressDTOList.get(0).getAddressId())
-				.orElseThrow(() -> new ResourceNotFoundException(
-						"Address", "id", addressDTOList.get(0).getAddressId()));
-		Address billingAddress = null;
-		if (addressDTOList.size() > 1) {
-			billingAddress =  addressRepository.findById(addressDTOList.get(1).getAddressId())
-					.orElseThrow(() -> new ResourceNotFoundException(
-							"Address", "id", addressDTOList.get(1).getAddressId()));
-		}
-		Cart cart = modelMapper.map(orderRequestDTO.getCartDTO(), Cart.class);
-		Cart newCart = cartRepository.save(cart);
-		Set<CartItem> items = orderRequestDTO.getCartDTO().getCartItems();
-		for (CartItem item: items) {
-			item.setCart(newCart);
-			cartItemRepository.save(item);
-		}
-		Cart cartToUpdate = cartRepository.findById(newCart.getId())
-				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", newCart.getId()));
-		Instant currTime = Instant.now();
-		cartToUpdate.setOrderedAt(currTime);
-		cart.setUser(user);
-		Cart savedCart = cartRepository.save(cart);
-		Order newOrder = new Order(currTime, savedCart, user, null, shippingAddress, billingAddress);
-		Order placedOrder = orderRepository.save(newOrder);
-		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
-		return placedOrderDTO;
-	}
+		// get saved addresses
+		Address shippingAddress = addressRepository.findByUserUserIdAndBillingAddressIsFalse(user.getUserId())
+				.orElseThrow(() -> new ResourceNotFoundException("Address", "userId", user.getUserId()));
+		Address billingAddress = addressRepository.findByUserUserIdAndBillingAddressIsTrue(user.getUserId());
 
-	@Transactional
-	@Override
-	public OrderDTO placeOrderAsUserAddAddress(OrderRequestDTO orderRequestDTO) {
-		User user = authUtil.loggedinUser();
-		List<AddressDTO> addressDTOList = orderRequestDTO.getAddressDTOList();
-		Address shippingAddress = modelMapper.map(addressDTOList.get(0), Address.class);
-		shippingAddress.setUser(user);
-		Address savedSAddress = addressRepository.save(shippingAddress);
-		Address billingAddress = null;
-		Address savedBAddress = null;
-		if (addressDTOList.size() > 1) {
-			billingAddress =  modelMapper.map(addressDTOList.get(1), Address.class);
-			billingAddress.setUser(user);
-			savedBAddress = addressRepository.save(billingAddress);
-		}
 		Cart cart = modelMapper.map(orderRequestDTO.getCartDTO(), Cart.class);
 		Cart newCart = cartRepository.save(cart);
 		Set<CartItem> items = orderRequestDTO.getCartDTO().getCartItems();
@@ -196,9 +157,83 @@ public class OrderServiceImpl implements OrderService {
 				orderRequestDTO.getPgStatus(), orderRequestDTO.getPgResponseMessage(),
 				orderRequestDTO.getPgName());
 		Payment savedPayment = paymentRepository.save(payment);
-		Order newOrder = new Order(currTime, savedCart, user, savedPayment, savedSAddress, savedBAddress);
+
+		Order newOrder = new Order(currTime, savedCart, user, savedPayment, shippingAddress, billingAddress);
 		Order placedOrder = orderRepository.save(newOrder);
 		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
 		return placedOrderDTO;
+	}
+
+	@Transactional
+	@Override
+	public OrderDTO placeOrderWithNewAddresses(OrderRequestDTO orderRequestDTO) {
+		// get addresses
+		Address shippingAddress = addressRepository.findById(orderRequestDTO.getShippingAddressId())
+				.orElseThrow(() -> new ResourceNotFoundException("Address", "id", orderRequestDTO.getShippingAddressId()));
+		Address billingAddress = null;
+		if (orderRequestDTO.getBillingAddressId() != null) {
+			billingAddress = addressRepository.findById(orderRequestDTO.getBillingAddressId())
+					.orElseThrow(() -> new ResourceNotFoundException("Address", "id", orderRequestDTO.getBillingAddressId()));
+		}
+		// save cart
+		User user = authUtil.loggedinUser();
+		Cart cart = modelMapper.map(orderRequestDTO.getCartDTO(), Cart.class);
+		Cart newCart = cartRepository.save(cart);
+		Set<CartItem> items = orderRequestDTO.getCartDTO().getCartItems();
+		for (CartItem item: items) {
+			item.setCart(newCart);
+			cartItemRepository.save(item);
+		}
+		Cart cartToUpdate = cartRepository.findById(newCart.getId())
+				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", newCart.getId()));
+		Instant currTime = Instant.now();
+		cartToUpdate.setOrderedAt(currTime);
+		cart.setUser(user);
+		Cart savedCart = cartRepository.save(cart);
+
+		Payment payment = new Payment(orderRequestDTO.getPgPaymentId(),
+				orderRequestDTO.getPgStatus(), orderRequestDTO.getPgResponseMessage(),
+				orderRequestDTO.getPgName());
+		Payment savedPayment = paymentRepository.save(payment);
+
+		Order newOrder = new Order(currTime, savedCart, user, savedPayment, shippingAddress, billingAddress);
+		Order placedOrder = orderRepository.save(newOrder);
+		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
+		return placedOrderDTO;
+	}
+
+	@Transactional
+	@Override
+	public OrderDTO placeOrderAsGuest(OrderRequestDTO orderRequestDTO) {
+//		List<AddressDTO> addressDTOList = orderRequestDTO.getAddressDTOList();
+//		Address shippingAddress = modelMapper.map(addressDTOList.get(0), Address.class);
+//		Address savedSAddress = addressRepository.save(shippingAddress);
+//		Address billingAddress = null;
+//		Address savedBAddress = null;
+//		if (addressDTOList.size() > 1) {
+//			billingAddress =  modelMapper.map(addressDTOList.get(1), Address.class);
+//			savedBAddress = addressRepository.save(billingAddress);
+//		}
+//		Cart cart = modelMapper.map(orderRequestDTO.getCartDTO(), Cart.class);
+//		Cart newCart = cartRepository.save(cart);
+//		Set<CartItem> items = orderRequestDTO.getCartDTO().getCartItems();
+//		for (CartItem item: items) {
+//			item.setCart(newCart);
+//			cartItemRepository.save(item);
+//		}
+//		Cart cartToUpdate = cartRepository.findById(newCart.getId())
+//				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", newCart.getId()));
+//		Instant currTime = Instant.now();
+//		cartToUpdate.setOrderedAt(currTime);
+//		Cart savedCart = cartRepository.save(cart);
+//
+//		Payment payment = new Payment(orderRequestDTO.getPgPaymentId(),
+//				orderRequestDTO.getPgStatus(), orderRequestDTO.getPgResponseMessage(),
+//				orderRequestDTO.getPgName());
+//		Payment savedPayment = paymentRepository.save(payment);
+//		Order newOrder = new Order(currTime, savedCart, null, savedPayment, savedSAddress, savedBAddress);
+//		Order placedOrder = orderRepository.save(newOrder);
+//		OrderDTO placedOrderDTO = modelMapper.map(placedOrder, OrderDTO.class);
+		return new OrderDTO ();
 	}
 }

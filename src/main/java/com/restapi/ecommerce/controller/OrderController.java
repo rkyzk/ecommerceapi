@@ -44,41 +44,47 @@ public class OrderController {
 	}
 
 	/**
+	 * place order
+   *
 	 * 注文データを追加（ゲスト）
 	 *
-	 * @param orderRequestByGuestDTO
-	 * @return
-	 */
-	@PostMapping("/order/guest")
-	public ResponseEntity<OrderDTO> placeOrderAsGuest(@RequestBody
-			OrderRequestDTO orderRequestDTO) {
-		OrderDTO placedOrderDTO = orderService.placeOrderAsGuest(orderRequestDTO);
-		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
-	}
-
-	/**
-	 * 注文データを追加（ログインユーザ・既存住所更新なし）
-	 *
-	 * @param orderRequestDTO
+	 * @param 
 	 * @return
 	 */
 	@PostMapping("/order")
-	public ResponseEntity<OrderDTO> placeOrderAsUser(@RequestBody
+	public ResponseEntity<OrderDTO> placeOrder(@RequestBody
 			OrderRequestDTO orderRequestDTO) {
 		OrderDTO placedOrderDTO = orderService.placeOrderAsUser(orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
 	/**
+	 * place order at new addresses
+	 * 注文データを追加（ログインユーザ・既存住所更新なし）
+	 *
+	 * @param orderRequestDTO
+	 * @return
+	 */
+	@PostMapping("/order/newaddresses")
+	public ResponseEntity<OrderDTO> placeOrderWithNewAddresses(@RequestBody
+			OrderRequestDTO orderRequestDTO) {
+		System.out.println(orderRequestDTO.getShippingAddressId());
+		System.out.println(orderRequestDTO.getBillingAddressId());
+		OrderDTO placedOrderDTO = orderService.placeOrderWithNewAddresses(orderRequestDTO);
+		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
+	}
+
+	/**
+	 * place order as guest
 	 * 注文データを追加（ログインユーザ・既存住所更新あり）
 	 *
 	 * @param orderRequestDTO
 	 * @return
 	 */
-	@PostMapping("/order/address/add")
-	public ResponseEntity<OrderDTO> placeOrderAsUserAddAddress(@RequestBody
+	@PostMapping("/order/guest")
+	public ResponseEntity<OrderDTO> placeOrderAsGuest(@RequestBody
 			OrderRequestDTO orderRequestDTO) {
-		OrderDTO placedOrderDTO = orderService.placeOrderAsUserAddAddress(orderRequestDTO);
+		OrderDTO placedOrderDTO = orderService.placeOrderAsGuest(orderRequestDTO);
 		return new ResponseEntity<OrderDTO>(placedOrderDTO, HttpStatus.CREATED);
 	}
 
@@ -92,7 +98,7 @@ public class OrderController {
     @PostMapping("/order/stripe-client-secret")
     public ResponseEntity<String> createStripeClientSecret(@RequestBody StripePaymentDTO stripePaymentDto)
     		throws StripeException {
-            PaymentIntent paymentIntent = stripeService.paymentIntent(stripePaymentDto);
-            return new ResponseEntity<>(paymentIntent.getClientSecret(), HttpStatus.CREATED);
+        PaymentIntent paymentIntent = stripeService.paymentIntent(stripePaymentDto);
+        return new ResponseEntity<>(paymentIntent.getClientSecret(), HttpStatus.CREATED);
     }
 }
