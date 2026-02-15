@@ -1,26 +1,32 @@
-# Ecommerce REST API
+# ECサイトREST API
 
-EC サイト　 REST API
+<img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="ホームページ">
 
-### Contents
+ECサイトのREST API。
+Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトを下記パスで公開している。<br/>
+[Wild Blossum Garden](http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com/products?category=4)
+
+### 目次
 
 1. 概要
 2. 使用言語、フレームワーク
-3. 仕様
-4. ER 図
-5. 参考資料
+3. 主な機能
+4. ER図
+5. テスト
+6. 参考資料
 
-### Overview
+### 概要
 
-EC サイトの REST API
-ログイン機能
+チューリップ、ヒヤシンスなどの球根を販売するECサイトのREST API。
+ユーザ、商品、カート情報、注文内容などのデータを取得、登録、更新、削除する。
+ログイン機能にJWTとリフレッシュトークンを使用。カード決済処理はStripe APIを利用。
 
-### Technologies used
+### 使用言語、フレームワーク、DB
 
 Java(Spring Boot)
 PostgreSQL
 
-### Features
+### エンドポイント
 
 #### AuthController
 
@@ -72,11 +78,16 @@ PostgreSQL
 | 25  | add new addresses and place order as user      | /order/address/add          | post   |
 | 26  | create payment intent and return client secret | /order/stripe-client-secret | post   |
 
-### ER diagram
+### ER図
 
 <img src="./src/main/resources/ER.png" alt="er-diagram" width="800px" />
 
-### Credits
+### 概要
+全般的に動作確認済み。
+単体テストJunit、結合テストを月以降実施予定。
 
-I leaned the methods to build this app with Udemy course "Java Spring Boot professional eCommerce project master class"</br>
+### 参考資料
+
+Udemyのコース"Java Spring Boot professional eCommerce project master class"を参考にし
+作成。<br/>
 https://github.com/EmbarkXOfficial/spring-boot-course
