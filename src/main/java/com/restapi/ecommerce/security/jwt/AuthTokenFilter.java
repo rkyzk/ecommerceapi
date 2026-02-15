@@ -53,12 +53,10 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	        logger.debug("AuthTokenフィルタが適用されます。URI: {}", request.getRequestURI());
             String jwt = parseJwt(request);
             String username = "";
-            System.out.println("JWT: " + jwt);
             try {
             	username = jwtUtils.getUsernameFromJwtToken(jwt);
             } catch (ExpiredJwtException e) {
             	request.setAttribute("error", "expiredJwt");
-            	System.out.println("expiredJwt");
             	throw e;
             }
             if (jwt == null) {
