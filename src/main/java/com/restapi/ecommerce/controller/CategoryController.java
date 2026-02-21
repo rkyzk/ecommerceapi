@@ -27,7 +27,7 @@ public class CategoryController {
 	CategoryService categoryService;
 
 	/**
-	 * カテゴリーをすべて取得
+	 * カテゴリーを取得
 	 *
 	 * @param pageNumber
 	 * @param pageSize

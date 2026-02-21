@@ -65,7 +65,7 @@ public class OrderController {
 	}
 
 	/**
-	 * 指定ユーザIDの過去注文データを取得し返却する
+	 * ログイン中ユーザの全注文データを取得し返却する
 	 * 
 	 * @param orderRequestDTO
 	 * @return
