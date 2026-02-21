@@ -3,7 +3,7 @@
 <img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="ホームページ">
 
 ECサイトのREST API。
-Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトを下記パスで公開している。<br/>
+Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトは下リンク先で公開：<br/>
 [Wild Blossum Garden](http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com)
 
 ### 目次
@@ -83,20 +83,20 @@ PostgreSQL
 | 5   | 指定IDの商品データを更新 | /api/admin/products/{prodId}                 | put    |
 | 6   | 指定IDの商品の削除日を設定 | /api/admin/products/delete/{prodId}          | put    |
 
+#### 注文データ登録、取得およびclientSecretの取得
+| Nr  | 機能                                        | API エンドポイント       | メソッド |
+| --- | :----------------------------------- | :-------------------------- | :----- |
+| 1   | 注文データを登録（登録済み住所を使用し、新規住所は登録なし）| /order       | post   |
+| 2   | 注文データを登録（新規住所登録あり）           | /order/newaddresses| post   |
+| 3   | ログイン中ユーザの注文履歴データを取得         | /order-history          | get   |
+| 4   | Payment intent作成しclientSecretを返却する | /order/stripe-client-secret | post   |
+
 #### レビュー情報登録、取得
 
 | Nr  | 機能                      | API エンドポイント       | メソッド |
-| --- | :------------------------ | :-------------------------- | :----- |post   |
+| --- | :------------------------ | :-------------------------- | :----- |
 | 1   | レビューを取得              | /api/public/reviews  | post   |
 | 2   | 指定注文IDに紐づくレビューを登録| /api/review/{orderId}| post   |
-
-#### 注文データ登録、取得およびclientSecretの取得
-| Nr  | 機能                      | API エンドポイント       | メソッド |
-| --- | :------------------------ | :-------------------------- | :----- |post   |
-| 1   | 注文データを登録（登録済み住所を使用し、新規住所は登録なし）| /order       | post   |
-| 2   | 注文データを登録（新規住所登録あり）| /order/newaddresses| post   |
-| 3   | ログイン中ユーザの注文履歴データを取得| /order-history          | get   |
-| 4   | Payment intent作成しclientSecretを返却する | /order/stripe-client-secret | post   |
 
 ### ER図
 
