@@ -57,7 +57,6 @@ public class ProductController {
 			    required=false) String sortBy,
 			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
 			    required=false) String sortOrder) {
-		System.out.println("!!!!!!! " + sortBy);
 		ProductResponse response = productService.getProducts(pageNumber, pageSize, sortBy,
 				                                              sortOrder, keywords, categoryId, colors);
 		if (response == null) {

@@ -100,6 +100,9 @@ public class AddressServiceImpl implements AddressService {
 	/**
 	 * delete address
 	 * If orders table has the address, set user id = null
+	 * 
+	 * 住所を削除。注文テーブルに住所が存在する場合、レコードを物理削除せず
+	 * ユーザIDをnullに更新する。
 	 */
 	@Override
 	public String deleteAddress(Long addressId) {

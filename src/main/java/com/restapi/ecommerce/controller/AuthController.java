@@ -79,7 +79,7 @@ public class AuthController {
 	 * generate refresh token
 	 * set jwt cookie and refresh cookie to the header and return the body with
 	 * user details
-   *
+     *
 	 * 入力されたユーザ名とパスワードで認証する。
 	 * ユーザ詳細からJWT Cookie作成
 	 * JWT Cookieをヘッダに設定し、ユーザ詳細データを返却する。
