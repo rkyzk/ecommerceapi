@@ -19,6 +19,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * 例外発生時の処理
+ * @author reikoyazaki
+ *
+ */
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
@@ -40,7 +45,6 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 	    String attr = (String)request.getAttribute("error");   
 	    if (attr != null && attr.equals("expiredJwt")) {
 	    	response.sendError(420, "Jwt has expired.");
-	    	System.out.println("authEntry43");
 	    } else {
 	    	body.put("message", authException.getMessage());
 	    	body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
