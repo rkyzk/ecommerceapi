@@ -81,7 +81,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 	        null,
 	        userDetails.getAuthorities());
 	    logger.debug("JWTから取得したユーザ権限: {}", userDetails.getAuthorities());
-	    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request)); // session idなど
+	    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 	    SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

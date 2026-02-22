@@ -1,0 +1,35 @@
+### Spring Securityのカスタマイズについて
+
+Spring Securityの概要
+リクエストはControllerに届く前にフィルターチェーンで処理される。
+Spring Securityのライブラリを導入すると、AuthenticationFilterがフィルターチェーンに含まれる。
+AuthenticationFilterはAuthenticationオブジェクトを作成し、リクエストに含まれるユーザ情報
+（通常、ユーザ名とパスワード）をAuthentiocation Managerに渡す。
+Authentiocation ManagerがAuthenticationオブジェクトをAuthentiocationProviderに渡す。
+（このアプリではAuthentiocationProviderとしてDAOAuthentiocationProviderを利用する。）
+DAOAuthentiocationProviderはPasswordEncoderでユーザが入力したパスワードをエンコードする。
+UserDetailsServiceを通してDBよりUserDetailsのオブジェクトを取得し、ユーザ名、パスワードを検証する。
+ユーザ名、パスワードが整合すれば、権限（roles）のデータをAuthenticationオブジェクトにセットする。
+AuthenticationオブジェクトはAuthentiocation Managerを通してAuthenticationFilterに返され、
+SecurityContextにセットされる。
+そのリクエスト処理中はSecurityContextを通じてユーザの権限が参照される。
+
+
+SecurityFilterChainのカスタマイズ
+
+デフォルトでは
+org.springframework.boot.autoconfigure.security.servlet
+SpringBootWebSecurityConfigurationクラスにセキュリティフィルター処理が定義されている。
+これをcom.restapi.ecommerce.security.jwt.WebSecurityConfig.javaクラスの
+メソッドfilterChain(HttpSecurity http)でカスタマイズする。
+
+sessionCreationPolicyをステートレスに設定する。（Cookieにjssessionidが設定されなくなる)
+
+ユーザ名とパスワードはbase64で暗号化されてヘッダのAuthorizationにセットされる。
+
+例外発生時はAuthEntryPointで処理するよう設定。
+AuthenticationProviderのパスワードエンコーダーにはBCryptPasswordEncoderを設定。UserDetailsServiceにはUserDetailsServiceImplを設定。
+
+BCryptPasswordEncoderでは暗号化する対象の文字列（本アプリではパスワードの文字列）に
+ソルト（ランダムな文字列）を追加し、BCryptのアルゴリズムを用いてハッシュ化する。
+ソルトを追加することでセキュリティが強化される。
