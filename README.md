@@ -2,35 +2,37 @@
 
 <img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="ホームページ">
 
-ECサイトのREST API。
-Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトは下リンク先で公開：<br/>
-[Wild Blossum Garden](http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com)
+<p style="width: 90%;">ECサイトのREST API。
+Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトは下リンク先で公開：</p>
+<a href="http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com">Wild Blossum Garden</a><br>
+
+<a href="https://github.com/rkyzk/vite-react" target="_blank">フロントエンドプロジェクトのリポジトリ</a><br/>
 
 ### 目次
 
-[1.概要](#overview)
-2. 使用言語、フレームワーク
-3. 各機能のエンドポイント
-4. 各機能概要
-5. Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について
-6. カード情報Strip APIの利用について
-7. CORS設定について
-8. ER図
-9. テスト
-10. 参考資料
+1. 概要<br>
+2. 使用言語、フレームワーク<br>
+3. 各機能のエンドポイント<br>
+4. 各機能概要<br>
+5. Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について<br>
+6. カード決済処理におけるStripe APIの利用について<br/>
+7. CORS設定について<br>
+8. ER図<br>
+9. テスト<br>
+10. 参考資料<br>
 
-### 概要 {#overview}
+### 1. 概要
 
-チューリップ、ヒヤシンスなどの球根を販売するECサイトのREST API。
+<p style="width: 90%;">チューリップ、ヒヤシンスなどの球根を販売するECサイトのREST API。
 ユーザ、商品、カート情報、注文内容などのデータを取得、登録、更新、削除する。
-認証機能にJWTとリフレッシュトークンを使用。カード決済処理はStripe APIを利用。
+認証機能にJWTとリフレッシュトークンを使用。カード決済処理はStripe APIを利用。</p>
 
-### 使用言語、フレームワーク、DB
+### 2. 使用言語、フレームワーク、DB
 
 Java(Spring Boot)
 PostgreSQL
 
-### 各機能のエンドポイント
+### 3. 各機能のエンドポイント
 
 #### ユーザアカウント登録、ログイン、ログアウト
 
@@ -64,7 +66,7 @@ PostgreSQL
 | 1  | 全カテゴリーを取得        | /api/public/categories     | get    |
 | 2  | カテゴリーを追加          | /api/admin/categories      | post    |
 | 3  | カテゴリーを更新          | /api/categories/{categoryId} | get    |
-| 4  | カテゴリーを削除          | /api/admin/categories/delete/{categoryId}| post   |
+| 4  | カテゴリーを削除          | /api/admin/categories/delete/{categoryId}| delete   |
 
 #### カート情報登録、取得、更新、削除
 
@@ -102,19 +104,25 @@ PostgreSQL
 | 1   | レビューを取得              | /api/public/reviews  | post   |
 | 2   | 指定注文IDに紐づくレビューを登録| /api/review/{orderId}| post   |
 
-### Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について
-<a href="/documents/SpringSecurityのカスタマイズについて.md">Spring Securityのカスタマイズについて<a/>
-<a href="/documents/JWT・リフレッシュトークンに係る仕様について.md">JWT・リフレッシュトークンに係る仕様について<a/>
+### 4. 各機能概要
+TBD
 
-### ER図
+### 5. Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について
+<a href="/documents/SpringSecurityのカスタマイズについて.md">Spring Securityのカスタマイズについて</a><br>
+<a href="/documents/JWT・リフレッシュトークンに係る仕様について.md">JWT・リフレッシュトークンに係る仕様について</a><br>
+
+### 6. カード決済処理におけるStripe APIの利用について
+TBD
+### 7. CORS設定について
+TBD
+### 8. ER図
 
 <img src="./src/main/resources/ER.png" alt="er-diagram" width="800px" />
 
-### テスト
+### 9. テスト
 全般的に動作確認済み。
 単体テストJunit実施中、その後結合テストを実施予定。
 
-### 参考資料
-
+### 10. 参考資料
 Udemyのコース「Java Spring Boot professional eCommerce project master class」を参考に作成。<br/>
 https://github.com/EmbarkXOfficial/spring-boot-course
