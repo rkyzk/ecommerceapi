@@ -49,28 +49,26 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-    	if (!shouldNotFilter(request)) {
-	        logger.debug("AuthTokenフィルタが適用されます。URI: {}", request.getRequestURI());
-            String jwt = parseJwt(request);
-            String username = "";
-            try {
-            	username = jwtUtils.getUsernameFromJwtToken(jwt);
-            } catch (ExpiredJwtException e) {
-            	request.setAttribute("error", "expiredJwt");
-            	throw e;
-            }
-            if (jwt == null) {
-            	logger.error("Jwt is empty");
-            } else {
-            	try {
-					if (jwtUtils.validateJwtToken(jwt)) {
-						setAuthentication(request, username);
-					}
-				} catch (Exception ex) {
-					throw new ServletException();
+        logger.debug("AuthTokenフィルタが適用されます。URI: {}", request.getRequestURI());
+        String jwt = parseJwt(request);
+        String username = "";
+        try {
+        	username = jwtUtils.getUsernameFromJwtToken(jwt);
+        } catch (ExpiredJwtException e) {
+        	request.setAttribute("error", "expiredJwt");
+        	throw e;
+        }
+        if (jwt == null) {
+        	logger.error("Jwt is empty");
+        } else {
+        	try {
+				if (jwtUtils.validateJwtToken(jwt)) {
+					setAuthentication(request, username);
 				}
-            }
-    	}
+			} catch (Exception ex) {
+				throw new ServletException();
+			}
+        }
     	filterChain.doFilter(request, response);
     }
 

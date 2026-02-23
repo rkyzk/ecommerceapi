@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductService {
 				}
 			} else {
 				if (sortBy.equals("sales_count")) {
-					// カテゴリーでフィルター、売れ行き順降順
+					// カテゴリーでフィルター
 			    	productPage = productRepository
 			    			.findByCategoryCategoryIdAndDeletedAtIsNullSortBySalesCount(
 			    					Long.valueOf(categoryId), pageDetails);
@@ -96,11 +96,10 @@ public class ProductServiceImpl implements ProductService {
 			String keyword2 = "";
 			String keyword3 = "";
 			if (keywords != null && !keywords.isEmpty()) {
-				// キーワードが指定されているとき設定
 				String[] kwArr = keywords.split("_");
-			    keyword = kwArr[0];
-				keyword2 = kwArr.length > 1 ? kwArr[1] : "";
-			    keyword3 = kwArr.length > 2 ? kwArr[2] : "";
+				keyword = kwArr[0];
+				if (kwArr.length > 1) keyword2 = kwArr[1];
+				if (kwArr.length > 2) keyword3 = kwArr[2];
 			}
 			// カテゴリー設定
 	    	Long categoryIdMin = (long)0;

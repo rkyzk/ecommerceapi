@@ -2,37 +2,37 @@
 
 <img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="ホームページ">
 
-ECサイトのREST API。
-Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトは下リンク先で公開：<br/>
-[Wild Blossum Garden](http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com)<br/>
+<p style="width: 90%;">ECサイトのREST API。
+Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトは下リンク先で公開：</p>
+<a href="http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com">Wild Blossum Garden</a><br>
 
-<a href="https://github.com/rkyzk/vite-react" target="_blank">フロントエンドプロジェクトのリポジトリ<a/><br/>
+<a href="https://github.com/rkyzk/vite-react" target="_blank">フロントエンドプロジェクトのリポジトリ</a><br/>
 
 ### 目次
 
-<a href="#overview">1. 概要<a/><br/>
-<a href="#languages">2. 使用言語、フレームワーク<a/><br/>
-<a href="#endpoints">3. 各機能のエンドポイント<a/><br/>
-<a href="#functions">４. 各機能概要<a/><br/>
-<a href="#spring-security">5. Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について<a/><br/>
-<a href="#stripe-api">6. カード決済処理におけるStripe APIの利用について<a/><br/>
-<a href="#cors-setting">7. CORS設定について<a/><br/>
-<a href="#er-diagram">8. ER図<a/><br/>
-<a href="#tests">9. テスト<a/><br/>
-<a href="#credits">10. 参考資料<a/><br/>
+1. 概要<br>
+2. 使用言語、フレームワーク<br>
+3. 各機能のエンドポイント<br>
+4. 各機能概要<br>
+5. Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について<br>
+6. カード決済処理におけるStripe APIの利用について<br/>
+7. CORS設定について<br>
+8. ER図<br>
+9. テスト<br>
+10. 参考資料<br>
 
-<h2 id="overview">1. 概要<h2/>
+### 1. 概要
 
-チューリップ、ヒヤシンスなどの球根を販売するECサイトのREST API。
+<p style="width: 90%;">チューリップ、ヒヤシンスなどの球根を販売するECサイトのREST API。
 ユーザ、商品、カート情報、注文内容などのデータを取得、登録、更新、削除する。
-認証機能にJWTとリフレッシュトークンを使用。カード決済処理はStripe APIを利用。
+認証機能にJWTとリフレッシュトークンを使用。カード決済処理はStripe APIを利用。</p>
 
-<h2 id="languages">2. 使用言語、フレームワーク、DB<h2/>
+### 2. 使用言語、フレームワーク、DB
 
 Java(Spring Boot)
 PostgreSQL
 
-<h2 id="endpoints">3. 各機能のエンドポイント</h2>
+### 3. 各機能のエンドポイント
 
 #### ユーザアカウント登録、ログイン、ログアウト
 
@@ -103,23 +103,26 @@ PostgreSQL
 | --- | :------------------------ | :-------------------------- | :----- |
 | 1   | レビューを取得              | /api/public/reviews  | post   |
 | 2   | 指定注文IDに紐づくレビューを登録| /api/review/{orderId}| post   |
-<h2 id="functions">4. 各機能概要</h2>
+
+### 4. 各機能概要
 TBD
-<h2 id="spring-security">Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について<h2/>
-<a href="/documents/SpringSecurityのカスタマイズについて.md">5. Spring Securityのカスタマイズについて<a/><br/>
-<a href="/documents/JWT・リフレッシュトークンに係る仕様について.md">JWT・リフレッシュトークンに係る仕様について<a/>
-<h2 id="stripe-api">6. カード決済処理におけるStripe APIの利用について</h2>
+
+### 5. Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について
+<a href="/documents/SpringSecurityのカスタマイズについて.md">Spring Securityのカスタマイズについて</a><br>
+<a href="/documents/JWT・リフレッシュトークンに係る仕様について.md">JWT・リフレッシュトークンに係る仕様について</a><br>
+
+### 6. カード決済処理におけるStripe APIの利用について
 TBD
-<h2 id="cors-setting">7. CORS設定について</h2>
+### 7. CORS設定について
 TBD
-<h2 id="er-diagram">8. ER図</h2>
+### 8. ER図
 
 <img src="./src/main/resources/ER.png" alt="er-diagram" width="800px" />
 
-<h2 id="tests">9. テスト<h2/>
+### 9. テスト
 全般的に動作確認済み。
 単体テストJunit実施中、その後結合テストを実施予定。
 
-<h2 id="credits">10. 参考資料<h2/>
+### 10. 参考資料
 Udemyのコース「Java Spring Boot professional eCommerce project master class」を参考に作成。<br/>
 https://github.com/EmbarkXOfficial/spring-boot-course
