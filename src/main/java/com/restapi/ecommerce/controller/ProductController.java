@@ -24,6 +24,13 @@ import com.restapi.ecommerce.service.ProductService;
 
 import jakarta.validation.Valid;
 
+/**
+ * Controller that handles request for
+ * selecting, inserting, updating, deleting product data.
+ * 
+ * @author reikoyazaki
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class ProductController {
@@ -34,7 +41,8 @@ public class ProductController {
 	ProductDetailService productDetailService;
 
 	/**
-	 * 商品情報を返す。
+	 * Get product list
+	 * filtered and sorted according to given parameters
 	 *
 	 * @param keywords
 	 * @param categoryId
@@ -61,7 +69,7 @@ public class ProductController {
 				sortOrder, keywords, categoryId, colors);
 		if (response == null) {
 			APIResponse resp = new APIResponse();
-			resp.setMessage("該当する商品がありません。");
+			resp.setMessage("No products found.");
 			resp.setStatus(false);
 			return new ResponseEntity<> (resp, HttpStatus.NOT_FOUND);
 		}
@@ -69,9 +77,9 @@ public class ProductController {
 	}
 
 	/**
-	 * featuredフラグtrueの商品情報リストを返す。(未使用)
+	 * Return list of featured products.
 	 *
-	 * @return
+	 * @return list of featured products
 	 */
 	@GetMapping("/public/products/featured")
 	public ResponseEntity<List<ProductDTO>> getFeaturedProducts() {
@@ -80,7 +88,7 @@ public class ProductController {
 	}
 
 	/**
-	 * ID指定の商品情報詳細を返す。
+	 * Get product details
 	 *
 	 * @param product id
 	 * @return ResponseEntity
@@ -92,7 +100,7 @@ public class ProductController {
 	}
 
 	/**
-	 * 指定カテゴリーの商品情報を返す
+	 * Get product list of a specific category
 	 *
 	 * @param categoryId
 	 * @param pageNumber
@@ -117,7 +125,7 @@ public class ProductController {
 	}
 
     /**
-     * 商品を追加
+     * Add product
      *
      * @param productDTO
      * @param categoryId
@@ -131,7 +139,7 @@ public class ProductController {
 	}
 
 	/**
-	 * 商品データを更新
+	 * Update product
 	 *
 	 * @param productDTO
 	 * @param prodId
@@ -145,7 +153,8 @@ public class ProductController {
 	}
 
 	/**
-	 * 商品データを削除
+	 * Delete product
+	 * (Insert deleted date in column 'deleted_at')
 	 *
 	 * @param prodId
 	 * @return

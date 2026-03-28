@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService {
 					categoryId, keywordList, colorStr);
 		}
 		if (products.isEmpty()) {
-			throw new APIException("該当する商品がありません");
+			throw new APIException("No products found.");
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))

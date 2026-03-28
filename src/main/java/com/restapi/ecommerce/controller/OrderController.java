@@ -22,7 +22,8 @@ import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 
 /**
- * 注文に関するリクエストを処理するコントローラー
+ * Controller that handles
+ * requests for placing orders and for creating client secrets
  * 
  * @author reikoyazaki
  *
@@ -37,8 +38,7 @@ public class OrderController {
 	private StripeService stripeService;
 
 	/**
-	 * 注文データを受けDB登録処理を呼び出す
-	 * 注文データを返却する
+	 * Place order (without registering new addresses)
 	 *
 	 * @param orderRequestDTO
 	 * @return
@@ -51,8 +51,7 @@ public class OrderController {
 	}
 
 	/**
-	 * 注文を受けDB登録処理を呼び出す(新規住所登録を含む)
-	 * 注文データを返却する
+	 * Place order (register new addresses)
 	 * 
 	 * @param orderRequestDTO
 	 * @return
@@ -65,7 +64,7 @@ public class OrderController {
 	}
 
 	/**
-	 * ログイン中ユーザの全注文データを取得し返却する
+	 * Get logged-in user's order history
 	 * 
 	 * @param orderRequestDTO
 	 * @return
@@ -75,14 +74,15 @@ public class OrderController {
 		List<OrderDTO> orderList = orderService.getUserOrderList();
 		if (orderList == null) {
 			APIResponse response = new APIResponse();
-			response.setMessage("購入履歴はありません。");
+			response.setMessage("No order history available.");
 			return new ResponseEntity<APIResponse>(response, HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<List<OrderDTO>>(orderList, HttpStatus.OK);
 	}
 
 	/**
-	 * Stripe APIによりPayment intent作成し clientSecretを返却する
+	 * Create a payment intent and return clientSecret
+	 * using Stripe API
 	 *
 	 * @param stripePaymentDto
 	 * @return
