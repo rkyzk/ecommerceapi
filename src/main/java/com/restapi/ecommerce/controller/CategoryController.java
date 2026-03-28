@@ -20,6 +20,13 @@ import com.restapi.ecommerce.service.CategoryService;
 
 import jakarta.validation.Valid;
 
+/**
+ * Controller for selecting, inserting,
+ * updating, deleting categories
+ * 
+ * @author reikoyazaki
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class CategoryController {
@@ -27,7 +34,7 @@ public class CategoryController {
 	CategoryService categoryService;
 
 	/**
-	 * カテゴリーを取得
+	 * Get categories
 	 *
 	 * @param pageNumber
 	 * @param pageSize
@@ -50,7 +57,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * カテゴリーを追加
+	 * Add a new category
 	 *
 	 * @param categoryDTO
 	 * @return
@@ -62,7 +69,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * カテゴリーを更新
+	 * Update a category
 	 *
 	 * @param categoryDTO
 	 * @param categoryId
@@ -76,7 +83,7 @@ public class CategoryController {
 	}
 
 	/**
-	 * カテゴリーを削除
+	 * Delete a category
 	 *
 	 * @param categoryId
 	 * @return

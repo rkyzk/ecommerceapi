@@ -16,6 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.restapi.ecommerce.payload.CartDTO;
 import com.restapi.ecommerce.service.CartService;
 
+/**
+ * Controller that handles getting/updating cart data
+ * 
+ * @author reikoyazaki
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class CartController {
@@ -23,10 +29,11 @@ public class CartController {
 	CartService cartService;
 
 	/**
-	 * カートに商品を追加し、カート情報を返却する。
+	 * Add products to cart and return cart data
 	 *
 	 * @param productId
 	 * @param quantity
+	 *
 	 * @return cart
 	 */
 	@PostMapping("/cart/products/{productId}/quantity/{quantity}")
@@ -37,10 +44,11 @@ public class CartController {
 	}
 
 	/**
-	 * カートの中の商品の個数を更新する。
+	 * Update product quntity in the cart
 	 * 
 	 * @param productId
-	 * @param operation
+	 * @param quantity
+	 *
 	 * @return cartDTO
 	 */
 	@PutMapping("/cart/products/{productId}/quantity/{quantity}")
@@ -52,10 +60,11 @@ public class CartController {
 	}
 
 	/**
-	 * カートから商品を削除
+	 * Remove a specific product from cart
 	 * 
 	 * @param cartId
 	 * @param productId
+	 *
 	 * @return
 	 */
 	@DeleteMapping("/carts/{cartId}/products/{productId}")
@@ -66,7 +75,7 @@ public class CartController {
 	}
 
 	/**
-	 * チェックアウトされていないカートのリストを取得
+	 * get a list of carts
 	 *
 	 * @return list of carts
 	 */
@@ -77,7 +86,8 @@ public class CartController {
 	}
 
 	/**
-	 * ログイン中ユーザのカートを取得
+	 * get cart data of the logged in user.
+	 * 
 	 * @return cartDTO
 	 */
 	@GetMapping("/carts/user/cart")

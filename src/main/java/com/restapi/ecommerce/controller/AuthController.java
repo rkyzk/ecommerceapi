@@ -46,6 +46,13 @@ import com.restapi.ecommerce.utils.AuthUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
+/**
+ * Controller that handles reguests for logging in/out,
+ * registering users and refreshing JWT token
+ * 
+ * @author reikoyazaki
+ *
+ */
 @RequestMapping("/api")
 @RestController
 public class AuthController {
@@ -74,15 +81,11 @@ public class AuthController {
 	PasswordEncoder encoder;
 
 	/**
-	 * authenticate user using given username and password.
-	 * generate jwt Cookie from user details
-	 * generate refresh token
-	 * set jwt cookie and refresh cookie to the header and return the body with
-	 * user details
-     *
-	 * 入力されたユーザ名とパスワードで認証する。
-	 * ユーザ詳細からJWT Cookie作成
-	 * JWT Cookieをヘッダに設定し、ユーザ詳細データを返却する。
+	 * Authenticate user with username and password,
+	 * generate a jwt Cookie from user details,
+	 * generate a refresh token,
+	 * set jwt cookie and refresh cookie to the header
+	 * and return user details
 	 *
 	 * @param loginReq
 	 * @return
@@ -100,7 +103,7 @@ public class AuthController {
 			map.put("status", false);
 			return new ResponseEntity<Object> (map, HttpStatus.NOT_FOUND);
 		}
-		// セッションに認証情報を設定
+		// set authentication object to the context holder
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 	    ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
@@ -116,6 +119,16 @@ public class AuthController {
 						userDetails.getUsername(), roles));
 	}
 
+	/**
+	 * Authenticate user with username and password,
+	 * generate a jwt Cookie from user details,
+	 * generate a refresh token,
+	 * set jwt cookie and refresh cookie to the header
+	 * and return user details
+	 *
+	 * @param loginReq
+	 * @return
+	 */
 	@PostMapping("/auth/refreshtoken")
 	public ResponseEntity<?> refreshToken(HttpServletRequest request) {
 		String refreshToken = jwtUtils.getJwtRefreshFromCookies(request);
@@ -136,8 +149,7 @@ public class AuthController {
 	}
 
 	/**
-	 * ユーザ名、メールが存在しなかったら
-	 * ロールを設定しユーザを保存する。
+	 * Create a new user's account
 	 *
 	 * @param req
 	 * @return
@@ -183,11 +195,11 @@ public class AuthController {
 		}
 		user.setRoles(roles);
 		userRepository.save(user);
-		return ResponseEntity.ok(new MessageResponse("ユーザが登録されました。"));
+		return ResponseEntity.ok(new MessageResponse("You've been registered."));
 	}
 
 	/**
-	 * ログイン中のユーザ名を取得
+	 * return the current user's username
 	 *
 	 * @param authentication
 	 * @return
@@ -201,7 +213,8 @@ public class AuthController {
 	}
 
 	/**
-	 * ログイン中のユーザデータを取得
+	 * return the current user's user details object
+	 *
 	 * @param authentication
 	 * @return
 	 */
@@ -217,7 +230,7 @@ public class AuthController {
 	}
 
 	/**
-	 * ユーザをログアウトする。
+	 * log out user
 	 *
 	 * @param authentication
 	 * @return
@@ -230,6 +243,6 @@ public class AuthController {
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE, cleanJwtCookie.toString())
 				.header(HttpHeaders.SET_COOKIE, cleanJwtRefreshCookie.toString())
-				.body(new MessageResponse("ログアウトしました。"));
+				.body(new MessageResponse("You've been logged out"));
 	}
 }

@@ -17,16 +17,30 @@ import com.restapi.ecommerce.payload.ReviewDTO;
 import com.restapi.ecommerce.payload.ReviewResponse;
 import com.restapi.ecommerce.service.ReviewService;
 
+/**
+ * 
+ * @author reikoyazaki
+ *
+ */
 @RestController
 @RequestMapping("/api")
 public class ReviewController {
 	@Autowired
 	ReviewService reviewService;
 
+	/**
+	 * Get list of review entries.
+	 *
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @return
+	 */
 	@GetMapping("/public/reviews")
 	public ResponseEntity<?> getReviews(@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
 		    required=false) Integer pageNumber,
-			@RequestParam (name = "pageSize", defaultValue = "12",
+			@RequestParam (name = "pageSize", defaultValue = "10",
 			    required=false) Integer pageSize,
 			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,
 			    required=false) String sortBy,
@@ -36,17 +50,24 @@ public class ReviewController {
 				sortBy, sortOrder);
 		if (reviewResponse == null) {
 			APIResponse response = new APIResponse();
-			response.setMessage("レビューがありません。");
+			response.setMessage("No reivews available.");
 			return new ResponseEntity<APIResponse>(response, HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity<ReviewResponse>(reviewResponse, HttpStatus.OK);
 	}
 
+	/**
+	 * Save a review entry for an order.
+	 *
+	 * @param reviewDTO
+	 * @param orderId
+	 * @return
+	 */
 	@PostMapping("/review/{orderId}")
 	public ResponseEntity<?> postReview(@RequestBody ReviewDTO reviewDTO, @PathVariable Long orderId) {
 		Long reviewId = reviewService.postReview(reviewDTO, orderId);
 		APIResponse response = new APIResponse();
-		response.setMessage("レビューを保存しました。レビューID:" + reviewId);
+		response.setMessage("The review entry has been saved." + reviewId);
 		return new ResponseEntity<APIResponse> (response, HttpStatus.OK);
 	}
 }
