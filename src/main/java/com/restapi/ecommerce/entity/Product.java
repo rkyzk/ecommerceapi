@@ -84,4 +84,22 @@ public class Product {
 			orphanRemoval = true)
 	@JsonIgnore
 	Set<CartItem> cartItems = new HashSet<>();
+
+	@OneToMany(mappedBy="product",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+			orphanRemoval = true)
+	@JsonIgnore
+	Set<ProductColor> colors = new HashSet<>();
+
+	@OneToMany(mappedBy="product",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+			orphanRemoval = true)
+	@JsonIgnore
+	Set<ProductDetail> productDetail = new HashSet<>();
+
+	@OneToMany(mappedBy="product",
+			cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+			orphanRemoval = true)
+	@JsonIgnore
+	Set<SalesCount> salesCount = new HashSet<>();
 }

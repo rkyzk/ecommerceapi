@@ -1,9 +1,11 @@
 package com.restapi.ecommerce.service;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,132 +39,53 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ModelMapper modelMapper;
 
-	/**
-	 * 商品データを取得し返却する。
-	 * カテゴリー、色、キーワード指定があるときは
-	 * フィルターしてデータを返却する。
-	 * 
-	 * @param pageNumber
-	 * @param pageSize
-	 * @param sortBy
-	 * @param sortOrder
-	 * @param keywords
-	 * @param categoryId
-	 * @param colors
-	 * 
-	 * @return product data
-	 */
-	@Override
 	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder, String keywords, String categoryId, String colors) {
-		// ソート順を設定
-		Sort sortByAndOrder;
+		List<String> keywordList = null;
+		String colorStr = null;
+		if (!StringUtils.isEmpty(keywords)) keywordList = getKeywordList(keywords);
+		if (!StringUtils.isEmpty(colors)) colorStr = getColors(colors);
+		List<Product> products = null;
 		if (sortBy.equals("sales_count")) {
-			sortByAndOrder = Sort.unsorted(); // 売れ行き順の場合はSort設定せずクエリで並べ替えを実施
+			products = productRepository.getProductsSortBySalesCount(pageNumber, pageSize,
+					categoryId, keywordList, colorStr);
 		} else {
-			sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
-					? Sort.by(sortBy).ascending()
-					: Sort.by(sortBy).descending();
+			products = productRepository.getProducts(pageNumber, pageSize, sortBy, sortOrder,
+					categoryId, keywordList, colorStr);
 		}
-		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
-		Page<Product> productPage = null;
-		if ((colors == null || colors.isEmpty()) &&
-			(keywords == null || keywords.isEmpty())) {
-			if (categoryId == null || categoryId.isEmpty()) {
-				if (sortBy.equals("sales_count")) {
-					// 絞り込みなし、売れ行き順降順
-					productPage = productRepository.findByDeletedAtIsNullSortBySalesCount(pageDetails);
-				} else {
-					// 絞り込みなし、product_id昇順
-					productPage = productRepository.findByDeletedAtIsNull(pageDetails);
-				}
-			} else {
-				if (sortBy.equals("sales_count")) {
-					// カテゴリーでフィルター
-			    	productPage = productRepository
-			    			.findByCategoryCategoryIdAndDeletedAtIsNullSortBySalesCount(
-			    					Long.valueOf(categoryId), pageDetails);
-				} else {
-					// カテゴリーでフィルター、product_id昇順
-					productPage = productRepository
-			    			.findByCategoryCategoryIdAndDeletedAtIsNull(
-			    					Long.valueOf(categoryId), pageDetails);
-				}
-			}
-		} else {
-			// カテゴリー、色、キーワードでフィルター
-			// キーワード設定
-			String keyword = "";
-			String keyword2 = "";
-			String keyword3 = "";
-			if (keywords != null && !keywords.isEmpty()) {
-				String[] kwArr = keywords.split("_");
-				keyword = kwArr[0];
-				if (kwArr.length > 1) keyword2 = kwArr[1];
-				if (kwArr.length > 2) keyword3 = kwArr[2];
-			}
-			// カテゴリー設定
-	    	Long categoryIdMin = (long)0;
-	    	Long categoryIdMax = (long)100;
-	    	if (categoryId != null && !categoryId.isEmpty()) {
-	    		// カテゴリー指定されているときカテゴリーIdを設定
-	    		categoryIdMin = Long.valueOf(categoryId);
-	    		categoryIdMax = Long.valueOf(categoryId);
-	    	}
-	    	// 色設定
-	    	Long colorId1 = (long)1;
-    		Long colorId2 = (long)2;
-    		Long colorId3 = (long)3;
-    		Long colorId4 = (long)4;
-    		Long colorId5 = (long)5;
-    		Long colorId6 = (long)6;
-    		Long colorId7 = (long)7;
-    		Long colorId8 = (long)8;
-	    	if (colors != null && !colors.isEmpty()) {
-		    	// 色指定を設定
-				String[] colorArr = colors.split("_");
-				colorId1 = Long.valueOf(colorArr[0]);
-				colorId2 = colorArr.length > 1 ? Long.valueOf(colorArr[1]) : (long)0;
-				colorId3 = colorArr.length > 2 ? Long.valueOf(colorArr[2]) : (long)0;
-				colorId4 = colorArr.length > 3 ? Long.valueOf(colorArr[3]) : (long)0;
-				colorId5 = colorArr.length > 4 ? Long.valueOf(colorArr[4]) : (long)0;
-				colorId6 = colorArr.length > 5 ? Long.valueOf(colorArr[5]) : (long)0;
-				colorId7 = colorArr.length > 6 ? Long.valueOf(colorArr[6]) : (long)0;
-				colorId8 = colorArr.length > 7 ? Long.valueOf(colorArr[7]) : (long)0;
-	    	}
-	    	if (sortBy.equals("sales_count")) {
-	    		// カテゴリー、色、キーワードでフィルター、売れ行き降順
-	    		productPage = productRepository
-						.findProductsByKeywordsAndCategoryAndColorsSortBySalesCount(
-								keyword, keyword2, keyword3, categoryIdMin, categoryIdMax,
-								colorId1, colorId2, colorId3, colorId4, colorId5, colorId6,
-								colorId7, colorId8, pageDetails);
-	    	} else {
-	    		// カテゴリー、色、キーワードでフィルター、product_id昇順
-				productPage = productRepository
-					.findProductsByKeywordsAndCategoryAndColors(
-							keyword, keyword2, keyword3, categoryIdMin, categoryIdMax,
-							colorId1, colorId2, colorId3, colorId4, colorId5, colorId6,
-							colorId7, colorId8, pageDetails);
-	    	}
-		}
-		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
-			throw new APIException("商品がありません");
+			throw new APIException("該当する商品がありません");
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
 				.toList();
 		ProductResponse response = new ProductResponse();
 		response.setContent(productDTOs);
+		Long totalElements = productRepository.getTotalElements(categoryId, keywordList, colorStr);
+		Double doubleVal = Math.ceil((double)totalElements/(double)pageSize);
+		Integer totalPages = doubleVal.intValue();
 		// パジネーションデータ設定
-		response.setPageNumber(productPage.getNumber());
-		response.setPageSize(productPage.getSize());
-		response.setTotalElements(productPage.getTotalElements());
-		response.setTotalPages(productPage.getTotalPages());
-		response.setLastPage(productPage.isLast());
+		response.setPageNumber(pageNumber);
+		response.setPageSize(pageSize);
+		response.setTotalElements(totalElements);
+		response.setTotalPages(totalPages);
+		response.setLastPage(pageNumber == totalPages - 1);
 		return response;
-	};
+	}
+
+	private List<String> getKeywordList(String keywords) {
+		return Arrays.asList(keywords.split("_"));
+	}
+
+	private String getColors(String colors) {
+		String[] arr = colors.split("_");
+        StringBuilder str = new StringBuilder("(" + arr[0]);
+        for (int i = 1; i < arr.length; i++) {
+        	str.append(",").append(arr[i]);
+        }
+        str.append(")");
+        return str.toString();
+	}
 
 	/**
 	 * カテゴリーでフィルターした商品データを取得し返却する。

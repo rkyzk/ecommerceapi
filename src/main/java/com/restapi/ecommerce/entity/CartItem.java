@@ -18,23 +18,23 @@ import lombok.ToString;
 
 @Entity
 @Data
-@Table(name="cart_items")
+@Table(name = "cart_items")
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartItem {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name="product_id")
+	@JoinColumn(name = "product_id")
 	private Product product;
 
-	@Column(name="quantity")
+	@Column(name = "quantity")
 	private Integer quantity;
 
 	@ManyToOne
-	@JoinColumn(name="cart_id")
+	@JoinColumn(name = "cart_id")
 	@JsonIgnore
 	@EqualsAndHashCode.Exclude
 	@ToString.Exclude
