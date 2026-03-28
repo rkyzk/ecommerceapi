@@ -58,7 +58,7 @@ public class ProductController {
 			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
 			    required=false) String sortOrder) {
 		ProductResponse response = productService.getProducts(pageNumber, pageSize, sortBy,
-				                                              sortOrder, keywords, categoryId, colors);
+				sortOrder, keywords, categoryId, colors);
 		if (response == null) {
 			APIResponse resp = new APIResponse();
 			resp.setMessage("該当する商品がありません。");
@@ -90,32 +90,6 @@ public class ProductController {
 		List<ProductDetail> productDetail = productDetailService.getProductDetail(productId);
 		return new ResponseEntity<List<ProductDetail>> (productDetail, HttpStatus.OK);
 	}
-
-	/**
-	 * 商品名か商品情報「description」のフィールドにキーワードが含まれる
-	 * 商品情報詳細を返す。(未使用)
-	 *
-	 * @param keywords
-	 * @param pageNumber
-	 * @param pageSize
-	 * @param sortBy
-	 * @param sortOrder
-	 * @return
-	 */
-//	@GetMapping("/public/products/keywords/{keywords}")
-//	public ResponseEntity<ProductResponse> searchProductsByKeyword(@PathVariable String keywords,
-//			@RequestParam (name = "pageNumber", defaultValue = AppConstants.PAGE_NUMBER,
-//			    required=false) Integer pageNumber,
-//			@RequestParam (name = "pageSize", defaultValue = AppConstants.PAGE_SIZE,
-//			    required=false) Integer pageSize,
-//			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,
-//			    required=false) String sortBy,
-//			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
-//			    required=false) String sortOrder) {
-//		ProductResponse response = productService.searchProductsByKeywords(keywords, pageNumber,
-//				pageSize, sortBy, sortOrder);
-//		return new ResponseEntity<> (response, HttpStatus.OK);
-//	}
 
 	/**
 	 * 指定カテゴリーの商品情報を返す

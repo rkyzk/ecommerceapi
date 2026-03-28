@@ -8,6 +8,10 @@ Vite + Reactのフロントエンドプロジェクトで利用し、デプロ�
 
 <a href="https://github.com/rkyzk/vite-react" target="_blank">フロントエンドプロジェクトのリポジトリ</a><br/>
 
+https://dev.to/wittedtech-by-harshit/mastering-aws-step-by-step-guide-to-deploying-a-full-stack-react-java-spring-boot-app-c8d
+
+
+
 ### 目次
 
 1. 概要<br>
@@ -109,12 +113,13 @@ TBD
 
 ### 5. Spring SecurityのカスタマイズとJWT・リフレッシュトークンの利用について
 <a href="/documents/SpringSecurityのカスタマイズについて.md">Spring Securityのカスタマイズについて</a><br>
-<a href="/documents/JWT・リフレッシュトークンに係る仕様について.md">JWT・リフレッシュトークンに係る仕様について</a><br>
+<a href="/documents/JWTとリフレッシュトークンに係る仕様について.md">JWT・リフレッシュトークンに係る仕様について</a><br>
 
 ### 6. カード決済処理におけるStripe APIの利用について
 TBD
 ### 7. CORS設定について
-TBD
+ブラウザSame Origin PolicyCross Origin Resource Sharingとは他ドメインからそのドメインのリソースへのアクセスを許可することを、安全な形で制御するための仕組み。サーバ側でレスポンスのヘッダに値設定し、ブラウザがそのクライアントがリソースにアクセスすることが許可されているのかを判断する。
+
 ### 8. ER図
 
 <img src="./src/main/resources/ER.png" alt="er-diagram" width="800px" />
@@ -126,3 +131,9 @@ TBD
 ### 10. 参考資料
 Udemyのコース「Java Spring Boot professional eCommerce project master class」を参考に作成。<br/>
 https://github.com/EmbarkXOfficial/spring-boot-course
+
+Specification
+https://qiita.com/pesysyon/items/2ae1cf04efece72af4b4
+
+multiple keywords search
+https://qiita.com/ibara1454/items/7d65d75a910dced33b50
