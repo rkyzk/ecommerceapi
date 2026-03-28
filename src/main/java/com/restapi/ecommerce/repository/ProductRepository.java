@@ -13,40 +13,49 @@ import com.restapi.ecommerce.entity.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
-	/**
-	 * フィルターなし
-	 * @param pageDetails
-	 * @return
-	 */
+	/** Get all products */
 	Page<Product> findByDeletedAtIsNull(Pageable pageDetails);
 
+	/**
+	 * Get products filtered and sorted by given parameters.
+	 */
 	List<Product> getProducts(Integer pageNumber, Integer pageSize, String sortBy,
 			String sortOrder, String categoryId, List<String> keywordList, String colorStr);
 
+	/**
+	 * Get products filtered by given parameters
+	 * sorted by sales count in the past 30 days.
+	 */
 	List<Product> getProductsSortBySalesCount(Integer pageNumber, Integer pageSize,
     		String categoryId, List<String> keywords, String colors);
 
+	/**
+	 * Get the number of products in the result set.
+	 */
 	Long getTotalElements(String categoryId, List<String> keywordList, String colorStr);
 
 	/**
-	 * カテゴリー指定
-	 * @param categoryId
-	 * @param pageDetails
-	 * @return
+	 * Get products filtered by category only.
 	 */
 	Page<Product> findByCategoryCategoryIdAndDeletedAtIsNull(Long categoryId, Pageable pageDetails);
 
 	/**
-	 * 商品を取得
+	 * Get product by product name
 	 *
 	 * @param productName
 	 * @return
 	 */
 	Product findByProductName(String productName);
 
-	// 未使用
+	/** get fetured products (not in use) */
 	List<Product> findByFeaturedIsTrue();
 
+	/**
+	 * update quantity(stock) of products
+	 *
+	 * @param id
+	 * @param quantity
+	 */
 	@Modifying
 	@Query(value="UPDATE products p SET p.quantity = ?2 "
 			+ "where p.id = ?1", nativeQuery=true)

@@ -24,7 +24,9 @@ import com.restapi.ecommerce.payload.ProductResponse;
 import com.restapi.ecommerce.repository.CategoryRepository;
 import com.restapi.ecommerce.repository.ProductRepository;
 
-/** product service implementation */
+/**
+ * product service implementation
+ */
 @Service
 public class ProductServiceImpl implements ProductService {
 	@Autowired
@@ -64,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 		Long totalElements = productRepository.getTotalElements(categoryId, keywordList, colorStr);
 		Double doubleVal = Math.ceil((double)totalElements/(double)pageSize);
 		Integer totalPages = doubleVal.intValue();
-		// パジネーションデータ設定
+		// set pagination data
 		response.setPageNumber(pageNumber);
 		response.setPageSize(pageSize);
 		response.setTotalElements(totalElements);
@@ -108,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
 		Page<Product> productPage = productRepository.findByCategoryCategoryIdAndDeletedAtIsNull(categoryId, pageDetails);
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
-			throw new APIException("商品がありません");
+			throw new APIException("No products found.");
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
