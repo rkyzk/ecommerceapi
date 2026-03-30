@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,14 +42,39 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Value("${msg.product.service001}")
+	private String msg001;
+
+	@Value("${msg.product.service002}")
+	private String msg002;
+
+	@Value("${msg.product.service003}")
+	private String msg003;
+
+	/**
+	 * Get products data, filtered and sorted if specified.
+	 * 
+	 * @param pageNumber
+	 * @param pageSize
+	 * @param sortBy
+	 * @param sortOrder
+	 * @param keywords
+	 * @param categoryId
+	 * @param colors
+	 *
+	 * @return products data
+	 */
 	public ProductResponse getProducts(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder, String keywords, String categoryId, String colors) {
 		List<String> keywordList = null;
 		String colorStr = null;
+		// get keywords list if any
 		if (!StringUtils.isEmpty(keywords)) keywordList = getKeywordList(keywords);
+		// get color string if any
 		if (!StringUtils.isEmpty(colors)) colorStr = getColors(colors);
 		List<Product> products = null;
 		if (sortBy.equals("sales_count")) {
+			// if the result should be sorted by sales count
 			products = productRepository.getProductsSortBySalesCount(pageNumber, pageSize,
 					categoryId, keywordList, colorStr);
 		} else {
@@ -56,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
 					categoryId, keywordList, colorStr);
 		}
 		if (products.isEmpty()) {
-			throw new APIException("No products found.");
+			throw new APIException(msg001); // "No products found."
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
@@ -64,7 +90,8 @@ public class ProductServiceImpl implements ProductService {
 		ProductResponse response = new ProductResponse();
 		response.setContent(productDTOs);
 		Long totalElements = productRepository.getTotalElements(categoryId, keywordList, colorStr);
-		Double doubleVal = Math.ceil((double)totalElements/(double)pageSize);
+		// calculate total pages
+		Double doubleVal = Math.ceil((double)totalElements / (double)pageSize);
 		Integer totalPages = doubleVal.intValue();
 		// set pagination data
 		response.setPageNumber(pageNumber);
@@ -75,22 +102,28 @@ public class ProductServiceImpl implements ProductService {
 		return response;
 	}
 
+	/**
+	 * Return list of keywords
+	 *
+	 * @param keywords
+	 * @return
+	 */
 	private List<String> getKeywordList(String keywords) {
 		return Arrays.asList(keywords.split("_"));
 	}
 
+	/**
+	 * Return list of keywords
+	 *
+	 * @param keywords
+	 * @return
+	 */
 	private String getColors(String colors) {
-		String[] arr = colors.split("_");
-        StringBuilder str = new StringBuilder("(" + arr[0]);
-        for (int i = 1; i < arr.length; i++) {
-        	str.append(",").append(arr[i]);
-        }
-        str.append(")");
-        return str.toString();
+        return "(" + colors.replace("_", ",") + ")";
 	}
 
 	/**
-	 * カテゴリーでフィルターした商品データを取得し返却する。
+	 * Get products data filtered by category
 	 * 
 	 * @param pageNumber
 	 * @param pageSize
@@ -98,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
 	 * @param sortOrder
 	 * @param categoryId
 	 * 
-	 * @return product data
+	 * @return products data
 	 */
 	@Override
 	public ProductResponse getProductsByCategory(Long categoryId, Integer pageNumber,
@@ -110,7 +143,7 @@ public class ProductServiceImpl implements ProductService {
 		Page<Product> productPage = productRepository.findByCategoryCategoryIdAndDeletedAtIsNull(categoryId, pageDetails);
 		List<Product> products = productPage.getContent();
 		if (products.isEmpty()) {
-			throw new APIException("No products found.");
+			throw new APIException(msg001); // "No products found."
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))
@@ -127,7 +160,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	/**
-	 * add a new product
+	 * Add a new product
 	 */
 	@Override
 	public ProductDTO addProduct(Long categoryId, ProductDTO productDTO) {
@@ -136,7 +169,7 @@ public class ProductServiceImpl implements ProductService {
 						"Category", "categoryId", categoryId));
 		Product product = productRepository.findByProductName(productDTO.getProductName());
 		if (product != null)
-			throw new APIException("Product with the given name exists");
+			throw new APIException(msg002); // "The product name is already used."
 		productDTO.setCategory(category);
 		double specialPrice = productDTO.getPrice() * (1 - productDTO.getDiscount() * 0.01);
 		productDTO.setSpecialPrice(specialPrice);
@@ -211,7 +244,7 @@ public class ProductServiceImpl implements ProductService {
 		List<Product> products =
 				productRepository.findByFeaturedIsTrue();
 		if (products.isEmpty()) {
-			throw new APIException("No featured products present");
+			throw new APIException(msg003); // "No featured products present"
 		}
 		List<ProductDTO> productDTOs = products.stream()
 				.map(product -> modelMapper.map(product, ProductDTO.class))

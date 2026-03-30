@@ -39,31 +39,31 @@ public class ReviewServiceImpl implements ReviewService {
 	AuthUtil authUtil;
 
 	/**
-	 * レビューを取得し返却する。
+	 * Get all reviews
 	 * 
 	 * @param pageNumber
 	 * @param pageSize
 	 * @param sortBy
 	 * @param sortOrder
 	 * 
-	 * @return レビュー
+	 * @return list of reviews
 	 */
 	@Override
 	public ReviewResponse getAllReviews(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder) {
 		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
 		Page<Review> reviewPage = null;
-		// 絞り込みなし
+		// get all reviews
 		reviewPage = reviewRepository.findByValidIsTrueOrderByCreatedAtDesc(pageDetails);
 		List<Review> reviews = reviewPage.getContent();
-		// 該当商品がない時はnullを返却
+		// return null if no reviews are present
 		if (reviews.isEmpty()) return null;
 		List<ReviewDTO> reviewDTOs = reviews.stream()
 				.map(review -> modelMapper.map(review, ReviewDTO.class))
 				.toList();
 		ReviewResponse response = new ReviewResponse();
 		response.setContent(reviewDTOs);
-		// パジネーションデータ設定
+		// set pagination data
 		response.setPageNumber(reviewPage.getNumber());
 		response.setPageSize(reviewPage.getSize());
 		response.setTotalElements(reviewPage.getTotalElements());
@@ -78,10 +78,10 @@ public class ReviewServiceImpl implements ReviewService {
 				.orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 		reviewDTO.setOrder(order);
 		reviewDTO.setUser(authUtil.loggedinUser());
-		reviewDTO.setCreatedAt(Instant.now()); // localDatetime?
+		reviewDTO.setCreatedAt(Instant.now());
 		reviewDTO.setValid(true);
 		Review savedReview = reviewRepository.save(modelMapper.map(reviewDTO, Review.class));
-		// Orderに紐づくReviewを設定
+		// set review instance to the corresponding order instance
 		order.setReview(savedReview);
 		orderRepository.save(order);
 		return savedReview.getId();

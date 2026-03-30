@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.restapi.ecommerce.entity.Cart;
@@ -40,6 +41,24 @@ public class CartServiceImpl implements CartService {
 	@Autowired
 	AuthUtil authUtil;
 
+	@Value("${msg.cart.service001}")
+	private String msg001;
+
+	@Value("${msg.cart.service002}")
+	private String msg002;
+
+	@Value("${msg.cart.service003}")
+	private String msg003;
+
+	@Value("${msg.cart.service004}")
+	private String msg004;
+
+	@Value("${msg.cart.service005}")
+	private String msg005;
+
+	@Value("${msg.cart.service006}")
+	private String msg006;
+
 	/**
 	 * add product to cart
 	 *
@@ -56,13 +75,10 @@ public class CartServiceImpl implements CartService {
 		Integer stock = product.getQuantity();
 
 		if (stock == 0) {
-			throw new APIException("We're sorry.  The Product is out of stock");
+			throw new APIException(msg001); // The product is out of stock.
 		}
 		if (quantity > stock) {
-			// TO BE CORRECTED
-			throw new APIException("Only " + stock +
-					(stock > 1 ? " are" : " is") + " available. " +
-					"Would you like to order " + stock + "?");
+			throw new APIException(msg002 + stock); // Available quantity in stock:
 		}
 
 		CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), productId);
@@ -117,12 +133,10 @@ public class CartServiceImpl implements CartService {
 		int origQty = cartItem.getQuantity();
 		int stock = cartItem.getProduct().getQuantity();
 		if (stock == 0) {
-			new APIException("We're sorry.  The product is out of stock.");
+			new APIException(msg001); // The product is out of stock.
 		}
 		if (origQty + stock < quantity) {
-			throw new APIException("Only " + stock +
-					(stock > 1 ? " are" : " is") + " available. " +
-					"Would you like to order " + stock + "?");
+			throw new APIException(msg002 + stock); // Available quantity in stock:
 		}
 		// update cart item quantity
 		cartItem.setQuantity(quantity);
@@ -143,9 +157,8 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public String deleteProductFromCart(Long cartId, Long productId) {
 		CartItem item = cartItemRepository.findByCartIdAndProductId(cartId, productId);
-		if (item == null) throw new APIException(
-				"Cart item with the given product ID and cart ID was not found");
-		// delete the item
+		if (item == null) throw new APIException(msg004);
+		    // Message content: Cart item with the given product ID and cart ID was not found
 		cartItemRepository.delete(item);
 		Cart cart = cartRepository.findById(cartId)
 				.orElseThrow(() -> new ResourceNotFoundException("Cart", "id", cartId));
@@ -153,11 +166,12 @@ public class CartServiceImpl implements CartService {
 		set.remove(item);
 		if (set.size() == 0) {
 			cartRepository.delete(cart);
-			return "The cart is empty.";
+			return msg005; // "The cart is empty."
 		}
 		cart.setCartItems(set);
 		updateTotalPrice(cart);
-		return "Product " + item.getProduct().getProductName() + " was removed from the cart.";
+		return msg006 + item.getProduct().getProductName();
+			// "Product was removed from the cart. Product name:"
 	}
 
 	/**

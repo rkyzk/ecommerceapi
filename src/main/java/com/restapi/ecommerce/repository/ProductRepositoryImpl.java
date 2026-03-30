@@ -89,7 +89,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         if (colors != null) {
         	sql.append(" AND pc.color IN ").append(colors);
         }
-    	sql.append(" ORDER BY ").append(sortBy)
+    	sql.append(" ORDER BY p.").append(sortBy)
     		.append(" OFFSET ")
     		.append(pageSize * pageNumber).append(" ROWS FETCH NEXT ")
     		.append(pageSize).append(" ROWS ONLY");

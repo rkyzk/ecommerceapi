@@ -7,6 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Composite primary key for sales_count table
+ * @author reikoyazaki
+ *
+ */
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor

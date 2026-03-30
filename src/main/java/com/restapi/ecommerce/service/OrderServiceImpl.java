@@ -87,12 +87,12 @@ public class OrderServiceImpl implements OrderService {
 		for (CartItem item: items) {
 			item.setCart(newCart);
 			cartItemRepository.save(item);
-			// 商品の在庫数を更新
+			// update product stock
 			Product product = productRepository.findById(item.getProduct().getId())
 					.orElseThrow(() -> new ResourceNotFoundException("Product", "id", item.getProduct().getId()));
 			product.setQuantity(product.getQuantity() - item.getQuantity());
 			productRepository.save(product);
-			// 商品の売上数を更新
+			// update sales count
 			updateSalesQuantity(product, item.getQuantity());
 		}
 		Cart cartToUpdate = cartRepository.findById(newCart.getId())
@@ -145,12 +145,12 @@ public class OrderServiceImpl implements OrderService {
 		for (CartItem item: items) {
 			item.setCart(newCart);
 			cartItemRepository.save(item);
-			// 商品の在庫数を更新
+			// update product stock
 			Product product = productRepository.findById(item.getProduct().getId())
 					.orElseThrow(() -> new ResourceNotFoundException("Product", "id", item.getProduct().getId()));
 			product.setQuantity(product.getQuantity() - item.getQuantity());
 			productRepository.save(product);
-			// 商品の売上数を更新
+			// update sales count
 			updateSalesQuantity(product, item.getQuantity());
 		}
 		Cart cartToUpdate = cartRepository.findById(newCart.getId())
@@ -171,10 +171,10 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	/**
-	 * 指定するユーザIDの注文のリストを取得
+	 * Get order history of a user
 	 * 
-	 * @param userId: ユーザID
-	 * @return 注文リスト
+	 * @param userId: user id
+	 * @return order history
 	 */
 	@Override
 	public List<OrderDTO> getUserOrderList() {
@@ -187,7 +187,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	/**
-	 * 商品ごとの売上個数を保存
+	 * Update sales count
 	 *
 	 * @param product
 	 * @param quantity

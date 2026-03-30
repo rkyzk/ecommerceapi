@@ -64,7 +64,8 @@ public class Address {
 
 	private LocalDateTime updateDate;
 
-	public Address(User user, String fullname, String streetAddress1, String streetAddress2,
+	public Address(User user, String fullname, Boolean defaultAddressFlg,
+			Boolean shippingAddress, String streetAddress1, String streetAddress2,
 			String streetAddress3, String city, String prefecture, String postalCode) {
 		this.user= user;
 		this.fullname = fullname;

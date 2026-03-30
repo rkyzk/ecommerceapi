@@ -13,6 +13,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 	@Autowired
 	ProductDetailRepository productDetailRepository;
 
+	/**
+	 * Get product details
+	 */
 	@Override
 	public List<ProductDetail> getProductDetail(Long productId) {
 		return productDetailRepository

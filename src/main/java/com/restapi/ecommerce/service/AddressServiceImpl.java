@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.restapi.ecommerce.entity.Address;
@@ -21,13 +22,16 @@ import jakarta.transaction.Transactional;
 @Service
 public class AddressServiceImpl implements AddressService {
 	@Autowired
-	ModelMapper modelMapper;
+	private ModelMapper modelMapper;
 
 	@Autowired
-	AddressRepository addressRepository;
+	private AddressRepository addressRepository;
 
 	@Autowired
-	OrderRepository orderRepository;
+	private OrderRepository orderRepository;
+
+	@Value("${msg.address.service001}")
+	private String msg001;
 
 	/**
 	 * add an address
@@ -82,7 +86,7 @@ public class AddressServiceImpl implements AddressService {
 		addressInDB.setPostalCode(addressDTO.getPostalCode());
 		addressInDB.setUpdateDate(LocalDateTime.now());
 		Address updatedAddress = addressRepository.save(addressInDB);
-		// defaultAddressFlgがtrueだったら今までtrueだったアドレスのフラグをfalseに更新する
+		// If defaultAddressFlg is true, update the old default address by setting the flag false.
 		if (addressDTO.isDefaultAddressFlg() == true) {
 			Long userId = addressDTO.getUser().getUserId();
 			Boolean sAddr = addressDTO.isShippingAddress();
@@ -98,24 +102,24 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	/**
-	 * delete address
-	 * If orders table has the address, set user id = null
+	 * Delete address.
+	 * If the address is present in the orders table,
+	 * the address won't be deleted but user id will be set to null
 	 * 
-	 * 住所を削除。注文テーブルに住所が存在する場合、レコードを物理削除せず
-	 * ユーザIDをnullに更新する。
 	 */
 	@Override
 	public String deleteAddress(Long addressId) {
 		Address address = addressRepository.findByAddressId(addressId)
 				.orElseThrow(() -> new ResourceNotFoundException("Address", "id", addressId));
-		// check if orders table has the address
-		List<Order> orderList = orderRepository.findByShippingAddressAddressIdOrBillingAddressAddressId(addressId, addressId);
+		// check if the address is present in the orders table
+		List<Order> orderList = orderRepository
+				.findByShippingAddressAddressIdOrBillingAddressAddressId(addressId, addressId);
 		if (orderList.size() == 0) {
 		    addressRepository.deleteByAddressId(addressId);
 		} else {
 			address.setUser(null);
 			addressRepository.save(address);
 		}
-		return "Address (address ID: " + addressId + ") was successfully deleted.";
+		return msg001 + addressId;
 	}
 }
