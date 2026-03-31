@@ -1,13 +1,13 @@
 package com.restapi.ecommerce.enums;
 
 /**
- * ユーザの権限のEnum
+ * Enum for user roles (authorization)
  */
 public enum AppRole {
-    /** ユーザ */
+    /** user */
     ROLE_USER,
-    /** 販売者 （未使用）*/
+    /** seller (currently not in use) */
     ROLE_SELLER,
-    /** アドミン */
+    /** admin */
     ROLE_ADMIN
 }

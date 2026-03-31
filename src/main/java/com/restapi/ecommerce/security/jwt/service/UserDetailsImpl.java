@@ -15,7 +15,7 @@ import com.restapi.ecommerce.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** ユーザ詳細のクラス */
+/** User details implementation */
 @NoArgsConstructor
 @Data
 public class UserDetailsImpl implements UserDetails {
@@ -32,7 +32,6 @@ public class UserDetailsImpl implements UserDetails {
 
     private Collection<? extends GrantedAuthority> authorities;
 
-    /** コンストラクタ */
     public UserDetailsImpl(Long id, String username, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
@@ -42,9 +41,9 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    /** ユーザ詳細データを作成 */
+    /** Build user details */
     public static UserDetailsImpl build(User user) {
-        /** ユーザの権限を取得　*/
+        /** Get user authorities　*/
         List<GrantedAuthority> authorities = user.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleName().name()))
                 .collect(Collectors.toList());
@@ -54,10 +53,10 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
-                authorities); // ユーザの権限
+                authorities);
     }
 
-    /** ユーザの権限を取得　*/
+    /** Get user authorities　*/
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

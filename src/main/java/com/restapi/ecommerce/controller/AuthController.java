@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -80,6 +81,30 @@ public class AuthController {
 	@Autowired
 	PasswordEncoder encoder;
 
+	@Value("${auth.controller.msg001}")
+	private String msg001;
+
+	@Value("${auth.controller.msg002}")
+	private String msg002;
+
+	@Value("${auth.controller.msg003}")
+	private String msg003;
+
+	@Value("${auth.controller.msg004}")
+	private String msg004;
+
+	@Value("${auth.controller.msg005}")
+	private String msg005;
+
+	@Value("${auth.controller.msg006}")
+	private String msg006;
+
+	@Value("${auth.controller.msg007}")
+	private String msg007;
+
+	@Value("${auth.controller.msg008}")
+	private String msg008;
+
 	/**
 	 * Authenticate user with username and password,
 	 * generate a jwt Cookie from user details,
@@ -134,7 +159,8 @@ public class AuthController {
 		String refreshToken = jwtUtils.getJwtRefreshFromCookies(request);
 		if (!StringUtils.isEmpty(refreshToken)) {
 			if (!refreshTokenService.verifyRefreshTokenExp(refreshToken)) {
-				return ResponseEntity.ok().body(new MessageResponse("Refresh Token has expired."));
+				return ResponseEntity.ok().body(new MessageResponse(msg001));
+				// Message: "Refresh Token has expired."
 			}
 			RefreshToken token = refreshTokenService.getToken(refreshToken)
 					.orElseThrow(() -> new ResourceNotFoundException("Token", "token value", refreshToken));
@@ -143,9 +169,9 @@ public class AuthController {
 							.loadUserByUsername(token.getUser().getUsername()));
 			return ResponseEntity.ok()
 					.header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-					.body(new MessageResponse("JWT refreshed."));
+					.body(new MessageResponse(msg002)); // "JWT has been regenerated."
 		}
-		return ResponseEntity.badRequest().body(new MessageResponse("Refresh Token is empty."));
+		return ResponseEntity.badRequest().body(new MessageResponse(msg003));
 	}
 
 	/**
@@ -158,11 +184,11 @@ public class AuthController {
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest req) {
 		if (userRepository.existsByUsername(req.getUsername())) {
 			return ResponseEntity.badRequest().body(
-					new MessageResponse("Username is already used."));
+					new MessageResponse(msg004)); // Username is already in use.
 		}
 		if (userRepository.existsByEmail(req.getEmail())) {
 			return ResponseEntity.badRequest().body(
-					new MessageResponse("Email is already used."));
+					new MessageResponse(msg005)); // Email is already in use.
 		}
 		User user = new User(req.getUsername(),
 				req.getEmail(),
@@ -171,31 +197,31 @@ public class AuthController {
 		Set<Role> roles = new HashSet<Role>();
 		if (strRoles == null) {
 			Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
-					.orElseThrow(() -> new RuntimeException("Role is not found."));
+					.orElseThrow(() -> new RuntimeException(msg006)); // Role is not found.
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(role -> {
 				switch(role) {
 					case "admin":
 						Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException("Role is not found."));
+							.orElseThrow(() -> new RuntimeException(msg006)); // Role is not found.
 						roles.add(adminRole);
 						break;
 					case "seller":
 						Role sellerRole = roleRepository.findByRoleName(AppRole.ROLE_SELLER)
-							.orElseThrow(() -> new RuntimeException("Role is not found."));
+							.orElseThrow(() -> new RuntimeException(msg006)); // Role is not found.
 						roles.add(sellerRole);
 						break;
 					default:
 						Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
-							.orElseThrow(() -> new RuntimeException("Role is not found"));
+							.orElseThrow(() -> new RuntimeException(msg006)); // Role is not found.
 						roles.add(userRole);
 				}
 			});
 		}
 		user.setRoles(roles);
 		userRepository.save(user);
-		return ResponseEntity.ok(new MessageResponse("You've been registered."));
+		return ResponseEntity.ok(new MessageResponse(msg007)); // "Your account has been created."
 	}
 
 	/**
@@ -243,6 +269,6 @@ public class AuthController {
 		return ResponseEntity.ok()
 				.header(HttpHeaders.SET_COOKIE, cleanJwtCookie.toString())
 				.header(HttpHeaders.SET_COOKIE, cleanJwtRefreshCookie.toString())
-				.body(new MessageResponse("You've been logged out"));
+				.body(new MessageResponse(msg008)); // "You've been logged out."
 	}
 }

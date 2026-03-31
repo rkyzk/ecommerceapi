@@ -56,9 +56,6 @@ public class CartServiceImpl implements CartService {
 	@Value("${msg.cart.service005}")
 	private String msg005;
 
-	@Value("${msg.cart.service006}")
-	private String msg006;
-
 	/**
 	 * add product to cart
 	 *
@@ -157,7 +154,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	public String deleteProductFromCart(Long cartId, Long productId) {
 		CartItem item = cartItemRepository.findByCartIdAndProductId(cartId, productId);
-		if (item == null) throw new APIException(msg004);
+		if (item == null) throw new APIException(msg003);
 		    // Message content: Cart item with the given product ID and cart ID was not found
 		cartItemRepository.delete(item);
 		Cart cart = cartRepository.findById(cartId)
@@ -166,11 +163,11 @@ public class CartServiceImpl implements CartService {
 		set.remove(item);
 		if (set.size() == 0) {
 			cartRepository.delete(cart);
-			return msg005; // "The cart is empty."
+			return msg004; // "The cart is empty."
 		}
 		cart.setCartItems(set);
 		updateTotalPrice(cart);
-		return msg006 + item.getProduct().getProductName();
+		return msg005 + item.getProduct().getProductName();
 			// "Product was removed from the cart. Product name:"
 	}
 

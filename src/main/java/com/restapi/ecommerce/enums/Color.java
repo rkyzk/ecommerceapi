@@ -1,5 +1,10 @@
 package com.restapi.ecommerce.enums;
 
+/**
+ * Enum for product colors
+ *
+ * @author reikoyazaki
+ */
 public enum Color {
     RED(1),
     ORANGE(2),
