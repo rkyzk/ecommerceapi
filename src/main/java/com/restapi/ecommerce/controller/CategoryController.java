@@ -50,7 +50,7 @@ public class CategoryController {
 			    required=false) Integer pageSize,
 			@RequestParam (name = "sortBy", defaultValue = "categoryId",
 			    required=false) String sortBy,
-			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
+			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR_ASC,
 			    required=false) String sortOrder) {
 		CategoryResponse response = categoryService.getCategories(pageNumber, pageSize, sortBy, sortOrder);
 		return new ResponseEntity<> (response, HttpStatus.OK);

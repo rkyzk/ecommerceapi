@@ -9,6 +9,10 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.restapi.ecommerce.entity.Address;
@@ -25,6 +29,7 @@ import com.restapi.ecommerce.payload.AddressDTO;
 import com.restapi.ecommerce.payload.OrderDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
 import com.restapi.ecommerce.payload.OrderRequestWithAddressesDTO;
+import com.restapi.ecommerce.payload.OrderResponse;
 import com.restapi.ecommerce.repository.AddressRepository;
 import com.restapi.ecommerce.repository.CartItemRepository;
 import com.restapi.ecommerce.repository.CartRepository;
@@ -171,19 +176,36 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	/**
-	 * Get order history of a user
+	 * Get current user's order list
 	 * 
 	 * @param userId: user id
 	 * @return order history
 	 */
 	@Override
-	public List<OrderDTO> getUserOrderList() {
+	public OrderResponse getUserOrderList(Integer pageNumber, Integer pageSize,
+			String sortOrder) {
 		User user = authUtil.loggedinUser();
-		List<Order> orders = orderRepository.findByUserUserIdOrderByOrderDateDesc(user.getUserId());
-		if (orders == null) return null;
-		return orders.stream()
+		String sortBy = "orderDate";
+
+		Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc")
+				? Sort.by(sortBy).ascending()
+				: Sort.by(sortBy).descending();
+		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, sortByAndOrder);
+		Page<Order> orderPage = orderRepository.findByUserUserId(user.getUserId(), pageDetails);
+		List<Order> orders = orderPage.getContent();
+		if (orders.isEmpty()) return null;
+		List<OrderDTO> orderDTOs = orders.stream()
 				.map(order -> modelMapper.map(order, OrderDTO.class))
-								.toList();
+				.toList();
+		OrderResponse response = new OrderResponse();
+		response.setContent(orderDTOs);
+		// set pagination data
+		response.setPageNumber(orderPage.getNumber());
+		response.setPageSize(orderPage.getSize());
+		response.setTotalElements(orderPage.getTotalElements());
+		response.setTotalPages(orderPage.getTotalPages());
+		response.setLastPage(orderPage.isLast());
+		return response;
 	}
 
 	/**

@@ -1,22 +1,12 @@
-# E-commerce REST API
+# ECサイトREST API
 
-<img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="landing page">
+<img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="ホームページ">
 
-<p style="width: 90%;">E-commerce REST API built with Java Spring Boot
-Deployed website：</p>
+<p style="width: 90%;">ECサイトのREST API。
+Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトは下リンク先で公開：</p>
 <a href="http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com">Wild Blossum Garden</a><br>
 
-<a href="https://github.com/rkyzk/vite-react" target="_blank">Frontend Project URL</a><br/>
-
-insert data (descriptions, addiotinal notes)
-reviews
-review swiper
-swiper arrow colors
-10 reviews per page
-images
-
-
-
+<a href="https://github.com/rkyzk/vite-react" target="_blank">フロントエンドプロジェクトのリポジトリ</a><br/>
 
 Barcelona
 https://www.bostonseeds.com/products/barcelona-tulip-bulbs.html

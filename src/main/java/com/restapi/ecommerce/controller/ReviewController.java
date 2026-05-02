@@ -44,7 +44,7 @@ public class ReviewController {
 			    required=false) Integer pageSize,
 			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,
 			    required=false) String sortBy,
-			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
+			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR_DESC,
 			    required=false) String sortOrder) {
 		ReviewResponse reviewResponse = reviewService.getAllReviews(pageNumber, pageSize,
 				sortBy, sortOrder);

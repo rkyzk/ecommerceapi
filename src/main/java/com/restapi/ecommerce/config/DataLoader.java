@@ -41,31 +41,31 @@ package com.restapi.ecommerce.config;
 //
 //
 //            // Create users if not already present
-//            if (!userRepository.existsByUsername("user1")) {
-//                User user1 = new User("user1", "user1@example.com", passwordEncoder.encode("password1"));
+//            if (!userRepository.existsByUsername("testuser")) {
+//                User user1 = new User("testuser", "testuser@test.com", passwordEncoder.encode("password1"));
 //                userRepository.save(user1);
 //            }
 //
-//            if (!userRepository.existsByUsername("seller1")) {
-//                User seller1 = new User("seller1", "seller1@example.com", passwordEncoder.encode("password2"));
-//                userRepository.save(seller1);
-//            }
+////            if (!userRepository.existsByUsername("seller1")) {
+////                User seller1 = new User("seller1", "seller1@example.com", passwordEncoder.encode("password2"));
+////                userRepository.save(seller1);
+////            }
 //
 //            if (!userRepository.existsByUsername("admin")) {
-//                User admin = new User("admin", "admin@example.com", passwordEncoder.encode("adminPass"));
+//                User admin = new User("admin", "admin@wildblossom.com", passwordEncoder.encode("adminPass"));
 //                userRepository.save(admin);
 //            }
 //
 //            // Update roles for existing users
-//            userRepository.findByUsername("user1").ifPresent(user -> {
+//            userRepository.findByUsername("testuser").ifPresent(user -> {
 //                user.setRoles(userRoles);
 //                userRepository.save(user);
 //            });
-//
-//            userRepository.findByUsername("seller1").ifPresent(seller -> {
-//                seller.setRoles(sellerRoles);
-//                userRepository.save(seller);
-//            });
+////
+////            userRepository.findByUsername("seller1").ifPresent(seller -> {
+////                seller.setRoles(sellerRoles);
+////                userRepository.save(seller);
+////            });
 //
 //            userRepository.findByUsername("admin").ifPresent(admin -> {
 //                admin.setRoles(adminRoles);
@@ -73,4 +73,4 @@ package com.restapi.ecommerce.config;
 //            });
 //        };
 //}
-//
+
