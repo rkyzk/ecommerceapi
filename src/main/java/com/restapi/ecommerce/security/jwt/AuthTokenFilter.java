@@ -62,7 +62,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
     /**
      * Validate JWT in the request cookie
-     * Throw exceptions if invalid.
+     * Throw exceptions if the token is invalid.
      */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -72,6 +72,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String jwt = jwtUtils.getJwtFromCookies(request);
         logger.debug(msg002, jwt);
         String username = "";
+        System.out.println(jwt);
         try {
         	username = jwtUtils.getUsernameFromJwtToken(jwt);
         } catch (ExpiredJwtException e) {

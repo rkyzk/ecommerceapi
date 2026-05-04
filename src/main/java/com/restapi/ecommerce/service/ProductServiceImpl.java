@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
 	private CategoryRepository categoryRepository;
 
 	@Autowired
-	private ImgUploadService imgUploadService;
+	private ImageUploadService imgUploadService;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -228,7 +228,7 @@ public class ProductServiceImpl implements ProductService {
 		String imageName = productToDelete.getImageName();
 		// if there's an image file, delete it from S3 bucket. 
 		if ((imageName != "") && (imageName != null)) {
-			imgUploadService.deleteImg(imageName);
+			//imgUploadService.deleteImage(imageName);
 		}
 	    productToDelete.setDeletedAt(Instant.now());
 		Product deletedProd = productRepository.save(productToDelete);
@@ -262,13 +262,13 @@ public class ProductServiceImpl implements ProductService {
 	 */
 	private String uploadImage(String imageName, MultipartFile file, String categoryName) {
 		// store it in S3 bucket
-		String imagePath = imgUploadService.uploadImg(
-			file, categoryName, // specify the folder 
-			imageName);
+//		String imagePath = imgUploadService.uploadImage(
+//			file, categoryName, // specify the folder 
+//			imageName);
 		// if upload fails, set error response
-		if (imagePath == null) { 
-			// to do
-		}
-		return imagePath;
+//		if (imagePath == null) { 
+//			// to do
+//		}
+		return null;
 	}
 }

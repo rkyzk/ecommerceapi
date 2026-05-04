@@ -15,6 +15,8 @@ swiper arrow colors
 10 reviews per page
 images
 
+image upload AWS
+https://qiita.com/tamorieeeen/items/051eb30f278e03f4ceff
 
 
 

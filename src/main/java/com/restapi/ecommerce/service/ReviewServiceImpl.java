@@ -1,7 +1,10 @@
 package com.restapi.ecommerce.service;
 
+
 import java.time.Instant;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restapi.ecommerce.entity.Order;
 import com.restapi.ecommerce.entity.Review;
@@ -30,7 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private OrderRepository orderRepository;
 
 	@Autowired
-	private ImgUploadService imgUploadService;
+	private ImageUploadService imgUploadService;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -54,7 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
 		Pageable pageDetails = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy).descending());
 		Page<Review> reviewPage = null;
 		// get all reviews
-		reviewPage = reviewRepository.findByValidIsTrueOrderByCreatedAtDesc(pageDetails);
+		reviewPage = reviewRepository.findByPublicizeFlgIsTrueOrderByCreatedAtDesc(pageDetails);
 		List<Review> reviews = reviewPage.getContent();
 		// return null if no reviews are present
 		if (reviews.isEmpty()) return null;
@@ -73,17 +77,49 @@ public class ReviewServiceImpl implements ReviewService {
 	};
 
 	@Override
-	public Long postReview(ReviewDTO reviewDTO, Long orderId) {
+	public Long postReview(String reviewContent, Byte stars,
+			String displayName, MultipartFile file, Long orderId) {
+		ReviewDTO reviewDTO = new ReviewDTO();
+		reviewDTO.setReviewContent(reviewContent);
+		reviewDTO.setStars(stars);
+		reviewDTO.setDisplayName(displayName);
 		Order order = orderRepository.findById(orderId)
 				.orElseThrow(() -> new ResourceNotFoundException("Order", "id", orderId));
 		reviewDTO.setOrder(order);
 		reviewDTO.setUser(authUtil.loggedinUser());
 		reviewDTO.setCreatedAt(Instant.now());
-		reviewDTO.setValid(true);
+		// if image was added, upload it on S3 
+		if (file != null && !file.isEmpty()) {
+			String fileName = file.getOriginalFilename();
+			int ind = fileName.lastIndexOf(".");
+			String updatedFileName = fileName.substring(0, ind) + getSaltString(12) + 
+					"." + fileName.substring(ind + 1);
+			// get current year
+			String year = ((Integer)Calendar.getInstance().get(Calendar.YEAR)).toString();
+			// upload the image to S3 bucket
+			try {
+				imgUploadService.uploadImage(year + "/" + updatedFileName, file);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		    reviewDTO.setImagePath(year + "/" + updatedFileName);
+		}
 		Review savedReview = reviewRepository.save(modelMapper.map(reviewDTO, Review.class));
 		// set review instance to the corresponding order instance
 		order.setReview(savedReview);
 		orderRepository.save(order);
 		return savedReview.getId();
 	}
+
+	private String getSaltString(int length) {
+        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < length) {
+            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
+            salt.append(SALTCHARS.charAt(index));
+        }
+        String saltStr = salt.toString();
+        return saltStr;
+    }
 }

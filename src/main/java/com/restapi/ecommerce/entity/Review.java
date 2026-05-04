@@ -50,8 +50,9 @@ public class Review {
 	@Max(5)
 	private byte stars;
 
+	private String displayName;
 	private Instant createdAt;
 	private Instant updatedAt;
-	private boolean anonym;
-	private boolean valid;
+	private boolean publicizeFlg;
+	private String imagePath;
 }

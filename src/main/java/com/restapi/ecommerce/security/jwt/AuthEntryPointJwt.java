@@ -44,7 +44,6 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", frontEndUrl);
         final Map<String, Object> body = new HashMap<>();
-
 	    String attr = (String)request.getAttribute("error");   
 	    if (attr != null && attr.equals("expiredJwt")) {
 	    	response.sendError(420, "Jwt has expired.");
