@@ -56,7 +56,7 @@ public class ReviewController {
 	}
 
 	/**
-	 * Save a review entry for an order.
+	 * Save a review entry about an order.
 	 *
 	 * @param reviewDTO
 	 * @param orderId
@@ -65,7 +65,7 @@ public class ReviewController {
 	@PostMapping("/review/{orderId}")
 	public ResponseEntity<?> postReview(
 			@RequestParam("reviewContent") String reviewContent,
-			@RequestParam("stars") Byte stars,
+			@RequestParam("stars") byte stars,
 			@RequestParam("displayName") String displayName,
 			@RequestParam("file") MultipartFile file,
 			@PathVariable Long orderId) {

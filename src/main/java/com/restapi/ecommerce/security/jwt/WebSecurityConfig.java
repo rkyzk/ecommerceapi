@@ -35,7 +35,7 @@ public class WebSecurityConfig {
 	}
 
 	/**
-	 * set instances of UserDetailsService class and
+	 * Set instances of UserDetailsService class and
 	 * of PasswordEncoder to DaoAuthenticationProvider
 	 * and return it.
 	 * 
@@ -51,7 +51,7 @@ public class WebSecurityConfig {
 	}
 
 	/**
-	 * return authenticationManager
+	 * Return authenticationManager
 	 * @return
 	 */
 	@Bean
@@ -76,24 +76,23 @@ public class WebSecurityConfig {
 	 * @return
 	 */
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable())
+	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.csrf(csrf -> csrf.disable())
 		    .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 		     // Stateless: SecurityContext will be deleted after each request is handled.
 		    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		    .authorizeHttpRequests(auth ->
 	            auth.requestMatchers("/api/public/**", "/api/auth/**").permitAll()
-	        // .requestMatchers("/api/admin/**").permitAll() // during devlopment
-		    // .requestMatchers("/h2-console/**").permitAll()
+		    // .requestMatchers("/h2-console/**").permitAll() // during development
 	                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		            .anyRequest().authenticated()
 		);
-		http.authenticationProvider(authenticationProvider());
+		httpSecurity.authenticationProvider(authenticationProvider());
 		// Add authenticationJwtTokenFilter before UsernamePasswordAuthenticationFilter
-		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-		http.headers(headers -> headers.frameOptions(
+		httpSecurity.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+		httpSecurity.headers(headers -> headers.frameOptions(
 				frameOptions -> frameOptions.sameOrigin()));
-		return http.build();
+		return httpSecurity.build();
 	}
 
 	/**

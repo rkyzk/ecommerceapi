@@ -72,7 +72,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         String jwt = jwtUtils.getJwtFromCookies(request);
         logger.debug(msg002, jwt);
         String username = "";
-        System.out.println(jwt);
         try {
         	username = jwtUtils.getUsernameFromJwtToken(jwt);
         } catch (ExpiredJwtException e) {

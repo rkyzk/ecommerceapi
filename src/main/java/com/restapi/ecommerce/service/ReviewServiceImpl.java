@@ -77,7 +77,7 @@ public class ReviewServiceImpl implements ReviewService {
 	};
 
 	@Override
-	public Long postReview(String reviewContent, Byte stars,
+	public Long postReview(String reviewContent, byte stars,
 			String displayName, MultipartFile file, Long orderId) {
 		ReviewDTO reviewDTO = new ReviewDTO();
 		reviewDTO.setReviewContent(reviewContent);
