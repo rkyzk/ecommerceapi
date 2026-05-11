@@ -3,7 +3,7 @@
 <img src="./src/main/resources/images/landing-page.png" style="width: 85%;" alt="Landing page" title="landing page">
 
 Deployed website:
-<a href="https://main.d1ke51gjkcvl1c.amplifyapp.com" target="_blank"> Wild Blossom Garden</a><br>
+<a href="https://main.dw15oiibmfng0.amplifyapp.com" target="_blank"> Wild Blossom Garden</a><br>
 
 <h2>Overview</h2>
 Wild Blossom Garden is an imaginary online shop selling flower bulbs. Users can browse products, place items in their shopping carts, enter delivery and payment information and place orders. They can also view their order history and submit feedback about their purchase. This Rest API  handles requests from the frontend application and manages authentication and interactions with the database.<br>
@@ -36,11 +36,11 @@ The source code for the frontend application can be found <a href="https://githu
 <h2 id="link2">Endpoints</h2>
  
 <h3>Products</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-|:--: | :----------------------- | :--------------------| :-----: |
-| 1   | return product data      | /api/public/products | get   |
-| 2   | return product detail    | /public/product/detail/{productId}| get   | 
-| 3   | return product data of<br> a specific category| /public/categories/<br>{categoryId}/products| get   |            
+  | Nr  | Functions                | API Endpoints        | Methods |
+  |:--: | :----------------------- | :--------------------| :-----: |
+  | 1   | return product data      | /api/public/products | get   |
+  | 2   | return product detail    | /public/product/detail/{productId}| get   | 
+  | 3   | return product data of<br> a specific category| /public/categories/ <br>{categoryId}/products| get   |            
  
 <h3>Authentication</h3>
 | Nr  | Functions                | API Endpoints        | Methods |
