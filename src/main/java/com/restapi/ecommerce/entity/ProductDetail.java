@@ -35,7 +35,7 @@ public class ProductDetail {
 
 	@Size(min=2, max=20)
 	private String key;
-	@Size(min=2, max=300)
+	@Size(min=2, max=500)
 	private String value;
 
 	public ProductDetail(Product product, String key, String value) {

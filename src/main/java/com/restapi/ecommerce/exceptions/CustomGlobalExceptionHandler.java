@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.restapi.ecommerce.payload.APIResponse;
 
 /**
- * カスタムグローバル例外のクラス
+ * Custom Global Exception class
  */
 @RestControllerAdvice
 public class CustomGlobalExceptionHandler {

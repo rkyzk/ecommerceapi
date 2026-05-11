@@ -21,24 +21,24 @@ import com.restapi.ecommerce.security.jwt.service.UserDetailsServiceImpl;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-	/** ユーザ情報を取得するサービス */
 	@Autowired
 	UserDetailsServiceImpl userDetailsService;
 
-	/** 例外を処理するクラス */
+	/** Class that handles exceptions  */
 	@Autowired
 	private AuthEntryPointJwt unauthorizedHandler;
 
-	/** authenticationJWTトークンフィルター */
+	/** JWT authentication filter */
 	@Bean
 	public AuthTokenFilter authenticationJwtTokenFilter() {
 		return new AuthTokenFilter();
 	}
 
 	/**
-	 * authenticationProviderとして
-	 * UserDetailsServiceとPasswordEncoderを設定し、
-	 * DaoAuthenticationProviderを返す
+	 * Set instances of UserDetailsService class and
+	 * of PasswordEncoder to DaoAuthenticationProvider
+	 * and return it.
+	 * 
 	 * @return
 	 *
 	 */
@@ -51,7 +51,7 @@ public class WebSecurityConfig {
 	}
 
 	/**
-	 * authConfigに基づく AuthenticationManagerを取得し返す
+	 * Return authenticationManager
 	 * @return
 	 */
 	@Bean
@@ -61,7 +61,7 @@ public class WebSecurityConfig {
 	}
 
 	/**
-	 * BCryptPasswordエンコーダーを返す
+	 * Return an instance of BCryptPassword
 	 * @return
 	 */
 	@Bean
@@ -70,33 +70,36 @@ public class WebSecurityConfig {
 	}
 
 	/**
-	 * SecurityFilterChainを設定し返却する
+	 * Set securityFilterChain and return it
 	 *
+	 * @param http
 	 * @return
 	 */
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable())
+	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.csrf(csrf -> csrf.disable())
 		    .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
-		     // Stateless: SecurityContextはリクエストをプロセスした後、削除される。
+		     // Stateless: SecurityContext will be deleted after each request is handled.
 		    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 		    .authorizeHttpRequests(auth ->
 	            auth.requestMatchers("/api/public/**", "/api/auth/**").permitAll()
-	        // .requestMatchers("/api/admin/**").permitAll() // during devlopment
-		    // .requestMatchers("/h2-console/**").permitAll()
+		    // .requestMatchers("/h2-console/**").permitAll() // during development
 	                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 		            .anyRequest().authenticated()
 		);
-		http.authenticationProvider(authenticationProvider());
-		// authenticationJwtTokenFilterをUsernamePasswordAuthenticationFilterの前に追加
-		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-		http.headers(headers -> headers.frameOptions(
+		httpSecurity.authenticationProvider(authenticationProvider());
+		// Add authenticationJwtTokenFilter before UsernamePasswordAuthenticationFilter
+		httpSecurity.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+		httpSecurity.headers(headers -> headers.frameOptions(
 				frameOptions -> frameOptions.sameOrigin()));
-		return http.build();
+		return httpSecurity.build();
 	}
 
-	// access from these addresses will be excluded from the security filter chain.
-	// 下記URLからのアクセスを許容する。
+	/**
+	 * Access from these addresses will be excluded from the security filter chain.
+	 * 
+	 * @return
+	 */
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
 		return (web -> web.ignoring().requestMatchers("/v2/api-docs",

@@ -1,167 +1,44 @@
-# Wild Blossom Garden - REST API for E-commerce Website 
+# ECサイトREST API
 
-<img src="./src/main/resources/images/landing-page.png" style="width: 85%;" alt="Landing page" title="landing page">
+<img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="ホームページ">
 
-Deployed website:
-<a href="https://main.d1ke51gjkcvl1c.amplifyapp.com" target="_blank"> Wild Blossom Garden</a><br>
+<p style="width: 90%;">ECサイトのREST API。
+Vite + Reactのフロントエンドプロジェクトで利用し、デプロイしたサイトは下リンク先で公開：</p>
+<a href="http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com">Wild Blossum Garden</a><br>
 
-<h2>Overview</h2>
-Wild Blossom Garden is an imaginary online shop selling flower bulbs. Users can browse products, place items in their shopping carts, enter delivery and payment information and place orders. They can also view their order history and submit feedback about their purchase. This Rest API  handles requests from the frontend application and manages authentication and interactions with the database.<br>
+<a href="https://github.com/rkyzk/vite-react" target="_blank">フロントエンドプロジェクトのリポジトリ</a><br/>
 
-The source code for the frontend application can be found <a href="https://github.com/rkyzk/vite-react/tree/dev-eng2" target="_blank">here.</a><br/></p>.
+Barcelona
+https://www.bostonseeds.com/products/barcelona-tulip-bulbs.html
+https://www.dutchbulbs.com/products/barcelona_triumph_tulip_?srsltid=AfmBOopZNTvKcsq57eW9GCPtbzS6ldv9nRGiM-98N32G0yxYHFpi5Xmo
 
-<h2>Contents</h2>
-<a href="#link1">1. Main Functions of the Website Wild Blossom Garden</a><br/>
-<a href="#link2">2. Endpoints</a><br/>
-<a href="#link3">3. ER Diagram</a><br/>
-<a href="#link4">4. Use of Stripe API</a><br/>
-<a href="#link5">5. Customization of Spring Security</a><br/>
-<a href="#link6">6. Use of JWT and Refresh Tokens</a><br/>
-<a href="#link7">7. Use of AWS S3 Bucket for Storing Images</a><br/>
-<a href="#link8">8. Deploying on AWS</a><br/>
-<a href="#link9">9. Credits</a><br/>
-
-<h2 id="link1> Main Functions of the Website Wild Blossom Garden</h2>
-- Browse Products
-- View product details
-- Search products by keywords, flower kinds and colors
-- Sort by popularity or prices
-- Manage user accounts
-- Authenticate requests（JWT and refresh tokens are used.）
-- Enter delivery and payment information
-- Place orders
-- View order history, submit feedback
-- View customer review entries
-
-<h2 id="link2">Endpoints</h2>
- 
-<h3>Products</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-|:--: | :----------------------- | :--------------------| :-----: |
-| 1   | return product data      | /api/public/products | get   |
-| 2   | return product detail    | /public/product/detail/{productId}| get   | 
-| 3   | return product data of<br> a specific category| /public/categories/<br>{categoryId}/products| get   |            
- 
-<h3>Authentication</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-|:--: | :----------------------- | :--------------------| :-----: |
-| 1   | create an account        | /api/auth/signup     | post    |
-| 2   | log in                   | /api/auth/signin     | post    | 
-| 3   | log out                  | /api/auth/signout    | post    | 
-| 4   | get user's name          | /api/auth/username   | get     | 
-| 5   | get user data            | /api/auth/user       | get     | 
-
- 
-<h3>Categories (flower kinds)</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
-| 1   | get all categories       | /api/public/categories   | get   |
-| 2   | add a category           | /api/admin/categories    | post   | 
-| 3   | update a category        | /api/admin/categories/<br>{categoryId} | put   | 
-| 4   | delete a category        | /api/admin/categories/<br>delete/{categoryId}| delete| 
-
-<h3>Addresses</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
-| 1   | get all addresses        | /api/addresses       | post   |
-| 2   | add an address           | /api/addresses/anonym| post   | 
-| 3   | get user address         | /api/user/addresses  | get    | 
-| 4   | get address by id        | /api/addresses /{addressId} | get    |
-| 5   | update address by id     | /api/addresses /{addressId} | put    |
-| 6   | delete address by id     | /api/addresses /{addressId} | delete |
-
-<h3>Carts</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
-| 1   | update quantity of an item<br>in cart | /cart/products/{productId}/<br>quantity/{quantity}| put   |
-| 2   | delete a product from cart| /carts/{cartId}/products/<br>{productId}|delete | 
-| 3   | get cart data of the current user| /carts/user/cart  | get    | 
-
-
-<h3>Orders</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
-| 1   | Place order (without<br>registering new addresses)|/order| post   |
-| 2   | Place order (register<br>new addresses)|/order/newaddresses| post   |
-| 3   | Get current user's order<br>list|/order-history| get   |
-| 4   |Create and return a payment<br>intent using Stripe API|/order/stripe-client-secret|post|
-
-<h3>Reviews</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
-| 1   |Get list of review entries|/public/reviews       |get  |
-| 2   |post a review about an order |/review/{orderId}     |post |
-
-<h2>ER Diagram</h2>
-
-<h2>Functions in more details</h2>
-<h2>Use of Stripe API</h2>
-
-<h2>Customization of Spring Security</h2>
-
-<h2>Use of JWT and Refresh Tokens</h2>
-
-<h2>Deploying on AWS</h2>
-
-https://dev.to/wittedtech-by-harshit/mastering-aws-step-by-step-guide-to-deploying-a-full-stack-react-java-spring-boot-app-c8d
-
-<h2>Credits</h2>
-<p>I learned methods to build ecommerce applications in the following course at Udemy:</br>
-  "Java Spring Boot professional eCommerce project master class"</br>
-  https://github.com/EmbarkXOfficial/spring-boot-course</br>
-  I used many aspects learned from the course in this application.
-  </p>
-
-<p>I took code snippets from the following sites</p>
-
-- uploading images on AWS
-https://qiita.com/tamorieeeen/items/051eb30f278e03f4ceff
-
-<p>Paragraphs are taken and modified from the following sites.</p>
-
-Descriptions on Product Detail Page
-
-- Barcelona<br/>
-https://www.bostonseeds.com/products/barcelona-tulip-bulbs.html<br/>
-https://www.dutchbulbs.com/products/barcelona_triumph_tulip_?srsltid=AfmBOopZNTvKcsq57eW9GCPtbzS6ldv9nRGiM-98N32G0yxYHFpi5Xmo<br/>
-
-- Grape Hyacinths<br/>
+Grape Hyacinths
 https://www.gardeningknowhow.com/ornamental/bulbs/grape-hyacinth/planting-and-care-of-grape-hyacinths.htm
 
-- Advance crocus<br/>
+
+advance crocus
 https://www.gardenia.net/plant/crocus-chrysanthus-advance
 
-- Spring Green<br/>
+Descriptions about the products on Product Detail pages are taken from the following website:
 https://www.gardenia.net/plant/tulipa-spring-green-viridiflora-tulip
 
-- Big Chief<br/>
-https://www.farmergracy.co.uk/products/tulip-big-chief-bulbs-uk<br/>
+additional notes
+https://www.floretflowers.com/resources/how-to-grow-tulips/
 
-- Labyrinth
+
+https://www.farmergracy.co.uk/products/tulip-big-chief-bulbs-uk
+
+
+dahlia
 https://www.longfield-gardens.com/products/dahlia-labyrinth?srsltid=AfmBOookZqK4dDSS1cf0GyCY9xqy2ZNSIUIa7fToB2gANSigJ24aeOQG
 
-- White Nettie
 https://www.courtercountryfarm.com/product-page/white-nettie-dahlia-tuber
 
-- Anastasia
+hyacinths
 https://club.global.flowers/en/hyacinthus/14755-hyacinthus-orientalis-anastasia
 
 
-- Growing tips<br/>
-https://www.floretflowers.com/resources/how-to-grow-tulips/<br/>
-
- 
-
-
-
-
-
-
-
-
-
-
-
+https://dev.to/wittedtech-by-harshit/mastering-aws-step-by-step-guide-to-deploying-a-full-stack-react-java-spring-boot-app-c8d
 
 
 

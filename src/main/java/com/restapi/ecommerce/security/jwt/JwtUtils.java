@@ -22,7 +22,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
-/** JWTのユティリティクラス */
+/** JWT utility class */
 @Component
 public class JwtUtils {
 	private static final Logger logger = (Logger) LoggerFactory.getLogger(JwtUtils.class);
@@ -39,6 +39,22 @@ public class JwtUtils {
 	@Value("${spring.app.jwtRefreshCookieName}")
 	private String jwtRefreshCookie;
 
+	@Value("${jwt.utils.msg001}")
+	private String msg001;
+
+	@Value("${jwt.utils.msg002}")
+	private String msg002;
+
+	@Value("${jwt.utils.msg003}")
+	private String msg003;
+
+	/**
+	 * Retrieve the first cookie with the given name.
+	 * 
+	 * @param request
+	 * @param name
+	 * @return cookie  value
+	 */
 	public String getCookieValueByName(HttpServletRequest request, String name) {
 		Cookie cookie = WebUtils.getCookie(request, name);
 		if (cookie != null) {
@@ -62,13 +78,13 @@ public class JwtUtils {
 				.maxAge(24 * 60 * 60)
 				.httpOnly(true)
 				.sameSite("None")
-				.secure(true) // development
+				.secure(true)
 				.build();
 		return cookie;
     }
 
 	/**
-	 * ユーザ名よりJWTを作成、クッキーに設定しクッキーを返す
+	 * Generate JWT from username, set it to cookie and return cookie.
 	 */
 	public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
 		String jwt = generateTokenFromUsername(userPrincipal.getUsername());
@@ -80,7 +96,10 @@ public class JwtUtils {
 	}
 
 	/**
-	 * 空のトークンとパスからクッキーを作成し返す。
+	 * Generate cookie with token value 'null' and return it
+	 * 
+	 * @param name
+	 * @parama path
 	 */
 	public ResponseCookie getCleanCookie(String name, String path) {
 		ResponseCookie cookie = ResponseCookie.from(name, null)
@@ -107,7 +126,7 @@ public class JwtUtils {
 	}
 
 	/**
-	 * JWTよりユーザ名を取得し返す
+	 * Get username from JWT
 	 */
 	public String getUsernameFromJwtToken(String token) {
 		return Jwts.parser()
@@ -119,27 +138,30 @@ public class JwtUtils {
 	}
 
 	/**
-	 * jwtSecretをもとにキーを生成
+	 * Generate key using jwtSecret
 	 */
 	private Key key() {
 		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 	}
 
 	/**
-	 * jwtトークンを検証
+	 * Validate JWT token
+	 * 
+	 * @param authToken
+	 * @return
 	 */
 	public boolean validateJwtToken(String authToken) throws Exception {
 		try {
 			Jwts.parser().verifyWith((SecretKey) key()).build().parseSignedClaims(authToken);
 			return true;
 		} catch (MalformedJwtException e) {
-	        logger.error("JWTトークンが不正: {}", e.getMessage());
+	        logger.error(msg001, e.getMessage());
 	        throw e;
         } catch (UnsupportedJwtException e) {
-            logger.error("JWTトークンがサポートされていません。: {}", e.getMessage());
+            logger.error(msg002, e.getMessage());
             throw e;
         } catch (IllegalArgumentException e) {
-            logger.error("JWTのclaimsの値が不正です。: {}", e.getMessage());
+            logger.error(msg003, e.getMessage());
             throw e;
         }
 	}

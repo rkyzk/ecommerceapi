@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,9 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private ModelMapper modelMapper;
 
+	@Value("${msg.category.service001}")
+	private String msg001;
+
 	@Override
 	public CategoryResponse getCategories(Integer pageNumber, Integer pageSize,
 			String sortBy, String sortOrder) {
@@ -37,7 +41,7 @@ public class CategoryServiceImpl implements CategoryService {
 		Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
 		List<Category> categories = categoryPage.getContent();
 		if (categories.isEmpty()) {
-			throw new APIException("No categories present");
+			throw new APIException(msg001);
 		}
 		List<CategoryDTO> categoryDTOs = categories.stream()
 				.map(category -> modelMapper.map(category, CategoryDTO.class))

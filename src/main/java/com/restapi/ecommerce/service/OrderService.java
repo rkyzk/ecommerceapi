@@ -1,10 +1,9 @@
 package com.restapi.ecommerce.service;
 
-import java.util.List;
-
 import com.restapi.ecommerce.payload.OrderDTO;
 import com.restapi.ecommerce.payload.OrderRequestDTO;
 import com.restapi.ecommerce.payload.OrderRequestWithAddressesDTO;
+import com.restapi.ecommerce.payload.OrderResponse;
 
 import jakarta.transaction.Transactional;
 
@@ -15,5 +14,6 @@ public interface OrderService {
 
 	@Transactional
 	OrderDTO placeOrderWithNewAddresses(OrderRequestWithAddressesDTO orderRequestDTO);
-	List<OrderDTO> getUserOrderList();
+
+	OrderResponse getUserOrderList(Integer pageNumber, Integer pageSize, String sortOrder);
 }

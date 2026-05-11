@@ -10,5 +10,5 @@ import com.restapi.ecommerce.entity.Review;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>{
-	Page<Review> findByValidIsTrueOrderByCreatedAtDesc(Pageable pageDetails);
+	Page<Review> findByPublicizeFlgIsTrueOrderByCreatedAtDesc(Pageable pageDetails);
 }

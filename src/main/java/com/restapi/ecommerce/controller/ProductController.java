@@ -63,7 +63,7 @@ public class ProductController {
 			    required=false) Integer pageSize,
 			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,
 			    required=false) String sortBy,
-			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
+			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR_ASC,
 			    required=false) String sortOrder) {
 		ProductResponse response = productService.getProducts(pageNumber, pageSize, sortBy,
 				sortOrder, keywords, categoryId, colors);
@@ -117,7 +117,7 @@ public class ProductController {
 			    required=false) Integer pageSize,
 			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,
 			    required=false) String sortBy,
-			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
+			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR_ASC,
 			    required=false) String sortOrder) {
 		ProductResponse response = productService.getProductsByCategory(categoryId, pageNumber,
 				pageSize, sortBy, sortOrder);
@@ -125,6 +125,7 @@ public class ProductController {
 	}
 
     /**
+     * NOT IN USE
      * Add product
      *
      * @param productDTO
@@ -139,6 +140,7 @@ public class ProductController {
 	}
 
 	/**
+	 * NOT IN USE
 	 * Update product
 	 *
 	 * @param productDTO
@@ -153,6 +155,7 @@ public class ProductController {
 	}
 
 	/**
+	 * NOT IN USE
 	 * Delete product
 	 * (Insert deleted date in column 'deleted_at')
 	 *

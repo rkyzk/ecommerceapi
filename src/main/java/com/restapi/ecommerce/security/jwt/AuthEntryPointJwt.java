@@ -31,17 +31,19 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     @Value("${frontend.URL}")
 	private String frontEndUrl;
 
+    @Value("${auth.entry.point.msg001}")
+	private String msg001;
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
-        logger.error("認証エラー: {}", authException.getCause(), authException.getMessage());
-
+    	// "Authentication Error: {}"
+        logger.error(msg001, authException.getCause(), authException.getMessage());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Origin", frontEndUrl);
         final Map<String, Object> body = new HashMap<>();
-
 	    String attr = (String)request.getAttribute("error");   
 	    if (attr != null && attr.equals("expiredJwt")) {
 	    	response.sendError(420, "Jwt has expired.");

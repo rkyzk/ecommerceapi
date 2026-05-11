@@ -1,6 +1,7 @@
 package com.restapi.ecommerce.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,12 +15,19 @@ public class AuthUtil {
 	@Autowired
 	UserRepository userRepository;
 
-	/** ログイン中ユーザのデータを取得 */
+	@Value("${auth.util.msg001}")
+	private String msg001;
+
+	/**
+	 * Get current user's data
+	 *
+	 * @return User
+	 */
 	public User loggedinUser() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = userRepository.findByUsername(authentication.getName())
 				.orElseThrow(() -> new UsernameNotFoundException(
-						"ユーザ名が「" + authentication.getName() + "」のユーザは見つかりません。"));
+						msg001 + authentication.getName()));
 		return user;
 	}
 }

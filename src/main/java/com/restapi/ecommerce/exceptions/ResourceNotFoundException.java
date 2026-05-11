@@ -1,28 +1,30 @@
 package com.restapi.ecommerce.exceptions;
 
 /**
- * リソース不在の例外クラス
+ * Exception to be thrown when resource is not found.
  */
 public class ResourceNotFoundException extends RuntimeException {
 	String resourceName;
 	String field;
-	String fieldName;
-	Long fieldId;
-	
+	String strValue;
+	Long longValue;
+
 	public ResourceNotFoundException() {
 	}
-	
-	public ResourceNotFoundException(String resourceName, String field, String fieldName) {
-		super(String.format("%sが%sの%sは見つかりません。", fieldName, field, resourceName));
+
+	public ResourceNotFoundException(String resourceName, String field, String strValue) {
+		super(String.format("Resource with the specified field value was not found:"
+				+ "Resource: %s, Field: %s, Value: %s", resourceName, field, strValue));
 		this.resourceName = resourceName;
 		this.field = field;
-		this.fieldName = fieldName;
+		this.strValue = strValue;
 	}
-	
-	public ResourceNotFoundException(String resourceName, String field, Long fieldId) {
-		super(String.format("%sが%dの%sは見つかりません。", field, fieldId, resourceName));
+
+	public ResourceNotFoundException(String resourceName, String field, Long longValue) {
+		super(String.format("Resource with the specified field value was not found:"
+				+ "Resource: %s, Field: %s, Value: %d", resourceName, field, longValue));
 		this.resourceName = resourceName;
 		this.field = field;
-		this.fieldId = fieldId;
+		this.longValue = longValue;
 	}
 }

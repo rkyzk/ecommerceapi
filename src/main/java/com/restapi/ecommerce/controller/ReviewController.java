@@ -6,14 +6,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.restapi.ecommerce.config.AppConstants;
 import com.restapi.ecommerce.payload.APIResponse;
-import com.restapi.ecommerce.payload.ReviewDTO;
 import com.restapi.ecommerce.payload.ReviewResponse;
 import com.restapi.ecommerce.service.ReviewService;
 
@@ -44,7 +43,7 @@ public class ReviewController {
 			    required=false) Integer pageSize,
 			@RequestParam (name = "sortBy", defaultValue = AppConstants.SORT_PRODUCTS_BY,
 			    required=false) String sortBy,
-			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR,
+			@RequestParam (name = "sortOrder", defaultValue = AppConstants.SORT_DIR_DESC,
 			    required=false) String sortOrder) {
 		ReviewResponse reviewResponse = reviewService.getAllReviews(pageNumber, pageSize,
 				sortBy, sortOrder);
@@ -57,17 +56,23 @@ public class ReviewController {
 	}
 
 	/**
-	 * Save a review entry for an order.
+	 * Save a review entry about an order.
 	 *
 	 * @param reviewDTO
 	 * @param orderId
 	 * @return
 	 */
 	@PostMapping("/review/{orderId}")
-	public ResponseEntity<?> postReview(@RequestBody ReviewDTO reviewDTO, @PathVariable Long orderId) {
-		Long reviewId = reviewService.postReview(reviewDTO, orderId);
+	public ResponseEntity<?> postReview(
+			@RequestParam("reviewContent") String reviewContent,
+			@RequestParam("stars") byte stars,
+			@RequestParam("displayName") String displayName,
+			@RequestParam("file") MultipartFile file,
+			@PathVariable Long orderId) {
+		Long reviewId = reviewService.postReview(reviewContent, stars,
+				displayName, file, orderId);
 		APIResponse response = new APIResponse();
-		response.setMessage("The review entry has been saved." + reviewId);
+		response.setMessage("The review entry has been saved: " + reviewId);
 		return new ResponseEntity<APIResponse> (response, HttpStatus.OK);
 	}
 }

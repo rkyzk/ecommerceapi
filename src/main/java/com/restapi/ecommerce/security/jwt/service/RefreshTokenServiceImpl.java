@@ -47,7 +47,6 @@ public class RefreshTokenServiceImpl {
 				.orElseThrow(() -> new ResourceNotFoundException("Token", "token value", token));
 		if (refreshToken.getRefreshTokenExpTime().compareTo(Instant.now()) < 0) {
 			refreshTokenRepository.delete(refreshToken);
-			// throw new APIException("Token has expired. Please sign in again.");
 			return false;
 		}
 		return true;
