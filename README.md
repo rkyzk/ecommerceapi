@@ -1,15 +1,14 @@
-# Wild Blossom Garden - REST API for ECommerce Website 
+# Wild Blossom Garden - REST API for E-commerce Website 
 
-<img src="./src/main/resources/images/homepage.jpg" style="width: 85%;" alt="Landing page" title="landing page">
+<img src="./src/main/resources/images/landing-page.png" style="width: 85%;" alt="Landing page" title="landing page">
 
-<p style="width: 90%;">
 Deployed website:
-<a href="http://wild-blossom-garden.s3-website-ap-northeast-1.amazonaws.com"> Wild Blossum Garden</a><br>
-
-<p>Frontend Project Source can be found 
-<a href="https://github.com/rkyzk/vite-react/tree/dev-eng2" target="_blank">here.</a><br/></p>
+<a href="https://main.d1ke51gjkcvl1c.amplifyapp.com" target="_blank"> Wild Blossom Garden</a><br>
 
 <h2>Overview</h2>
+Wild Blossom Garden is an imaginary online shop selling flower bulbs. Users can browse products, place items in their shopping carts, enter delivery and payment information and place orders. They can also view their order history and submit feedback about their purchase. This Rest API  handles requests from the frontend application and manages authentication and interactions with the database.<br>
+
+The source code for the frontend application can be found <a href="https://github.com/rkyzk/vite-react/tree/dev-eng2" target="_blank">here.</a><br/></p>.
 
 <h2>Contents</h2>
 <a href="#link1">1. Main Functions of the Website Wild Blossom Garden</a><br/>
@@ -38,19 +37,19 @@ Deployed website:
  
 <h3>Products</h3>
 | Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
+|:--: | :----------------------- | :--------------------| :-----: |
 | 1   | return product data      | /api/public/products | get   |
 | 2   | return product detail    | /public/product/detail/{productId}| get   | 
-| 3   | return product data of a specific category| /public/categories/{categoryId}/products| get   |            
+| 3   | return product data of<br> a specific category| /public/categories/<br>{categoryId}/products| get   |            
  
 <h3>Authentication</h3>
 | Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
-| 1   | create an account        | /api/auth/signup     | post   |
-| 2   | log in                   | /api/auth/signin     | post   | 
-| 3   | log out                  | /api/auth/signout    | post   | 
-| 4   | get user's name          | /api/auth/username   | get    | 
-| 5   | get user data            | /api/auth/user       | get    | 
+|:--: | :----------------------- | :--------------------| :-----: |
+| 1   | create an account        | /api/auth/signup     | post    |
+| 2   | log in                   | /api/auth/signin     | post    | 
+| 3   | log out                  | /api/auth/signout    | post    | 
+| 4   | get user's name          | /api/auth/username   | get     | 
+| 5   | get user data            | /api/auth/user       | get     | 
 
  
 <h3>Categories (flower kinds)</h3>
@@ -58,8 +57,8 @@ Deployed website:
 | --- | :----------------------- | :--------------------| :----- |
 | 1   | get all categories       | /api/public/categories   | get   |
 | 2   | add a category           | /api/admin/categories    | post   | 
-| 3   | update a category        | /api/admin/categories/{categoryId} | put   | 
-| 4   | delete a category        | /api/admin/categories/delete/{categoryId}| delete| 
+| 3   | update a category        | /api/admin/categories/<br>{categoryId} | put   | 
+| 4   | delete a category        | /api/admin/categories/<br>delete/{categoryId}| delete| 
 
 <h3>Addresses</h3>
 | Nr  | Functions                | API Endpoints        | Methods |
@@ -74,18 +73,18 @@ Deployed website:
 <h3>Carts</h3>
 | Nr  | Functions                | API Endpoints        | Methods |
 | --- | :----------------------- | :--------------------| :----- |
-| 1   | update quantity of an item in cart | /cart/products/{productId}/quantity/{quantity}| put   |
-| 2   | delete a product from cart| /carts/{cartId}/products/{productId}|delete | 
+| 1   | update quantity of an item<br>in cart | /cart/products/{productId}/<br>quantity/{quantity}| put   |
+| 2   | delete a product from cart| /carts/{cartId}/products/<br>{productId}|delete | 
 | 3   | get cart data of the current user| /carts/user/cart  | get    | 
 
 
 <h3>Orders</h3>
 | Nr  | Functions                | API Endpoints        | Methods |
 | --- | :----------------------- | :--------------------| :----- |
-| 1   | Place order (without registering new addresses)|/order| post   |
-| 2   | Place order (register new addresses)|/order/newaddresses| post   |
-| 3   | Get current user's order list|/order-history| get   |
-| 4   |Create and return a payment intent using Stripe API|/order/stripe-client-secret|post|
+| 1   | Place order (without<br>registering new addresses)|/order| post   |
+| 2   | Place order (register<br>new addresses)|/order/newaddresses| post   |
+| 3   | Get current user's order<br>list|/order-history| get   |
+| 4   |Create and return a payment<br>intent using Stripe API|/order/stripe-client-secret|post|
 
 <h3>Reviews</h3>
 | Nr  | Functions                | API Endpoints        | Methods |
@@ -102,17 +101,16 @@ Deployed website:
 
 <h2>Use of JWT and Refresh Tokens</h2>
 
-
-<h2>Use of AWS S3 Bucket for Storing Images</h2>
-
 <h2>Deploying on AWS</h2>
 
 https://dev.to/wittedtech-by-harshit/mastering-aws-step-by-step-guide-to-deploying-a-full-stack-react-java-spring-boot-app-c8d
 
 <h2>Credits</h2>
-<p>I learned many of the methods used in this application from the following course at Udemy:</br>
+<p>I learned methods to build ecommerce applications in the following course at Udemy:</br>
   "Java Spring Boot professional eCommerce project master class"</br>
-  https://github.com/EmbarkXOfficial/spring-boot-course</p>
+  https://github.com/EmbarkXOfficial/spring-boot-course</br>
+  I used many aspects learned from the course in this application.
+  </p>
 
 <p>I took code snippets from the following sites</p>
 

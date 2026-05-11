@@ -1,5 +1,6 @@
 package com.restapi.ecommerce.config;
 
+// Loads Data of testuser, seller1 and admin
 //@Component
 //public class DataLoader implements CommandLineRunner {
 //		private final UserRepository userRepository;

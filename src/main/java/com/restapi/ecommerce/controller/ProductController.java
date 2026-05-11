@@ -125,6 +125,7 @@ public class ProductController {
 	}
 
     /**
+     * NOT IN USE
      * Add product
      *
      * @param productDTO
@@ -139,6 +140,7 @@ public class ProductController {
 	}
 
 	/**
+	 * NOT IN USE
 	 * Update product
 	 *
 	 * @param productDTO
@@ -153,6 +155,7 @@ public class ProductController {
 	}
 
 	/**
+	 * NOT IN USE
 	 * Delete product
 	 * (Insert deleted date in column 'deleted_at')
 	 *

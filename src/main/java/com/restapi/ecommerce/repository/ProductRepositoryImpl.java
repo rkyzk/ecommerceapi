@@ -37,9 +37,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         }
         if (keywords != null) {
             for (int i = 0; i < keywords.size(); i++) {
-            	sql.append(" AND (LOWER(p.product_name) LIKE ':keyword")
-            		.append(i).append("' OR LOWER(pd.value) LIKE ':keyword")
-            		.append(i).append("')))");
+            	sql.append(" AND (LOWER(p.product_name) LIKE ?")
+            		.append(i + 1).append(" OR LOWER(pd.value) LIKE ?")
+            		.append(i + 1).append(")");
             }
         }
         if (colors != null) {
@@ -51,7 +51,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         }
         if (keywords != null) {
             for (int i = 0; i < keywords.size(); i++) {
-                query.setParameter("keyword" + i, "%" + keywords.get(i).toLowerCase() + "%");
+                query.setParameter(i + 1, "%" + keywords.get(i).toLowerCase() + "%");
             }
         }
         return (Long)query.getSingleResult();
@@ -81,9 +81,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         }
         if (keywords != null) {
             for (int i = 0; i < keywords.size(); i++) {
-            	sql.append(" AND (LOWER(p.product_name) LIKE ':keyword")
-            		.append(i).append("' OR LOWER(pd.value) LIKE ':keyword")
-            		.append(i).append("')))");
+            	sql.append(" AND (LOWER(p.product_name) LIKE ?")
+            		.append(i + 1).append(" OR LOWER(pd.value) LIKE ?")
+            		.append(i + 1).append(")");
             }
         }
         if (colors != null) {
@@ -99,7 +99,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         }
         if (keywords != null) {
             for (int i = 0; i < keywords.size(); i++) {
-                query.setParameter("keyword" + i, "%" + keywords.get(i).toLowerCase() + "%");
+                query.setParameter(i + 1, "%" + keywords.get(i).toLowerCase() + "%");
             }
         }
         return query.getResultList();
@@ -126,15 +126,14 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         		+ "INNER JOIN product_color pc ON p.id = pc.product_id "
         		+ "LEFT OUTER JOIN sales_count sc ON p.id = sc.product_id "
         		+ "WHERE p.deleted_at is null");
-
         if (!StringUtils.isEmpty(categoryId)) {
         	sql.append(" AND p.category_id = :categoryId");
         }
         if (keywords != null) {
             for (int i = 0; i < keywords.size(); i++) {
-                sql.append(" AND (LOWER(p.product_name) LIKE ':keyword")
-                	.append(i).append("' OR LOWER(pd.value) LIKE ':keyword")
-                    .append(i).append("')))");
+                sql.append(" AND (LOWER(p.product_name) LIKE ?")
+                	.append(i + 1).append(" OR LOWER(pd.value) LIKE ?")
+                    .append(i + 1).append(")");
             }
         }
         if (colors != null) {
@@ -150,7 +149,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         }
         if (keywords != null && !keywords.isEmpty()) {
             for (int i = 0; i < keywords.size(); i++) {
-                query.setParameter("keyword" + i, "%" + keywords.get(i).toLowerCase() + "%");
+                query.setParameter(i + 1, "%" + keywords.get(i).toLowerCase() + "%");
             }
         }
         return query.getResultList();

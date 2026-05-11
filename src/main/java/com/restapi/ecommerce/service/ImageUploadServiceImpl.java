@@ -1,9 +1,6 @@
 package com.restapi.ecommerce.service;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,29 +29,11 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 	/**
 	 * Upload file on AWS S3 bucket
 	 * 
-	 * @params multipartFile
-	 *         folder
-	 *         fileName
-	 * @return return code
+	 * @params s3Path
+	 *         file
+	 *
+	 * @return
 	 */
-//	public String uploadImage(MultipartFile multipartFile,
-//			String folder, String origFileName) {
-//		LocalDateTime currTime = LocalDateTime.now();
-//		String fileName = origFileName +
-//				currTime.toString()
-//		            .replace(" ", "-").replace(":", "");
-//		String filePath = folder + "/" + fileName;
-//		try {
-//			File file = convertMultipartFileToFile(multipartFile);
-//			// upload file
-//			amazonS3.putObject(bucketName, filePath, file);
-//			file.delete();
-//		} catch (Exception e){
-//			return null;
-//		}
-//		return filePath;
-//	}
-
 	public void uploadImage(String s3Path, MultipartFile file) {
         PutObjectRequest putObjRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
@@ -73,42 +52,4 @@ public class ImageUploadServiceImpl implements ImageUploadService {
         	e.printStackTrace();
         }
     }
-	
-	
-	/**
-	 * Delete file from AWS S3 bucket
-	 * 
-	 * @params fileName
-	 * @return return code
-	 */
-//	public boolean deleteImage(final String fileName) {
-//		final DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucketName, fileName);
-//	    try {
-//	    	amazonS3.deleteObject(deleteObjectRequest);
-//	    } catch (AmazonServiceException e) {
-//            // Amazon S3 exception
-//            e.printStackTrace();
-//            return false;
-//        } catch (SdkClientException e) {
-//            // Amazon S3 couldn't be contacted for a response, or the client
-//            // couldn't parse the response from Amazon S3.
-//            e.printStackTrace();
-//            return false;
-//        }
-//	    return true;
-//	}
-
-	/**
-	 * Convert multipart file to file.
-	 * 
-	 * @params file: multipart file
-	 * @return file
-	 */
-	private File convertMultipartFileToFile(MultipartFile file) throws IOException {
-		File convertedFile = new File(file.getOriginalFilename());
-		FileOutputStream fos = new FileOutputStream(convertedFile);
-		fos.write(file.getBytes());
-		fos.close();		
-		return convertedFile;
-	}
 }

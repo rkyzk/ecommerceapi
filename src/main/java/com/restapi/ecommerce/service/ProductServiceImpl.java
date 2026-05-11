@@ -37,9 +37,6 @@ public class ProductServiceImpl implements ProductService {
 	private CategoryRepository categoryRepository;
 
 	@Autowired
-	private ImageUploadService imgUploadService;
-
-	@Autowired
 	private ModelMapper modelMapper;
 
 	@Value("${msg.product.service001}")
@@ -178,9 +175,9 @@ public class ProductServiceImpl implements ProductService {
 		if (file != null && !file.isEmpty()) {
 			String imageName = productDTO.getImgFile().getOriginalFilename();
 			// store it in S3 bucket
-			String imagePath = uploadImage(imageName, file, category.getCategoryName());
+			//String imagePath = uploadImage(imageName, file, category.getCategoryName());
 			productDTO.setImageName(imageName);
-		    productDTO.setImagePath(imagePath);
+		    //productDTO.setImagePath(imagePath);
 		}
 		Product prodData = modelMapper.map(productDTO, Product.class);
 		Product savedProduct = productRepository.save(prodData);
@@ -188,6 +185,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	/**
+	 * NOT IN USE
 	 * update product
 	 *
 	 */
@@ -202,10 +200,10 @@ public class ProductServiceImpl implements ProductService {
 		if (file != null && !file.isEmpty()) {
 			String imageName = productDTO.getImgFile().getOriginalFilename();
 			// store it in S3 bucket
-			String imagePath = uploadImage(imageName, file,
-					productDTO.getCategory().getCategoryName());
+//			String imagePath = uploadImage(imageName, file,
+//					productDTO.getCategory().getCategoryName());
 			productDTO.setImageName(imageName);
-		    productDTO.setImagePath(imagePath);
+		    //productDTO.setImagePath(imagePath);
 		}
 	    productToUpdate.setProductName(productDTO.getProductName());
 	    productToUpdate.setQuantity(productDTO.getQuantity());
@@ -217,6 +215,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	/**
+	 *  NOT IN USE
 	 * delete product
 	 */
 	@Override
@@ -250,25 +249,5 @@ public class ProductServiceImpl implements ProductService {
 				.map(product -> modelMapper.map(product, ProductDTO.class))
 				.toList();
 		return productDTOs;
-	}
-
-	/**
-	 * Upload image on S3 Bucket.
-	 * 
-	 * @param imageName
-	 * @param file
-	 * @param categoryName
-	 * @return image path
-	 */
-	private String uploadImage(String imageName, MultipartFile file, String categoryName) {
-		// store it in S3 bucket
-//		String imagePath = imgUploadService.uploadImage(
-//			file, categoryName, // specify the folder 
-//			imageName);
-		// if upload fails, set error response
-//		if (imagePath == null) { 
-//			// to do
-//		}
-		return null;
 	}
 }
