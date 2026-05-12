@@ -1,4 +1,4 @@
-# Wild Blossom Garden - REST API for E-commerce Website 
+# Wild Blossom Garden<br>REST API for E-commerce Website 
 
 <img src="./src/main/resources/images/landing-page.png" style="width: 85%;" alt="Landing page" title="landing page">
 
@@ -6,20 +6,19 @@ Deployed website:
 <a href="https://main.dw15oiibmfng0.amplifyapp.com" target="_blank"> Wild Blossom Garden</a><br>
 
 <h2>Overview</h2>
-Wild Blossom Garden is an imaginary online shop selling flower bulbs. Users can browse products, place items in their shopping carts, enter delivery and payment information and place orders. They can also view their order history and submit feedback about their purchase. This Rest API  handles requests from the frontend application and manages authentication and interactions with the database.<br>
+Wild Blossom Garden is an imaginary shop selling flower bulbs online. Users can browse products, place items in their shopping carts, enter delivery and payment information and place orders. They can also view their order history and submit feedback about their purchase. This Rest API handles requests from the frontend application and manages authentication and interactions with the database.<br>
 
-The source code for the frontend application can be found <a href="https://github.com/rkyzk/vite-react/tree/dev-eng2" target="_blank">here.</a><br/></p>.
+The source code for the frontend application can be found <a href="https://github.com/rkyzk/vite-react/tree/dev-eng2" target="_blank">here</a>.</p>.
 
 <h2>Contents</h2>
-<a href="#link1">1. Main Functions of the Website Wild Blossom Garden</a><br/>
-<a href="#link2">2. Endpoints</a><br/>
-<a href="#link3">3. ER Diagram</a><br/>
-<a href="#link4">4. Use of Stripe API</a><br/>
-<a href="#link5">5. Customization of Spring Security</a><br/>
-<a href="#link6">6. Use of JWT and Refresh Tokens</a><br/>
-<a href="#link7">7. Use of AWS S3 Bucket for Storing Images</a><br/>
-<a href="#link8">8. Deploying on AWS</a><br/>
-<a href="#link9">9. Credits</a><br/>
+<a href="#link1">1. Main Functions of the Website Wild Blossom Garden</a><br>
+<a href="#link2">2. Endpoints in Controller Classes</a><br>
+<a href="#link3">3. ER Diagram</a><br>
+<a href="#link4">4. Use of Stripe API</a><br>
+<a href="#link5">5. Customization of Spring Security</a><br>
+<a href="#link6">6. Use of JWT and Refresh Tokens</a><br>
+<a href="#link8">7. Deploying on AWS</a><br>
+<a href="#link9">8. Credits</a><br>
 
 <h2 id="link1> Main Functions of the Website Wild Blossom Garden</h2>
 - Browse Products
@@ -33,16 +32,18 @@ The source code for the frontend application can be found <a href="https://githu
 - View order history, submit feedback
 - View customer review entries
 
-<h2 id="link2">Endpoints</h2>
+<h2 id="link2">Endpoints in Controller Classes</h2>
  
-<h3>Products</h3>
+#### ProductController<br>
+
   | Nr  | Functions                | API Endpoints        | Methods |
   |:--: | :----------------------- | :--------------------| :-----: |
-  | 1   | return product data      | /api/public/products | get   |
+  | 1   | return product data      | /api/public/products | get     |
   | 2   | return product detail    | /public/product/detail/{productId}| get   | 
   | 3   | return product data of<br> a specific category| /public/categories/ <br>{categoryId}/products| get   |            
  
-<h3>Authentication</h3>
+#### AuthController<br>
+
 | Nr  | Functions                | API Endpoints        | Methods |
 |:--: | :----------------------- | :--------------------| :-----: |
 | 1   | create an account        | /api/auth/signup     | post    |
@@ -52,25 +53,28 @@ The source code for the frontend application can be found <a href="https://githu
 | 5   | get user data            | /api/auth/user       | get     | 
 
  
-<h3>Categories (flower kinds)</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
+#### Categories (flower kinds)<br>
+
+| Nr  | Functions                | API Endpoints            | Methods |
+|:--: | :----------------------- | :------------------------| :----- |
 | 1   | get all categories       | /api/public/categories   | get   |
 | 2   | add a category           | /api/admin/categories    | post   | 
 | 3   | update a category        | /api/admin/categories/<br>{categoryId} | put   | 
 | 4   | delete a category        | /api/admin/categories/<br>delete/{categoryId}| delete| 
 
-<h3>Addresses</h3>
-| Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
-| 1   | get all addresses        | /api/addresses       | post   |
-| 2   | add an address           | /api/addresses/anonym| post   | 
-| 3   | get user address         | /api/user/addresses  | get    | 
-| 4   | get address by id        | /api/addresses /{addressId} | get    |
-| 5   | update address by id     | /api/addresses /{addressId} | put    |
-| 6   | delete address by id     | /api/addresses /{addressId} | delete |
+#### Addresses<br>
 
-<h3>Carts</h3>
+| Nr  | Functions                | API Endpoints               | Methods |
+|:--: | :----------------------- | :---------------------------| :-------|
+| 1   | get all addresses        | /api/addresses              | post    |
+| 2   | add an address           | /api/addresses/anonym       | post    | 
+| 3   | get user address         | /api/user/addresses         | get     | 
+| 4   | get address by id        | /api/addresses /{addressId} | get     |
+| 5   | update address by id     | /api/addresses /{addressId} | put     |
+| 6   | delete address by id     | /api/addresses /{addressId} | delete  |
+
+#### Carts<br>
+
 | Nr  | Functions                | API Endpoints        | Methods |
 | --- | :----------------------- | :--------------------| :----- |
 | 1   | update quantity of an item<br>in cart | /cart/products/{productId}/<br>quantity/{quantity}| put   |
@@ -78,7 +82,7 @@ The source code for the frontend application can be found <a href="https://githu
 | 3   | get cart data of the current user| /carts/user/cart  | get    | 
 
 
-<h3>Orders</h3>
+#### Orders<br>
 | Nr  | Functions                | API Endpoints        | Methods |
 | --- | :----------------------- | :--------------------| :----- |
 | 1   | Place order (without<br>registering new addresses)|/order| post   |
@@ -86,7 +90,7 @@ The source code for the frontend application can be found <a href="https://githu
 | 3   | Get current user's order<br>list|/order-history| get   |
 | 4   |Create and return a payment<br>intent using Stripe API|/order/stripe-client-secret|post|
 
-<h3>Reviews</h3>
+#### Reviews<br>
 | Nr  | Functions                | API Endpoints        | Methods |
 | --- | :----------------------- | :--------------------| :----- |
 | 1   |Get list of review entries|/public/reviews       |get  |
