@@ -2,9 +2,6 @@
 
 <img src="./src/main/resources/images/landing-page.png" style="width: 85%;" alt="Landing page" title="landing page">
 
-Deployed website:
-<a href="https://main.dw15oiibmfng0.amplifyapp.com" target="_blank"> Wild Blossom Garden</a><br>
-
 <h2>Overview</h2>
 Wild Blossom Garden is an imaginary shop selling flower bulbs online. Users can browse products, place items in their shopping carts, enter delivery and payment information and place orders. They can also view their order history and submit feedback about their purchase. This Rest API handles requests from the frontend application and manages authentication and interactions with the database.<br>
 
@@ -53,7 +50,7 @@ The source code for the frontend application can be found <a href="https://githu
 | 5   | get user data            | /api/auth/user       | get     | 
 
  
-#### Categories (flower kinds)<br>
+#### CategoryController (Flower kinds)<br>
 
 | Nr  | Functions                | API Endpoints            | Methods |
 |:--: | :----------------------- | :------------------------| :----- |
@@ -62,41 +59,45 @@ The source code for the frontend application can be found <a href="https://githu
 | 3   | update a category        | /api/admin/categories/<br>{categoryId} | put   | 
 | 4   | delete a category        | /api/admin/categories/<br>delete/{categoryId}| delete| 
 
-#### Addresses<br>
+#### AddressController<br>
 
 | Nr  | Functions                | API Endpoints               | Methods |
 |:--: | :----------------------- | :---------------------------| :-------|
-| 1   | get all addresses        | /api/addresses              | post    |
-| 2   | add an address           | /api/addresses/anonym       | post    | 
+| 1   | add an addresses<br>(user id will be set)| /api/addresses    | post    |
+| 2   | add an address<br>(user id will be null) | /api/addresses/anonym| post    | 
 | 3   | get user address         | /api/user/addresses         | get     | 
 | 4   | get address by id        | /api/addresses /{addressId} | get     |
 | 5   | update address by id     | /api/addresses /{addressId} | put     |
 | 6   | delete address by id     | /api/addresses /{addressId} | delete  |
 
-#### Carts<br>
+#### CartController<br>
 
 | Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
+|:--: | :----------------------- | :--------------------| :----- |
 | 1   | update quantity of an item<br>in cart | /cart/products/{productId}/<br>quantity/{quantity}| put   |
 | 2   | delete a product from cart| /carts/{cartId}/products/<br>{productId}|delete | 
 | 3   | get cart data of the current user| /carts/user/cart  | get    | 
 
 
-#### Orders<br>
+#### OrderController<br>
+
 | Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
+|:--: | :----------------------- | :--------------------| :------ |
 | 1   | Place order (without<br>registering new addresses)|/order| post   |
 | 2   | Place order (register<br>new addresses)|/order/newaddresses| post   |
-| 3   | Get current user's order<br>list|/order-history| get   |
-| 4   |Create and return a payment<br>intent using Stripe API|/order/stripe-client-secret|post|
+| 3   | Get current user's <br>order list|/order-history| get   |
+| 4   |Create and return a payment<br>intent(use Stripe API)|/order/stripe-client-secret|post|
 
-#### Reviews<br>
+#### ReviewController<br>
+
 | Nr  | Functions                | API Endpoints        | Methods |
-| --- | :----------------------- | :--------------------| :----- |
+|:--: | :----------------------- | :--------------------| :----- |
 | 1   |Get list of review entries|/public/reviews       |get  |
 | 2   |post a review about an order |/review/{orderId}     |post |
 
 <h2>ER Diagram</h2>
+
+<img src="./src/main/resources/images/ER-ecommerce-API.png" style="width: 85%;" alt="ERD for ecommerce API" title="ERD for ecommerce API">
 
 <h2>Functions in more details</h2>
 <h2>Use of Stripe API</h2>
@@ -106,8 +107,6 @@ The source code for the frontend application can be found <a href="https://githu
 <h2>Use of JWT and Refresh Tokens</h2>
 
 <h2>Deploying on AWS</h2>
-
-https://dev.to/wittedtech-by-harshit/mastering-aws-step-by-step-guide-to-deploying-a-full-stack-react-java-spring-boot-app-c8d
 
 <h2>Credits</h2>
 <p>I learned methods to build ecommerce applications in the following course at Udemy:</br>
